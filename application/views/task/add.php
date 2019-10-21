@@ -114,7 +114,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <option value="1">Daily</option>
                                 <option value="2">Weekly</option>
                                 <option value="3">Monthly</option>
-                                <option value="4">one time</option>
+                                <option value="4">One time</option>
                               </select>  
                       </div>
 
