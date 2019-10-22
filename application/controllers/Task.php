@@ -93,7 +93,8 @@ class Task extends CI_Controller
     	$data['nav1'] = 'Manager';
 
     	$data['currentUser'] = $this->currentUser;
-    	$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+		$data['users'] = $this->db->get("aauth_users")->result_array();
         $data['inc_page'] = 'task/alert'; // views/display.php page
         $this->load->view('manager_layout', $data);
     }

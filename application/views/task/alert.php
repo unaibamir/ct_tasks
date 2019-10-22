@@ -5,7 +5,7 @@
 </div>
 
 <?php
-$departments = array(
+$job_types = array(
 	1 => "Daily",
 	2 => "Weekly",
 	3 => "Monthly",
@@ -26,31 +26,38 @@ $departments = array(
 						<thead>
 							<tr>
 								<th class="text-center">Task Code</th>
-
 								<th colspan="2">Task Title</th>
 								<th colspan="2">Job Type</th>
+								<th colspan="2">Given By</th>
 								<th class="text-right">Actions</th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php if (!empty($tasks)) : ?>
-								<?php foreach ($tasks as $task) {
+								<?php 
+								foreach ($tasks as $task) {
+									$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
+									$given_by_key = array_search($t_given, array_column($users, "id"));
 									//print_r($task->department_id);exit;
-										//task
-										echo '<tr>';
-										echo '<td class="text-center">' . $task->t_code . '</td>';
-										echo '<td colspan="2">' . $task->t_title . '</td>';
-										echo '<td colspan="2">' . $departments[$task->department_id] . '</td>';
-										echo '<td class="td-actions text-right">';
+									
+									//task
+									echo '<tr>';
+									echo '<td class="text-center">' . $task->t_code . '</td>';
+									echo '<td colspan="2">' . $task->t_title . '</td>';
+									echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
+									echo '<td colspan="2">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+									echo '<td class="td-actions text-right">';
 										echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
 
 										echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
 
 										echo '<button data-id="' . $task->tid . '" type="button" rel="tooltip" data-toggle="popover" title="view Details" class="task-detail btn btn-success btn-simple btn-icon btn-sm">
-                  <i class="now-ui-icons education_glasses"></i>
-                  </button></td>';
-										echo '</tr>';
-									} ?>
+										<i class="now-ui-icons education_glasses"></i>
+										</button>';
+									echo '</td>';
+									echo '</tr>';
+								}
+								?>
 
 							<?php endif; ?>
 						</tbody>
