@@ -4,7 +4,7 @@
 <div class="panel-header panel-header-sm">
 </div>
 <?php
-$departments = array(
+$job_types = array(
 	1 => "Daily",
 	2 => "Weekly",
 	3 => "Monthly",
@@ -31,6 +31,7 @@ $departments = array(
 									<th>Task Code</th>
 									<th>Job Type</th>
 									<th>Assigned To</th>
+									<th>Given By</th>
 									<th>Start Date</th>
 									<th>End Date</th>
 									<th>Action</th>
@@ -40,19 +41,24 @@ $departments = array(
 
 								<?php if (!empty($tasks)) : ?>
 									<?php foreach ($tasks as $task) {
+										$t_given = !empty( $task->given_by ) ? $task->given_by : $task->created_by;
+										$given_by_key = array_search($t_given, array_column( $users, "id" ) );
+										
 
-											//task
-											echo '<tr>';
-											echo '<td>' . $task->t_title . '</td>';
-											echo '<td>' . $task->c_name . '</td>';
-											echo '<td>' . $task->t_code . '</td>';
-											echo '<td>' . $departments[$task->department_id] . '</td>';
-											echo '<td>' . $task->first_name . " " .$task->last_name . '</td>';
-											echo '<td>' . $task->start_date . '</td>';
-											echo '<td>' . $task->end_date . '</td>';
-											echo '<td> - - - </td>';
-											echo '</tr>';
-										} ?>
+										//task
+										echo '<tr>';
+										echo '<td>' . $task->t_title . '</td>';
+										echo '<td>' . $task->c_name . '</td>';
+										echo '<td>' . $task->t_code . '</td>';
+										echo '<td>' . $job_types[$task->parent_id] . '</td>';
+										echo '<td>' . $task->first_name . " " . $task->last_name . '</td>';
+										echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+										echo '<td>' . $task->start_date . '</td>';
+										echo '<td>' . $task->end_date . '</td>';
+										echo '<td> - - - </td>';
+										echo '</tr>';
+									}
+									?>
 
 								<?php endif; ?>
 

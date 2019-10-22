@@ -22,10 +22,13 @@ class Task extends CI_Controller
 		//echo "<pre>";print_r($data['tasks']);exit;
 		$data['heading1'] = 'Task Listing';
 		$data['nav1'] = 'Manager';
+		$data['users'] = $this->db->get("aauth_users")->result_array();
 
 		$data['currentUser'] = $this->currentUser;
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
-        $data['inc_page'] = 'task/list'; // views/display.php page
+		$data['inc_page'] = 'task/list'; // views/display.php page
+		
+
         $this->load->view('manager_layout', $data);
     }
 
@@ -39,7 +42,7 @@ class Task extends CI_Controller
 		//select all department
     	$data['departments'] = $this->getDepartments();
 		//select all employees
-    	$data['employees'] = $this->getUsers('Employee');
+		$data['employees'] = $this->getUsers('Employee');
 
     	$data['currentUser'] = $this->currentUser;
     	$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
