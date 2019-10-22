@@ -17,9 +17,9 @@ class Task extends CI_Controller
 	{
 
 
-		$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id";
+		$sql = "SELECT T.*, D.c_name, E.* FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id LEFT JOIN aauth_users AS E on E.id = T.assignee";
 		$data['tasks'] = $this->db->query($sql)->result();
-
+		//echo "<pre>";print_r($data['tasks']);exit;
 		$data['heading1'] = 'Task Listing';
 		$data['nav1'] = 'Manager';
 
