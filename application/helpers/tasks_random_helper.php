@@ -1,6 +1,4 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); ?>
-
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 if (!function_exists("dd")) {
     function dd($data, $exit_data = true)

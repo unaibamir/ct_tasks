@@ -49,7 +49,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 									<?php foreach ($tasks as $task) {
 										$t_given = !empty( $task->given_by ) ? $task->given_by : $task->created_by;
 										$given_by_key = array_search($t_given, array_column( $users, "id" ) );
-										
+										$assigned_user_key =  array_search($task->assignee, array_column( $users, "id" ) );
 
 										//task
 										echo '<tr>';
@@ -57,7 +57,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 										echo '<td>' . $task->c_name . '</td>';
 										echo '<td>' . $task->t_code . '</td>';
 										echo '<td>' . $job_types[$task->parent_id] . '</td>';
-										echo '<td>' . "asd" . '</td>';
+										echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
 										echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
 										echo '<td>' . $task->start_date . '</td>';
 										echo '<td>' . $task->end_date . '</td>';
