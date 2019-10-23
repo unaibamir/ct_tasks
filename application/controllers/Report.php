@@ -73,7 +73,7 @@ class Report extends CI_Controller
         $this->load->view('manager_layout', $data);
 	}
 
-	public function monthly()
+	public function monthly_old()
 	{
 		$data['CurrentMonthDates'] = $this->getCurrentMonthDates();
 		$sql = "SELECT 
@@ -97,11 +97,11 @@ class Report extends CI_Controller
 		$data['currentUser'] = $this->currentUser;
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'report/monthly'; // views/display.php page
+        $data['inc_page'] = 'report/monthly_new'; // views/display.php page
         $this->load->view('manager_layout', $data);
 	}
 
-
-	public function getCurrentMonthDates()
+	public function getCurrentMonthDates_old()
 	{
 		$year = date('Y');
 		$dates = array();
@@ -118,6 +118,56 @@ class Report extends CI_Controller
 		}
 
 		return $dates[date('m')];
+	}
+
+	public function monthly()
+	{
+
+		$data['currentUser'] = $this->currentUser;
+		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+		
+		$current_month 	= date("F");
+		$month_dates 	= $this->getCurrentMonthDates();
+		$data["month_dates"] = $month_dates;
+
+		$sql = "SELECT T.*,  assignee.first_name as given, reporter.first_name as follow, D.c_name FROM `tasks` AS T
+		LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+		LEFT JOIN departments AS D on D.cid = T.department_id";
+		$data['tasks'] = $this->db->query($sql)->result();
+
+		$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+		$data['currentMonthReports'] = $this->db->query($sql)->result();
+
+
+		$data['heading1'] = 'Monthly Status';
+		$data['nav1'] = ($this->currentUserGroup[0]->name == 'Manager')? 'Manager' : 'GEW Employee';
+
+        //$data['inc_page'] = 'report/monthly'; // views/display.php page
+        $data['inc_page'] = 'report/monthly_new'; // views/display.php page
+
+
+        $this->load->view('manager_layout', $data);
+	}
+
+	public function getCurrentMonthDates()
+	{
+		$year = date('Y');
+		$dates = array();
+
+		date("L", mktime(0,0,0, 7,7, $year)) ? $days = 366 : $days = 365;
+		for($i = 1; $i <= $days; $i++)
+		{
+			$month = date('m', mktime(0,0,0,1,$i,$year));
+			$wk = date('W', mktime(0,0,0,1,$i,$year));
+			$wkDay = date('D', mktime(0,0,0,1,$i,$year));
+			$day = date('d', mktime(0,0,0,1,$i,$year));
+
+			$dates[$month][$day] = $wkDay;
+		}
+
+		$dates = $dates[date('m')];
+		return $dates;
 	}
 
 	public function add($task_id = 0)
@@ -150,6 +200,7 @@ class Report extends CI_Controller
 		$data['currentUser'] = $this->currentUser;
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'report/add'; // views/task/add.php page
+        
         $this->load->view('manager_layout', $data);
 	}
 
@@ -159,6 +210,7 @@ class Report extends CI_Controller
 		//server validation
 		$data = array(
 			'task_id' => $this->input->post('task_id'),
+			'user_id' => $this->currentUser->id,
 			'berfore' => $this->input->post('befor'),
 			'after' => $this->input->post('after'),
 			'status' => $this->input->post('status')

@@ -84,9 +84,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
           </div>
          
           <div class="form-group d-flex justify-content-center">
-            <a href="#" onclick="submitloginform();">
+            <!-- <a href="#" onclick="submitloginform();">
               <p>Login here</p>
-            </a>
+            </a> -->
+            <input type="submit" value="Login" class="btn btn-primary">
         </a>
 
           </div>

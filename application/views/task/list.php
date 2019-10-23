@@ -10,7 +10,7 @@ $job_types = array(
 	3 => "Monthly",
 	4 => "One Time"
 );
-
+$job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 ?>
 <!-- Dashboard for User -->
 <div class="content">
@@ -21,25 +21,31 @@ $job_types = array(
 					<h5 class="title">Task Listing</h5>
 				</div>
 				<div class="card-body">
-					<div class="table-responsive">
-
-						<table class="table">
-							<thead class=" text-primary">
-								<tr>
-									<th>Ttile</th>
-									<th>Department</th>
-									<th>Task Code</th>
-									<th>Job Type</th>
-									<th>Assigned To</th>
-									<th>Given By</th>
-									<th>Start Date</th>
-									<th>End Date</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody>
-
-								<?php if (!empty($tasks)) : ?>
+					<nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily");?>" id="nav-task-daily" href="<?php echo base_url("task/?view=daily"); ?>">Daily</a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly");?>" id="nav-task-weekly" href="<?php echo base_url("task/?view=weekly"); ?>">Weekly</a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly");?>" id="nav-task-monthly" href="<?php echo base_url("task/?view=monthly"); ?>">Monthly</a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time");?>" id="nav-task-one-time" href="<?php echo base_url("task/?view=one-time"); ?>">One Time</a>
+                        </div>
+                    </nav>
+                    <?php if (!empty($tasks)) : ?>
+						<div class="table-responsive">
+							<table class="table">
+								<thead class=" text-primary">
+									<tr>
+										<th>Ttile</th>
+										<th>Department</th>
+										<th>Task Code</th>
+										<th>Job Type</th>
+										<th>Assigned To</th>
+										<th>Given By</th>
+										<th>Start Date</th>
+										<th>End Date</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
 									<?php foreach ($tasks as $task) {
 										$t_given = !empty( $task->given_by ) ? $task->given_by : $task->created_by;
 										$given_by_key = array_search($t_given, array_column( $users, "id" ) );
@@ -51,7 +57,7 @@ $job_types = array(
 										echo '<td>' . $task->c_name . '</td>';
 										echo '<td>' . $task->t_code . '</td>';
 										echo '<td>' . $job_types[$task->parent_id] . '</td>';
-										echo '<td>' . $task->first_name . " " . $task->last_name . '</td>';
+										echo '<td>' . "asd" . '</td>';
 										echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
 										echo '<td>' . $task->start_date . '</td>';
 										echo '<td>' . $task->end_date . '</td>';
@@ -59,13 +65,19 @@ $job_types = array(
 										echo '</tr>';
 									}
 									?>
-
-								<?php endif; ?>
-
-							</tbody>
-						</table>
-					</div>
-
+								</tbody>
+							</table>
+						</div>
+					<?php else: ?>
+						<br>
+						<div class="col-md-4 offset-4">
+							<div class="alert alert-primary">
+								<span>
+									<b> Sorry!</b> There are no tasks under this job type
+								</span>
+							</div>
+						</div>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>

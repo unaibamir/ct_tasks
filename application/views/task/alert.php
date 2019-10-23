@@ -12,6 +12,8 @@ $job_types = array(
 	4 => "One Time"
 );
 
+$job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
+
 ?>
 
 <div class="content">
@@ -21,48 +23,69 @@ $job_types = array(
 			<div class="card card-chart text-center">
 
 				<div class="card-body center">
-
-					<table class="table text-left">
-						<thead>
-							<tr>
-								<th class="text-center">Task Code</th>
-								<th colspan="2">Task Title</th>
-								<th colspan="2">Job Type</th>
-								<th colspan="2">Given By</th>
-								<th class="text-right">Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php if (!empty($tasks)) : ?>
-								<?php 
-								foreach ($tasks as $task) {
-									$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
-									$given_by_key = array_search($t_given, array_column($users, "id"));
-									//print_r($task->department_id);exit;
+					<nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily");?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>">Daily</a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly");?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>">Weekly</a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly");?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>">Monthly</a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time");?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>">One Time</a>
+                        </div>
+                    </nav>
+					<?php if (!empty($tasks)) : ?>
+						<div class="table-responsive">
+							<table class="table text-left">
+								<thead>
+									<tr>
+										<th class="text-center">Task Code</th>
+										<th colspan="2">Task Title</th>
+										<th colspan="2">Job Type</th>
+										<th colspan="2">Given By</th>
+										<th class="text-right">Actions</th>
+									</tr>
+								</thead>
+								<tbody>
 									
-									//task
-									echo '<tr>';
-									echo '<td class="text-center">' . $task->t_code . '</td>';
-									echo '<td colspan="2">' . $task->t_title . '</td>';
-									echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
-									echo '<td colspan="2">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
-									echo '<td class="td-actions text-right">';
-										echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
+									<?php 
+									foreach ($tasks as $task) {
+										$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
+										$given_by_key = array_search($t_given, array_column($users, "id"));
+										
+										
+										//task
+										echo '<tr>';
+										echo '<td class="text-center">' . $task->t_code . '</td>';
+										echo '<td colspan="2">' . $task->t_title . '</td>';
+										echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
+										echo '<td colspan="2">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+										echo '<td class="td-actions text-right">';
+											if( $task->reported ) {
+												echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already Reported</a>';
+											} else {
+												echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
+											}
+											echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
 
-										echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
-
-										echo '<button data-id="' . $task->tid . '" type="button" rel="tooltip" data-toggle="popover" title="view Details" class="task-detail btn btn-success btn-simple btn-icon btn-sm">
-										<i class="now-ui-icons education_glasses"></i>
-										</button>';
-									echo '</td>';
-									echo '</tr>';
-								}
-								?>
-
-							<?php endif; ?>
-						</tbody>
-					</table>
-
+											echo '<button data-id="' . $task->tid . '" type="button" rel="tooltip" data-toggle="popover" title="view Details" class="task-detail btn btn-success btn-simple btn-icon btn-sm">
+											<i class="now-ui-icons education_glasses"></i>
+											</button>';
+										echo '</td>';
+										echo '</tr>';
+									}
+									?>
+									
+								</tbody>
+							</table>
+						</div>
+					<?php else: ?>
+						<br>
+						<div class="col-md-4 offset-4">
+							<div class="alert alert-primary">
+								<span>
+									<b> Sorry!</b> There are no tasks under this job type
+								</span>
+							</div>
+						</div>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>

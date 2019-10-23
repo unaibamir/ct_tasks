@@ -15,11 +15,40 @@ class Task extends CI_Controller
 
 	public function index()
 	{
+        
+		//$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
+        $view = !empty( $this->input->get('view') ) ? $this->input->get('view') : "daily";
+        
+        $this->db->select('*');
+        $this->db->from('tasks');
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        
+        switch ($view) {
+            case "daily":
+                $this->db->where('tasks.parent_id', 1);
+                break;
 
+            case "weekly":
+                $this->db->where('tasks.parent_id', 2);
+                break;
 
-		$sql = "SELECT T.*, D.c_name, E.* FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id LEFT JOIN aauth_users AS E on E.id = T.assignee";
-		$data['tasks'] = $this->db->query($sql)->result();
-		//echo "<pre>";print_r($data['tasks']);exit;
+            case "monthly":
+                $this->db->where('tasks.parent_id', 3);
+                break;
+
+            case "one-time":
+                $this->db->where('tasks.parent_id', 4);
+                break;
+            
+            default:
+                $this->db->where('tasks.parent_id', 1);
+                break;
+        }
+
+        $tasks = $this->db->get()->result();
+		
+        $data['tasks'] = $tasks;
+		
 		$data['heading1'] = 'Task Listing';
 		$data['nav1'] = 'Manager';
 		$data['users'] = $this->db->get("aauth_users")->result_array();
@@ -86,8 +115,49 @@ class Task extends CI_Controller
     public function alert()
     {
     	$data['nav1'] = 'GEW Employee';
-    	$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id WHERE T.assignee = ?";
-    	$data['tasks'] = $this->db->query($sql, $this->currentUser->id)->result();
+    	/*$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id WHERE T.assignee = ?";
+    	$data['tasks'] = $this->db->query($sql, $this->currentUser->id)->result();*/
+
+        $view = !empty( $this->input->get('view') ) ? $this->input->get('view') : "daily";
+
+        $this->db->select('*');
+        $this->db->from('tasks');
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->where('tasks.assignee', $this->currentUser->id);
+
+        switch ($view) {
+            case "daily":
+                $this->db->where('tasks.parent_id', 1);
+                break;
+
+            case "weekly":
+                $this->db->where('tasks.parent_id', 2);
+                break;
+
+            case "monthly":
+                $this->db->where('tasks.parent_id', 3);
+                break;
+
+            case "one-time":
+                $this->db->where('tasks.parent_id', 4);
+                break;
+            
+            default:
+                $this->db->where('tasks.parent_id', 1);
+                break;
+        }
+
+        $tasks = $this->db->get()->result();
+        foreach ($tasks as $key => $task) {
+
+            $reported = $this->db->query("SELECT * FROM `reports` WHERE task_id ={$task->tid} AND user_id = {$this->currentUser->id} AND DATE(created_at) = CURDATE()")->result_array();
+            if( !empty($reported) && isset($reported[0]) ) {
+                $task->reported = true;
+            } else {
+                $task->reported = false;
+            }
+        }
+        $data['tasks'] = $tasks;
 
     	$data['heading1'] = 'EMPLOYEE CODE <h5>GEW - '.$this->currentUser->username.'</h5>';
     	$data['nav1'] = 'Manager';
@@ -96,6 +166,8 @@ class Task extends CI_Controller
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
 		$data['users'] = $this->db->get("aauth_users")->result_array();
         $data['inc_page'] = 'task/alert'; // views/display.php page
+        
+
         $this->load->view('manager_layout', $data);
     }
 
