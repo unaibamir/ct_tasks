@@ -11,6 +11,7 @@ class Report extends CI_Controller
 			redirect(base_url(''));
 		$this->currentUser = $this->aauth->get_user();
 		$this->currentUserGroup = $this->aauth->get_user_groups();
+		
 	}
 
 	public function daily()
@@ -29,6 +30,15 @@ class Report extends CI_Controller
 		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
 		LEFT JOIN departments AS D on D.cid = T.department_id
 		LEFT JOIN reports AS R on R.task_id = T.tid";
+
+		if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+			$sql .= " WHERE T.assignee = {$_GET["employee_id"]}";
+		}
+
+		if( $this->currentUserGroup[0]->name == "Employee" ) {
+			$sql .= " WHERE T.assignee = {$this->currentUser->id}";
+		}
+		
 		$tasks = $this->db->query($sql)->result();
 
 
@@ -97,7 +107,6 @@ class Report extends CI_Controller
 		$data['currentUser'] = $this->currentUser;
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'report/monthly'; // views/display.php page
-        $data['inc_page'] = 'report/monthly_new'; // views/display.php page
         $this->load->view('manager_layout', $data);
 	}
 
@@ -134,8 +143,13 @@ class Report extends CI_Controller
 		LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
 		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
 		LEFT JOIN departments AS D on D.cid = T.department_id";
-		$data['tasks'] = $this->db->query($sql)->result();
 
+		if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+			$sql .= " WHERE T.assignee = {$_GET["employee_id"]}";
+		}
+
+		$data['tasks'] = $this->db->query($sql)->result();
+		
 		$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
 		$data['currentMonthReports'] = $this->db->query($sql)->result();
 

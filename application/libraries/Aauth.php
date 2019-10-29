@@ -739,6 +739,7 @@ class Aauth {
 			$this->error($this->CI->lang->line('aauth_error_username_invalid'));
 			$valid = false;
 		}
+
 		if (!$valid) {
 			return false;
 		}

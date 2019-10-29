@@ -11,6 +11,7 @@ class Task extends CI_Controller
 			redirect(base_url(''));
 		$this->currentUser = $this->aauth->get_user();
 		$this->currentUserGroup = $this->aauth->get_user_groups();
+        $this->load->helper(array('form', 'url'));
 	}
 
 	public function index()
@@ -18,6 +19,7 @@ class Task extends CI_Controller
         
 		//$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
         $view = !empty( $this->input->get('view') ) ? $this->input->get('view') : "daily";
+        $employee_id = !empty( $this->input->get('employee_id') ) ? $this->input->get('employee_id') : false;
         
         $this->db->select('*');
         $this->db->from('tasks');
@@ -45,12 +47,16 @@ class Task extends CI_Controller
                 break;
         }
 
+        if( $employee_id ) {
+            $this->db->where('tasks.assignee', $employee_id);
+        }
+
         $tasks = $this->db->get()->result();
 		
         $data['tasks'] = $tasks;
 		
 		$data['heading1'] = 'Task Listing';
-		$data['nav1'] = 'Manager';
+		$data['nav1'] = $this->currentUserGroup[0]->name;
 		$data['users'] = $this->db->get("aauth_users")->result_array();
 
 		$data['currentUser'] = $this->currentUser;
@@ -66,7 +72,7 @@ class Task extends CI_Controller
     	$this->load->library('form_validation');
 
     	$data['heading1'] = 'Task from';
-    	$data['nav1'] = 'Manager';
+    	$data['nav1'] = $this->currentUserGroup[0]->name;
     	$data['task_code'] = $this->generateRandomString(4);
 		//select all department
     	$data['departments'] = $this->getDepartments();
@@ -75,19 +81,39 @@ class Task extends CI_Controller
 
     	$data['currentUser'] = $this->currentUser;
     	$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            $employee_id = $this->currentUserGroup[0]->user_id;
+        } else {
+            $employee_id = isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ? $_GET["employee_id"] : "";
+        }
+        
+        $data['employee_id'] = $employee_id;
         $data['inc_page'] = 'task/add'; // views/task/add.php page
         $this->load->view('manager_layout', $data);
     }
 
     public function save()
     {
+        /*$this->load->helper(array('file','directory'));
+
+        $upload_path                    = "uploads/tasks";
+        
+        if( !is_dir( $upload_path ) ) {
+            mkdir( $upload_path, 0777, true );
+        }
+        
+        $config['upload_path']          = $upload_path;
+        $config['allowed_types']        = 'doc|docx|xls|xlsx|ppt|pptx|csv';*/
+
+
 		//server validation
     	$data = array(
     		't_title' => $this->input->post('title'),
     		't_code' => $this->input->post('code'),
     		'department_id' => $this->input->post('department'),
     		'parent_id' => $this->input->post('parentId'),
-    		'assignee' => $this->input->post('assignee'),
+    		'assignee' => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
     		'reporter' => $this->input->post('reporter'),
 			//'attachment_id' => $this->input->post('title'),
     		't_description' => $this->input->post('description'),
@@ -160,7 +186,7 @@ class Task extends CI_Controller
         $data['tasks'] = $tasks;
 
     	$data['heading1'] = 'EMPLOYEE CODE <h5>GEW - '.$this->currentUser->username.'</h5>';
-    	$data['nav1'] = 'Manager';
+    	$data['nav1'] = $this->currentUserGroup[0]->name;
 
     	$data['currentUser'] = $this->currentUser;
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;

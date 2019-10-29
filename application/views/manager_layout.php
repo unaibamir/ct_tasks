@@ -19,8 +19,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  <!-- CSS Files -->
  <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet" />
  <link href="<?php echo base_url('assets/css/now-ui-dashboard.css?v=1.3.0'); ?>" rel="stylesheet" />
+ <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
  <!-- CSS Just for demo purpose, don't include it in your project -->
  <link href="<?php echo base_url('assets/demo/demo.css'); ?>" rel="stylesheet" />
+
+<script src="<?php echo base_url('assets/js/core/jquery.min.js');?>"></script>
 
  <script type="text/javascript">
      $('#myButton').click(function() {
@@ -47,6 +50,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <p><?php echo $nav1; ?></p>
                         </a>
                     </li>
+                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)): ?>
+                        <li>
+                            <a href="<?php echo base_url('task/add'); ?>">
+                                <i class="now-ui-icons gestures_tap-01 "></i>
+                                <p>Add New Task</p>
+                            </a>
+                        </li>
+                    <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)): ?>
                         <li>
                             <a href="<?php echo base_url('task/alert'); ?>">
@@ -95,19 +106,26 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)): ?>
-                        <li>
-                            <a href="<?php echo base_url('task/add'); ?>">
-                                <i class="now-ui-icons gestures_tap-01 "></i>
-                                <p>Add New Task</p>
-                            </a>
-                        </li>
-                    <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)): ?>
                         <li>
                             <a href="<?php echo base_url('task'); ?>">
                                 <i class="now-ui-icons gestures_tap-01 "></i>
                                 <p>Task Listing</p>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)): ?>
+                        <li>
+                            <a href="<?php echo base_url('employee/'); ?>">
+                                <i class="now-ui-icons users_single-02"></i>
+                                <p>View Employees Report</p>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="<?php echo base_url('employee/all'); ?>">
+                                <i class="now-ui-icons users_single-02"></i>
+                                <p>View All Employees</p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -241,7 +259,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 </div>
 </div>
 <!--   Core JS Files   -->
-<script src="<?php echo base_url('assets/js/core/jquery.min.js');?>"></script>
 <script src="<?php echo base_url('assets/js/core/popper.min.js');?>"></script>
 <script src="<?php echo base_url('assets/js/core/bootstrap.min.js');?>"></script>
 <script src="<?php echo base_url('assets/js/plugins/perfect-scrollbar.jquery.min.js');?>"></script>
@@ -255,10 +272,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <script src="<?php echo base_url('assets/js/now-ui-dashboard.min.js?v=1.3.0');?>" type="text/javascript"></script>
 <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->
 <script src="<?php echo base_url('assets/demo/demo.js');?>"></script>
+
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+
 <script>
     $(document).ready(function() {
         // Javascript method's body can be found in assets/js/demos.js
-        demo.initDashboardPageCharts();
+        //demo.initDashboardPageCharts();
+
+        $('#table-list').DataTable();
     });
 </script>
 </body>

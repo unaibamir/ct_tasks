@@ -37,14 +37,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 
+				<div class="card-body">
 				<?php
 				$currentdate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 				echo ' <label class="text-warning font-weight-bold " >Current Date: </label> ' . date("d / m / Y", $currentdate) . '<br>';
 
 				echo '<label class="text-warning font-weight-bold " >Current Month : </label> ' . date(" F Y") . '   ' ?>
-				<div class="card-body">
 					<!-- Form Start her-->
-					<?php echo form_open('task/save', array('id' => 'task_form')); ?>
+					<?php echo form_open_multipart('task/save', array('id' => 'task_form')); ?>
 					<div class="row">
 
 						<div class="col-md-4 font-weight-bold ">
@@ -130,12 +130,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 							<div class="form-group">
 								<label for="sel1">Assigned To</label>
-								<select class="form-control" id="sel1" name="assignee">
+								<select class="form-control" id="sel1" name="assignee" <?php echo $employee_id != "" ? "readonly disabled" : ""; ?>>
 									<option>Select Given</option>
 									<?php
 									if (!empty($employees)) {
 										foreach ($employees as $key => $value) {
-											echo '<option value="' . $value->id . '" >' . $value->first_name . ' ' . $value->last_name . '</option>';
+											$selected = $employee_id == $value->id ? 'selected="selected"' : '';
+											echo '<option value="' . $value->id . '" '.$selected.'>' . $value->first_name . ' ' . $value->last_name . '</option>';
 										}
 									}
 									?>

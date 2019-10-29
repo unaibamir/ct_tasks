@@ -22,20 +22,21 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 				</div>
 				<div class="card-body">
 					<nav>
-                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily");?>" id="nav-task-daily" href="<?php echo base_url("task/?view=daily"); ?>">Daily</a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly");?>" id="nav-task-weekly" href="<?php echo base_url("task/?view=weekly"); ?>">Weekly</a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly");?>" id="nav-task-monthly" href="<?php echo base_url("task/?view=monthly"); ?>">Monthly</a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time");?>" id="nav-task-one-time" href="<?php echo base_url("task/?view=one-time"); ?>">One Time</a>
-                        </div>
-                    </nav>
-                    <?php if (!empty($tasks)) : ?>
+						<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo task_list_link("daily");?>">Daily</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo task_list_link("weekly");?>">Weekly</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo task_list_link("monthly");?>">Monthly</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo task_list_link("one-time");?>">One Time</a>
+						</div>
+					</nav>
+					<?php if (!empty($tasks)) : ?>
 						<div class="table-responsive">
 							<table class="table">
 								<thead class=" text-primary">
 									<tr>
 										<th>Ttile</th>
 										<th>Department</th>
+										<th>Job Category</th>
 										<th>Task Code</th>
 										<th>Job Type</th>
 										<th>Assigned To</th>
@@ -47,28 +48,29 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 								</thead>
 								<tbody>
 									<?php foreach ($tasks as $task) {
-										$t_given = !empty( $task->given_by ) ? $task->given_by : $task->created_by;
-										$given_by_key = array_search($t_given, array_column( $users, "id" ) );
-										$assigned_user_key =  array_search($task->assignee, array_column( $users, "id" ) );
+											$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
+											$given_by_key = array_search($t_given, array_column($users, "id"));
+											$assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
 
-										//task
-										echo '<tr>';
-										echo '<td>' . $task->t_title . '</td>';
-										echo '<td>' . $task->c_name . '</td>';
-										echo '<td>' . $task->t_code . '</td>';
-										echo '<td>' . $job_types[$task->parent_id] . '</td>';
-										echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
-										echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
-										echo '<td>' . $task->start_date . '</td>';
-										echo '<td>' . $task->end_date . '</td>';
-										echo '<td> - - - </td>';
-										echo '</tr>';
-									}
-									?>
+											//task
+											echo '<tr>';
+											echo '<td>' . $task->t_title . '</td>';
+											echo '<td>' . $task->c_name . '</td>';
+											echo '<td> Job Category Comes Here</td>';
+											echo '<td>' . $task->t_code . '</td>';
+											echo '<td>' . $job_types[$task->parent_id] . '</td>';
+											echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
+											echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+											echo '<td>' . $task->start_date . '</td>';
+											echo '<td>' . $task->end_date . '</td>';
+											echo '<td> - - - </td>';
+											echo '</tr>';
+										}
+										?>
 								</tbody>
 							</table>
 						</div>
-					<?php else: ?>
+					<?php else : ?>
 						<br>
 						<div class="col-md-4 offset-4">
 							<div class="alert alert-primary">
