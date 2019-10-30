@@ -23,46 +23,64 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 				<div class="card-body">
 					<nav>
 						<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo task_list_link("daily");?>">Daily</a>
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo task_list_link("weekly");?>">Weekly</a>
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo task_list_link("monthly");?>">Monthly</a>
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo task_list_link("one-time");?>">One Time</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo task_list_link("daily");?>"><kbd>Daily</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo task_list_link("weekly");?>"><kbd>Weekly</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo task_list_link("monthly");?>"><kbd>Monthly</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo task_list_link("one-time");?>"><kbd>One Time</kbd></a>
 						</div>
 					</nav>
 					<?php if (!empty($tasks)) : ?>
 						<div class="table-responsive">
-							<table class="table">
-								<thead class=" text-primary">
+							<table class="table" id="table-list">
+								<thead class=" thead-dark text-primary">
 									<tr>
-										<th>Ttile</th>
-										<th>Department</th>
-										<th>Job Category</th>
+										
 										<th>Task Code</th>
-										<th>Job Type</th>
+										<th>Ttile</th>
 										<th>Assigned To</th>
+										
 										<th>Given By</th>
+										<th>Department</th>
+										<th>Job Type</th>
+										
+										<th> Follow Up </th>
 										<th>Start Date</th>
 										<th>End Date</th>
 										<th>Action</th>
 									</tr>
 								</thead>
+
+
+
+
 								<tbody>
+
+
+
+
 									<?php foreach ($tasks as $task) {
 											$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
 											$given_by_key = array_search($t_given, array_column($users, "id"));
 											$assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
-
+											$start_date = date('d/m/Y', strtotime($task->start_date));
+											$end_date = date('d/m/Y', strtotime($task->end_date));
 											//task
 											echo '<tr>';
-											echo '<td>' . $task->t_title . '</td>';
-											echo '<td>' . $task->c_name . '</td>';
-											echo '<td> Job Category Comes Here</td>';
+											
 											echo '<td>' . $task->t_code . '</td>';
-											echo '<td>' . $job_types[$task->parent_id] . '</td>';
+											echo '<td>' . $task->t_title . '</td>';
+
 											echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
-											echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
-											echo '<td>' . $task->start_date . '</td>';
-											echo '<td>' . $task->end_date . '</td>';
+								
+											echo '<td> --- </td>';
+												
+											echo '<td>' . $task->c_name . '</td>';
+											echo '<td>' . $job_types[$task->parent_id] . '</td>';
+											
+											echo '<td> --- </td>';
+											
+											echo '<td>' .$start_date . '</td>';
+											echo '<td>' . $end_date . '</td>';
 											echo '<td> - - - </td>';
 											echo '</tr>';
 										}
@@ -88,13 +106,20 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 
 
 </div>
-<!-- Dashboard for User body-->
+<!-- 
+
+
+echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>'; 
+
+echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+
+	Dashboard for User body-->
 
 
 
 
 <footer class="footer">
-	<div class="container-fluid">
+<!--	<div class="container-fluid">
 		<nav>
 			<ul>
 				<li>
@@ -118,8 +143,10 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 			&copy;
 			<script>
 				document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
-			</script>, Desgin & Code by
+			</script> Design & Code by
 			<a href="http://www.gulfenviro.ae/" target="_blank">Amir Nisar</a>.
 		</div>
 	</div>
+
+-->
 </footer>

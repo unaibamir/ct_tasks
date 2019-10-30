@@ -41,10 +41,10 @@ class Report extends CI_Controller
 		
 		$tasks = $this->db->query($sql)->result();
 
-
+		$evening = $morning = $Ids = array();
+		
 		if (!empty($tasks))
 		{
-			$evening = $morning = $Ids = array();
 
 			foreach ($tasks as $key => $value) 
 			{

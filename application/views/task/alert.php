@@ -4,6 +4,16 @@
 <div class="panel-header panel-header-sm">
 </div>
 
+<style>
+.card label {
+    font-size: unset;
+    margin-bottom: 0;
+    padding-top: 0;
+    color: #000;
+    font-weight: bold;
+}
+</style>
+
 <?php
 $job_types = array(
 	1 => "Daily",
@@ -47,8 +57,10 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 									
 									<?php 
 									foreach ($tasks as $task) {
+										
 										$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
 										$given_by_key = array_search($t_given, array_column($users, "id"));
+										$follow_up_key = array_search($task->reporter, array_column($users, "id"));
 										
 										
 										//task
@@ -65,9 +77,71 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 											}
 											echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
 
-											echo '<button data-id="' . $task->tid . '" type="button" rel="tooltip" data-toggle="popover" title="view Details" class="task-detail btn btn-success btn-simple btn-icon btn-sm">
+											echo '<button data-id="' . $task->tid . '" type="button" title="view Details" class="btn btn-success btn-simple btn-icon btn-sm"  data-toggle="modal" data-target=".task-popup-' . $task->tid . '">
 											<i class="now-ui-icons education_glasses"></i>
 											</button>';
+											?>
+											<div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+												<div class="modal-dialog modal-lg">
+													<div class="modal-content">
+														<div class="modal-header">
+															<h5 class="modal-title h4" style="margin:0;">Task Code - <?php echo $task->t_code; ?> Details</h5>
+															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+																<span aria-hidden="true">×</span>
+															</button>
+														</div>
+														<div class="modal-body">
+															<div class="container-fluid">
+																<div class="row">
+																	<div class="col-md-12">
+																		<!-- <div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Task Code</label>
+																			<div class="col-md-9 text-left"><?php echo $task->t_code; ?></div>
+																		</div> -->
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Task Title</label>
+																			<div class="col-md-9 text-left"><?php echo $task->t_title; ?></div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Task Description</label>
+																			<div class="col-md-9 text-left"><?php echo $task->t_description; ?></div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Type</label>
+																			<div class="col-md-9 text-left"><?php echo $job_types[$task->parent_id]; ?></div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Given By</label>
+																			<div class="col-md-9 text-left"><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Follow Up</label>
+																			<div class="col-md-9 text-left"><?php echo $users[$follow_up_key]["first_name"] . " " . $users[$follow_up_key]["last_name"]; ?></div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Start Date</label>
+																			<div class="col-md-9 text-left">
+																				<?php echo date( $this->config->item('date_format'), strtotime($task->start_date) ); ?>
+																			</div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">End Date</label>
+																			<div class="col-md-9 text-left">
+																				<?php echo date( $this->config->item('date_format'), strtotime($task->end_date) ); ?>
+																			</div>
+																		</div>
+																		<div class="form-group row">
+																			<label for="" class="col-sm-3 col-form-label">Files</label>
+																			<div class="col-md-9 text-left"></div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<?php
 										echo '</td>';
 										echo '</tr>';
 									}

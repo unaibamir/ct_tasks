@@ -121,13 +121,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                 <p>View Employees Report</p>
                             </a>
                         </li>
-
+<!--
                         <li>
                             <a href="<?php echo base_url('employee/all'); ?>">
                                 <i class="now-ui-icons users_single-02"></i>
                                 <p>View All Employees</p>
                             </a>
                         </li>
+-->
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('assign_task', $currentUserGroup)): ?>
                         <li>
