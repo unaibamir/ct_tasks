@@ -28,4 +28,24 @@ $( function() {
 
         return date;
     }
+
+
+    $("#department").on("change", function(event){
+        var dept_id = $(this).val();
+
+        if( dept_id != "" && dept_id != "Select Department" ) {
+            var url = base_url + "user/getdepartmentusers/" + dept_id;
+            var assignee = $("#assignee");
+            $.ajax({url: url, success: function(result){
+                result  = JSON.parse(result);
+
+                if( result.status ) {
+                    assignee.find('option').remove();
+                    $.each(result.data, function( index, value ){
+                        assignee.append( new Option( value.name, value.id ) );
+                    });
+                }
+            }});
+        }
+    });
 } );

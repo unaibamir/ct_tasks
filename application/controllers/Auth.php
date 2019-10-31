@@ -7,6 +7,12 @@ class Auth extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+
+        if($this->aauth->is_loggedin()){
+            redirect(base_url('/dashboard'));
+        } else {
+            $this->index();
+        }
 	}
 
 
@@ -14,6 +20,7 @@ class Auth extends CI_Controller
 //load login screen
 	public function index()
 	{
+
 		$this->load->view('login');
 	}
 

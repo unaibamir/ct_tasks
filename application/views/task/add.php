@@ -65,16 +65,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						</div>
 
 						<div class="col-md-4 font-weight-bold">
-                            <div class="input-daterange">
-							<div class="form-group">
-								<label>Start Date</label>
-								<input type="text" name="start_date" class="form-control text-left" required id="start_date">
-							</div>
-							<div class="form-group">
-								<label>End Date</label>
-								<input type="text" name="end_date" class="form-control text-left" required id="end_date">
-							</div>
-                            </div>
 
                             <div class="form-group">
                                 <label for="sel1">Job Type / Task Categories</label>
@@ -88,7 +78,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                             <div class="form-group">
                                 <label for="sel1">Select Department</label>
-                                <select class="form-control" id="sel1" name="department" required>
+                                <select class="form-control" id="department" name="department" required>
                                     <option>Select Department</option>
                                     <?php
                                     if (!empty($departments)) {
@@ -100,6 +90,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </select>
                             </div>
 
+                            <div class="input-daterange">
+                                <div class="form-group">
+                                    <label>Start Date</label>
+                                    <input type="text" name="start_date" class="form-control text-left" required id="start_date">
+                                </div>
+                                <div class="form-group">
+                                    <label>End Date</label>
+                                    <input type="text" name="end_date" class="form-control text-left" required id="end_date">
+                                </div>
+                            </div>
+
 						</div>
 
 
@@ -108,8 +109,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
                             <div class="form-group">
-                                <label for="sel1">Given By</label>
-                                <select class="form-control" id="sel1" name="given_by" required>
+                                <label for="sel1">Given</label>
+                                <select class="form-control" id="given_by" name="given_by" required>
                                     <option>Select Given</option>
                                     <?php
                                     if (!empty($employees)) {
@@ -121,8 +122,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="sel1">Follow Up</label>
-                                <select class="form-control" id="sel1" name="reporter" required>
+                                <label for="sel1">Reporter</label>
+                                <select class="form-control" id="follow_up" name="reporter" required>
                                     <option>Select a Person</option>
                                     <?php
                                     if (!empty($employees)) {
@@ -135,8 +136,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </div>
 
 							<div class="form-group">
-								<label for="sel1">Assigned To</label>
-								<select class="form-control" id="sel1" name="assignee" <?php echo $employee_id != "" ? "" : ""; ?>  required>
+								<label for="sel1">Assign To</label>
+								<select class="form-control" id="assignee" name="assignee" <?php echo $employee_id != "" ? "" : ""; ?>  required>
 									<option>Select Given</option>
 									<?php
 									if (!empty($employees)) {

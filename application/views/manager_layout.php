@@ -23,11 +23,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="<?php echo base_url('assets/demo/demo.css'); ?>" rel="stylesheet" />
+    <link href="<?php echo base_url('assets/css/custom.css'); ?>" rel="stylesheet" />
 
     <script src="<?php echo base_url('assets/js/core/jquery.min.js');?>"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
  <script type="text/javascript">
+     var base_url = "<?php echo base_url("/")?>";
      $('#myButton').click(function() {
          $.scrollTo($('#myDiv'), 1000);
      });

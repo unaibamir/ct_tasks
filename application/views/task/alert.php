@@ -49,7 +49,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 										<th class="text-center">Task Code</th>
 										<th colspan="2">Task Title</th>
 										<th colspan="2">Job Type</th>
-										<th colspan="2">Given By</th>
+										<th colspan="2">Given</th>
 										<th class="text-right">Actions</th>
 									</tr>
 								</thead>

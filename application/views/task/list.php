@@ -31,33 +31,22 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 					</nav>
 					<?php if (!empty($tasks)) : ?>
 						<div class="table-responsive">
-							<table class="table" id="table-list">
+							<table class="table table-bordered table-hover" id="table-list">
 								<thead class=" thead-dark text-primary">
 									<tr>
-										
 										<th>Task Code</th>
 										<th>Ttile</th>
 										<th>Assigned To</th>
-										
 										<th>Given By</th>
 										<th>Department</th>
 										<th>Job Type</th>
-										
 										<th> Follow Up </th>
 										<th>Start Date</th>
 										<th>End Date</th>
 										<th>Action</th>
 									</tr>
 								</thead>
-
-
-
-
 								<tbody>
-
-
-
-
 									<?php foreach ($tasks as $task) {
 											$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
 											$given_by_key = array_search($t_given, array_column($users, "id"));
@@ -81,7 +70,13 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 											
 											echo '<td>' .$start_date . '</td>';
 											echo '<td>' . $end_date . '</td>';
-											echo '<td> - - - </td>';
+											?>
+                                            <td>
+                                                <a href="<?php echo base_url("/report/history/".$task->tid); ?>" class="btn btn-info btn-sm">
+                                                    View History
+                                                </a>
+                                            </td>
+                                            <?php
 											echo '</tr>';
 										}
 										?>

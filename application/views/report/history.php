@@ -82,6 +82,17 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                         echo '</div>';
                       }
                       echo '</div>';
+                    } else {
+                        ?>
+                            <div class="col-md-6 offset-3">
+                                <br>
+                                <div class="alert alert-primary">
+								<span>
+									<b> Sorry!</b> No task history is available right now.
+								</span>
+                                </div>
+                            </div>
+                        <?php
                     }
 
                   ?>
