@@ -16,7 +16,7 @@ class Task extends CI_Controller
 
 	public function index()
 	{
-        
+
 		//$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
         $view = !empty( $this->input->get('view') ) ? $this->input->get('view') : "daily";
         $employee_id = !empty( $this->input->get('employee_id') ) ? $this->input->get('employee_id') : false;
