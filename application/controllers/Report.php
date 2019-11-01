@@ -14,13 +14,51 @@ class Report extends CI_Controller
 		
 	}
 
-	public function daily()
+    public function daily()
+    {
+        $this->db->select('*');
+        $this->db->from('reports');
+        if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+            $this->db->where('assignee', $_GET["employee_id"]);
+        }
+
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            $this->db->where('user_id', $this->currentUser->id);
+        }
+
+        $reports = $this->db->get()->result();
+
+        if( !empty( $reports ) ) {
+            foreach ($reports as $key => $report ) {
+                $this->db->select('*');
+                $this->db->from('tasks');
+                $this->db->where('tid', $report->task_id);
+                $task = $this->db->get()->row();
+                $report->task = $task;
+            }
+        }
+
+        $data['reports'] = $reports;
+
+        $data['users'] = $this->db->get("aauth_users")->result_array();
+        $data['heading1'] = 'Daily Job Report View';
+        $data['nav1'] = 'GEW Employee';
+        $data['nav1'] = ($this->currentUserGroup[0]->name == 'Manager')? 'Manager' : 'GEW Employee';
+
+        $data['currentUser'] = $this->currentUser;
+        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        $data['inc_page'] = 'report/daily_new'; // views/display.php page
+        $this->load->view('manager_layout', $data);
+    }
+
+	public function daily_old()
 	{
 		$sql = "SELECT 
 		T.*, 
 		assignee.first_name as given,
 		reporter.first_name as follow,
 		D.c_name,
+		R.rid,
 		R.berfore,
 		R.after,
 		R.status
@@ -40,6 +78,7 @@ class Report extends CI_Controller
 		}
 		
 		$tasks = $this->db->query($sql)->result();
+
 
 		$evening = $morning = $Ids = array();
 		

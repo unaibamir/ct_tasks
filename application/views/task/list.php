@@ -51,8 +51,8 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 											$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
 											$given_by_key = array_search($t_given, array_column($users, "id"));
 											$assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
-											$start_date = date('d/m/Y', strtotime($task->start_date));
-											$end_date = date('d/m/Y', strtotime($task->end_date));
+											$start_date = date($this->config->item('date_format'), strtotime($task->start_date));
+											$end_date = date($this->config->item('date_format'), strtotime($task->end_date));
 											//task
 											echo '<tr>';
 											
