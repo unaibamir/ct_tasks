@@ -50,10 +50,34 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                </div>
                 <div class="row ">
               <h6 class=" m-1 ">Task  Description :</h6>
-              <p class=" card-text m-2 text-warning"><?php echo $task->t_description; ?></p>
+              <div class="col-md-12">
+                <p class=" card-text text-warning"><?php echo $task->t_description; ?></p>
+              </div>
              </div>
-               <a href="http://gdlp01.c-wss.com/gds/0/0300004730/02/eosrt3-eos1100d-im2-c-en.pdf" download>
-              <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png"  width="40" height="40"> Download File</a>
+             <div class="row">
+               <h6 class=" m-1 ">Task Files:</h6>
+               <div class="col-md-12">
+               <?php
+                if( !empty( $task_files ) ) {
+                  echo '<ul style="padding-left:0px;list-style: none;">';
+                  foreach ( $task_files as $file) {
+                    ?>
+                    <li>
+                    <a href="<?php echo $file["url"]; ?>" target="_blank">
+                      <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png"  width="40" height="40"> <?php echo $file["f_title"]; ?>
+                    </a>
+                    </li>
+                    <?php
+                  }
+                  echo '</ul>';
+                } else {
+                  echo 'No Files Available';
+                }
+                ?>
+                </div>
+             </div>
+              <!--  <a href="http://gdlp01.c-wss.com/gds/0/0300004730/02/eosrt3-eos1100d-im2-c-en.pdf" download>
+                            <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png"  width="40" height="40"> Download File</a> -->
 
             </div>
 
@@ -65,7 +89,8 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
                 <div class="row font-weight-bold text-danger border">                                          
                   <div class="col-md-2"><label>Date</label></div>
-                  <div class="col-md-9"><label>Update</label></div>
+                  <div class="col-md-7"><label>Update</label></div>
+                  <div class="col-md-2"><label>Files</label></div>
                   <div class="col-md-1"><label>Status</label></div>
                 </div>   
 
@@ -77,7 +102,24 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                         $newDate = date("d-M-y", strtotime($value->created_at));
                         echo '<div class="row    bg-light  border-bottom ">';
                         echo '<div class="col-md-2 text-info font-weight-bold border-right pt-5 ">'.$newDate.'</div>';
-                        echo '<div class="col-md-9 bg-light p-3 border-right ">'.$value->berfore.'</br><hr>'.$value->after.'</div>';
+                        echo '<div class="col-md-7 bg-light p-3 border-right ">'.$value->berfore.'</br><hr>'.$value->after.'</div>';
+                        echo '<div class="col-md-2 bg-light p-3 border-right ">';
+                        if( !empty( $value->files ) ) {
+                          echo '<ul style="padding-left:0px;list-style: none;">';
+                          foreach ( $value->files as $file) {
+                            ?>
+                            <li>
+                            <a href="<?php echo $file["url"]; ?>" target="_blank">
+                              <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png"  width="40" height="40"> <?php echo $file["f_title"]; ?>
+                            </a>
+                            </li>
+                            <?php
+                          }
+                          echo '</ul>';
+                        } else {
+                          echo 'No Files Available';
+                        }
+                        echo '</div>';
                         echo '<div class="col-md-1 text-primary t-3 text-sm-center  pt-5"><label><b>'.$value->status.'</b></label></div>';
                         echo '</div>';
                       }

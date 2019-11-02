@@ -48,6 +48,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                         <th class="th-sm" width="100px;">Assigned</th>
                         <th class="th-sm" width="100px;">Start date</th>
                         <th class="th-sm" width="100px;">End Date</th>
+                        <th class="th-sm" width="100px;">Report Date</th>
                         <th class="th-sm" width="250px;">Before</th>
                         <th class="th-sm" width="250px;">After</th>
                         <th class="th-sm" width="40px;">Status</th>
@@ -63,6 +64,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                         $assigned_user_key =  array_search($report->task->assignee, array_column($users, "id"));
                         $start_date = date($this->config->item('date_format'), strtotime($report->task->start_date));
                         $end_date = date($this->config->item('date_format'), strtotime($report->task->end_date));
+                        $report_date = date($this->config->item('date_format'), strtotime($report->created_at));
                         ?>
                         <tr id="report-<?php echo $report->rid; ?>">
                             <td><?php echo $report->task->t_code; ?></td>
@@ -71,6 +73,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                             <td><?php echo $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"]; ?></td>
                             <td><?php echo $start_date; ?></td>
                             <td><?php echo $end_date; ?></td>
+                            <td><?php echo $report_date; ?></td>
                             <td><?php echo $report->berfore; ?></td>
                             <td><?php echo $report->after; ?></td>
                             <td><?php echo $report->status; ?></td>

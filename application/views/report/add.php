@@ -111,7 +111,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
           echo '<label class="text-warning font-weight-bold " >Current Month : </label> '.date(" F Y").'   '?>
 
-           <?php echo form_open('report/save', array('id'=>'report_form'));?>
+           <?php echo form_open_multipart('report/save', array('id'=>'report_form'));?>
 
                <div class="row">
     
@@ -191,7 +191,7 @@ if (!empty($alreadReported->status))
             </div>
             <div class="custom-file">
               <input type="file" class="custom-file-input" id="inputGroupFile01"
-              aria-describedby="inputGroupFileAddon01" <?=$disabled?>>
+              aria-describedby="inputGroupFileAddon01" name="report_file" <?=$disabled?>>
               <label class="custom-file-label " for="inputGroupFile01">Choose file</label>
             </div>
         </div>

@@ -132,7 +132,25 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 																		</div>
 																		<div class="form-group row">
 																			<label for="" class="col-sm-3 col-form-label">Files</label>
-																			<div class="col-md-9 text-left">No Files Available</div>
+																			<div class="col-md-9 text-left">
+																				<?php
+																				if( !empty( $task->files ) ) {
+																					echo '<ul style="padding-left:16px;">';
+																					foreach ( $task->files as $file) {
+																						?>
+																						<li>
+																						<a href="<?php echo $file["url"]; ?>" target="_blank">
+																							<?php echo $file["f_title"]; ?>
+																						</a>
+																						</li>
+																						<?php
+																					}
+																					echo '</ul>';
+																				} else {
+																					echo 'No Files Available';
+																				}
+																				?>
+																			</div>
 																		</div>
 																	</div>
 																</div>

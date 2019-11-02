@@ -146,8 +146,8 @@ $job_types = array(
 									if ($currentUserGroup == "Employee" && $currentUser->id != $task->assignee) {
 										continue;
 									}
-									$start_date = date('d/m/Y', strtotime($task->start_date));
-									$end_date = date('d/m/Y', strtotime($task->end_date));
+									$start_date = date($this->config->item('date_format'), strtotime($task->start_date));
+									$end_date = date($this->config->item('date_format'), strtotime($task->end_date));
 									?>
 									<tr class="d-flex" id="task-<?php echo $task->tid; ?>">
 										<td style="width: 80px;"><?php echo $task->t_code; ?></td>
@@ -162,25 +162,40 @@ $job_types = array(
 										<td style="width: 100px;"><?php echo $start_date; ?></td>
 										<td style="width: 100px;"><?php echo $end_date; ?></td>
 										<?php
-										$output = "-";
-											foreach ($month_dates as $date_dig => $date_alpha) {
-												?>
-											<td style="width: 50px;">
-												<?php
-												$date1 = $date_dig . '/' . date('m/Y');
+										foreach ($month_dates as $date_dig => $date_alpha) {
+										?>
+										<td style="width: 50px;">
+											<?php
+											$current_date 	= $date_dig . date("/{$month_date}/Y");
+
+											$current_date_2 = strtotime(date( $date_dig . "-{$month_date}-Y" ));
+											$start_date 	= strtotime($task->start_date);
+											$end_date 		= strtotime($task->end_date);
+											$output 		= "-";
+
+											if( !empty( $currentMonthReports ) ) {
 												foreach ($currentMonthReports as $report_key => $report) {
-													$date2 = date('d/m/Y', strtotime($report->created_at));
-													if ($report->task_id == $task->tid && $date1 == $date2) {
-														$output = $report->status ;
-														continue;
+													
+													$report_date 	= date($this->config->item('date_format'), strtotime($report->created_at));
+													$report_date_2 	= date('d-m-Y', strtotime($report->created_at));
+
+													if( ($current_date_2 >= $start_date) && ($current_date_2 <= $end_date) && $current_date_2 != strtotime($report->created_at) ) {
+														//$output = "AB";
+														//break;
 													}
+													
+													if ( $report->task_id == $task->tid && $current_date == $report_date ) {
+														$output = $report->status ;
+													}
+													//break;													
 												}
-												?>
-												<?php echo '<span class="table-status">' . $output. '</span>'; ?>
-											</td>
-										<?php
 											}
 											?>
+											<?php echo '<span class="table-status">' . $output. '</span>'; ?>
+										</td>
+										<?php
+										}
+										?>
 									</tr>
 								<?php
 								}

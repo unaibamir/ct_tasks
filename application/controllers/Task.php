@@ -7,11 +7,14 @@ class Task extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		if(!$this->aauth->is_loggedin())
-			redirect(base_url(''));
+		
+        if(!$this->aauth->is_loggedin())
+			redirect(base_url('/'));
+
 		$this->currentUser = $this->aauth->get_user();
 		$this->currentUserGroup = $this->aauth->get_user_groups();
-        $this->load->helper(array('form', 'url'));
+
+        $this->load->helper(array('form', 'url', 'file','directory'));
 	}
 
 	public function index()
@@ -95,34 +98,51 @@ class Task extends CI_Controller
 
     public function save()
     {
-        /*$this->load->helper(array('file','directory'));
 
-        $upload_path                    = "uploads/tasks";
-        
+
+        $upload_path                = "uploads/tasks";
         if( !is_dir( $upload_path ) ) {
             mkdir( $upload_path, 0777, true );
         }
         
-        $config['upload_path']          = $upload_path;
-        $config['allowed_types']        = 'doc|docx|xls|xlsx|ppt|pptx|csv';*/
+        $file                       = array();
+        $config['upload_path']      = $upload_path;
+        $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
 
+        $this->load->library('upload', $config);
+
+        if ( ! $this->upload->do_upload('attachement')) {
+            
+        } else {
+            $file_data          = $this->upload->data();
+            //dd($file_data);
+            $file['f_title']    = $file_data["client_name"];
+            $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+            $file['type']       = $file_data["file_type"];
+            $file['status']     = 0;
+            $file['is_deleted'] = 0;
+
+            $this->db->insert("files", $file);
+            $file_id = $this->db->insert_id();
+        }
 
 		//server validation
     	$data = array(
-    		't_title' => $this->input->post('title'),
-    		't_code' => $this->input->post('code'),
-    		'department_id' => $this->input->post('department'),
-    		'parent_id' => $this->input->post('parentId'),
-    		'assignee' => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
-    		'reporter' => $this->input->post('reporter'),
-			//'attachment_id' => $this->input->post('title'),
-    		't_description' => $this->input->post('description'),
-    		'start_date' =>$this->input->post('start_date'),
-    		'end_date' => $this->input->post('end_date'),
-    		'created_by' => (!empty($this->currentUser->id))? $this->currentUser->id: 0
+    		't_title'         => $this->input->post('title'),
+    		't_code'          => rand(1000, 9999),
+    		'department_id'   => $this->input->post('department'),
+    		'parent_id'       => $this->input->post('parentId'),
+    		'assignee'        => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
+    		'reporter'        => $this->input->post('reporter'),
+			'attachment_id'   => $file_id,
+    		't_description'   => $this->input->post('description'),
+    		'start_date'      => $this->input->post('start_date'),
+    		'end_date'        => $this->input->post('end_date'),
+    		'created_by'      => (!empty($this->currentUser->id))? $this->currentUser->id: 0
     	);
 
     	$this->db->insert('tasks', $data);
+
 		//get task id and upload files
 
     	redirect(base_url('task'));
@@ -182,7 +202,15 @@ class Task extends CI_Controller
             } else {
                 $task->reported = false;
             }
+
+            $this->db->select('*');
+            $this->db->from('files');
+            $this->db->where('files.fid', $task->attachment_id );
+            $files = $this->db->get()->result_array();
+            $task->files = $files;
+
         }
+
         $data['tasks'] = $tasks;
 
     	$data['heading1'] = 'EMPLOYEE CODE <h5>GEW - '.$this->currentUser->username.'</h5>';

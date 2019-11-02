@@ -11,6 +11,8 @@ class Report extends CI_Controller
 			redirect(base_url(''));
 		$this->currentUser = $this->aauth->get_user();
 		$this->currentUserGroup = $this->aauth->get_user_groups();
+
+		$this->load->helper(array('form', 'url', 'file','directory'));
 		
 	}
 
@@ -176,6 +178,7 @@ class Report extends CI_Controller
 		
 		$current_month 	= date("F");
 		$month_dates 	= $this->getCurrentMonthDates();
+
 		$data["month_dates"] = $month_dates;
 
 		$sql = "SELECT T.*,  assignee.first_name as given, reporter.first_name as follow, D.c_name FROM `tasks` AS T
@@ -189,15 +192,18 @@ class Report extends CI_Controller
 
 		$data['tasks'] = $this->db->query($sql)->result();
 		
-		$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-		$data['currentMonthReports'] = $this->db->query($sql)->result();
+		/*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";*/
+		$data["month_date"] = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : date('m');
 
+		$sql_month_date = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : "MONTH(CURRENT_DATE())";
+		$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+		$result = $this->db->query($sql)->result();
+		$data['currentMonthReports'] = $result;
 
 		$data['heading1'] = 'Monthly Status';
 		$data['nav1'] = ($this->currentUserGroup[0]->name == 'Manager')? 'Manager' : 'GEW Employee';
 
-        //$data['inc_page'] = 'report/monthly'; // views/display.php page
-        $data['inc_page'] = 'report/monthly_new'; // views/display.php page
+        $data['inc_page'] = 'report/monthly_new';
 
 
         $this->load->view('manager_layout', $data);
@@ -219,7 +225,9 @@ class Report extends CI_Controller
 			$dates[$month][$day] = $wkDay;
 		}
 
-		$dates = $dates[date('m')];
+		$month_num = isset($_GET["month"]) ? $_GET["month"] : date('m');
+
+		$dates = $dates[ $month_num ];
 		return $dates;
 	}
 
@@ -259,6 +267,33 @@ class Report extends CI_Controller
 
 	public function save()
 	{
+
+		$upload_path                = "uploads/tasks";
+        if( !is_dir( $upload_path ) ) {
+            mkdir( $upload_path, 0777, true );
+        }
+        
+        $file                       = array();
+        $config['upload_path']      = $upload_path;
+        $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
+
+        $this->load->library('upload', $config);
+        $file_id = 0;
+        if ( ! $this->upload->do_upload('report_file')) {
+            
+        } else {
+            $file_data          = $this->upload->data();
+            //dd($file_data);
+            $file['f_title']    = $file_data["client_name"];
+            $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+            $file['type']       = $file_data["file_type"];
+            $file['status']     = 0;
+            $file['is_deleted'] = 0;
+
+            $this->db->insert("files", $file);
+            $file_id = $this->db->insert_id();
+        }
+
 		$task_id = $this->input->post('task_id');
 		//server validation
 		$data = array(
@@ -266,6 +301,7 @@ class Report extends CI_Controller
 			'user_id' => $this->currentUser->id,
 			'berfore' => $this->input->post('befor'),
 			'after' => $this->input->post('after'),
+			'attachment_id' => $file_id,
 			'status' => $this->input->post('status')
 		);
 
@@ -286,8 +322,25 @@ class Report extends CI_Controller
 		$sql = "SELECT T.*, D.c_name, assignee.first_name as given, reporter.first_name as follow FROM `tasks` AS T LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
 		$data['task'] = $this->db->query($sql, array($task_id))->row();
 
+		$this->db->select('*');
+        $this->db->from('files');
+        $this->db->where('files.fid', $data['task']->attachment_id );
+        $files = $this->db->get()->result_array();
+        $data['task_files'] = $files;
+
 		$sql = "SELECT * FROM reports WHERE task_id = ?";
-		$data['taskHistory'] = $this->db->query($sql, array($task_id))->result();
+		$task_history = $this->db->query($sql, array($task_id))->result();
+
+		foreach ($task_history as $key => $history) {
+			$this->db->select('*');
+	        $this->db->from('files');
+	        $this->db->where('files.fid', $history->attachment_id );
+	        $files = $this->db->get()->result_array();
+	        $history->files = $files;
+		}
+
+		$data['taskHistory'] = $task_history;
+		//dd($data['taskHistory']);
 
 		if (empty($data['task']))
 		{
