@@ -10,8 +10,6 @@ class Auth extends CI_Controller
 
         if($this->aauth->is_loggedin()){
             redirect(base_url('/dashboard'));
-        } else {
-            $this->index();
         }
 	}
 

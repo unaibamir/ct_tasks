@@ -10,7 +10,7 @@
         <div class="card card-chart text-center">
          <img class="card-img-top" src="https://www.iconshock.com/image/Sophistique/Project_management/responsability_assignment" alt="Card image cap" style="width: 25%;">
          <div class="card-body center">
-          <h3 class="card-title">Check New Task</h3>
+          <h3 class="card-title">Check Assign Task</h3>
           <p class="card-text">New Task job is waiting for you</p>
           <a href="./task/alert" class="btn btn-primary">Check Now</a>
         </div>
@@ -21,27 +21,14 @@
       <div class="card card-chart text-center">
        <img class="card-img-top" src="https://cdn2.iconfinder.com/data/icons/news-1/65/_Daily_News-512.png" alt="Card image cap" style="width: 25%;">
        <div class="card-body ">
-        <h3 class="card-title">Submit Daily Report</h3>
+        <h3 class="card-title">View Daily Job Report</h3>
         <p class="card-text">Submit your Daily Task Report.</p>
-        <a href="#" class="btn btn-primary">Submit Now</a>
+        <a href="./report/daily" class="btn btn-primary">View Now</a>
       </div>
     </div>
   </div>
-   <div class="col-lg-4">
-    <div class="card card-chart text-center">
-      <img class="card-img-top" src="http://pluspng.com/img-png/task-png-regular-report-task-icon-256.png" alt="Card image cap" style="width: 25%;">
-      <div class="card-body center">
-        <h3 class="card-title">Finished Job</h3>
-        <p class="card-text">All Finished Task & Executed Task over a Month</p>
-        <a href="#" class="btn btn-primary">Click here</a>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<div class="row">
-
+  
+  
   <div class="col-lg-4  col-md-6">
     <div class="card card-chart text-center">
      <img class="card-img-top" src="https://pngimage.net/wp-content/uploads/2018/05/akademik-png-8.png" alt="Card image cap" style="width: 23%;">
@@ -52,6 +39,22 @@
     </div>
   </div>
 </div>
+   
+
+</div>
+
+<div class="row">
+
+  <div class="col-lg-4">
+    <div class="card card-chart text-center">
+      <img class="card-img-top" src="http://pluspng.com/img-png/task-png-regular-report-task-icon-256.png" alt="Card image cap" style="width: 25%;">
+      <div class="card-body center">
+        <h3 class="card-title">Finished Job</h3>
+        <p class="card-text">All Finished Task & Executed Task over a Month</p>
+        <a href="#" class="btn btn-primary">Click here</a>
+      </div>
+    </div>
+  </div>
 
 <div class="col-lg-4 ">
     <div class="card card-chart text-center">
