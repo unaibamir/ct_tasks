@@ -56,7 +56,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 											//task
 											echo '<tr>';
 											
-											echo '<td>' . $task->t_code . '</td>';
+											echo '<td><b>GEW</b>_ <b>' . $users[$assigned_user_key]["username"] . "</b> _ <b>" .$task->t_code . '</b>  </td>';
 											echo '<td>' . $task->t_title . '</td>';
 
 											echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';

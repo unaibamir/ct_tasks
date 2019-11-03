@@ -21,7 +21,7 @@ class Report extends CI_Controller
         $this->db->select('*');
         $this->db->from('reports');
         if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
-            $this->db->where('assignee', $_GET["employee_id"]);
+            $this->db->where('user_id', $_GET["employee_id"]);
         }
 
         if( $this->currentUserGroup[0]->name == "Employee" ) {
@@ -36,6 +36,7 @@ class Report extends CI_Controller
                 $this->db->from('tasks');
                 $this->db->where('tid', $report->task_id);
                 $task = $this->db->get()->row();
+                
                 $report->task = $task;
             }
         }

@@ -59,9 +59,14 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                 <?php
                 if( !empty( $reports ) ) {
                     foreach ($reports as $key => $report) {
+
+                    	if( empty($report->task) ) {
+                    		continue;
+                    	}
                         $t_given = !empty($report->task->given_by) ? $report->task->given_by : $report->task->created_by;
                         $given_by_key = array_search($t_given, array_column($users, "id"));
                         $assigned_user_key =  array_search($report->task->assignee, array_column($users, "id"));
+
                         $start_date = date($this->config->item('date_format'), strtotime($report->task->start_date));
                         $end_date = date($this->config->item('date_format'), strtotime($report->task->end_date));
                         $report_date = date($this->config->item('date_format'), strtotime($report->created_at));

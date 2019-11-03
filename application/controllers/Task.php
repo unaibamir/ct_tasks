@@ -14,7 +14,7 @@ class Task extends CI_Controller
 		$this->currentUser = $this->aauth->get_user();
 		$this->currentUserGroup = $this->aauth->get_user_groups();
 
-        $this->load->helper(array('form', 'url', 'file','directory'));
+        $this->load->helper(array('form', 'url', 'file','directory', 'date'));
 	}
 
 	public function index()
@@ -85,13 +85,20 @@ class Task extends CI_Controller
     	$data['currentUser'] = $this->currentUser;
     	$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
 
+        //dd(str_pad(555, 4, '0', STR_PAD_LEFT));
+        $sql = "SELECT tid FROM `tasks` ORDER BY `tasks`.`tid`  DESC LIMIT 0, 1";
+        $last_task_id = $this->db->query($sql)->result_array();
+        
+        $last_task_id = str_pad($last_task_id[0]["tid"], 4, '0', STR_PAD_LEFT);
+        $data["last_task_id"] = $last_task_id;
+
         if( $this->currentUserGroup[0]->name == "Employee" ) {
             $employee_id = $this->currentUserGroup[0]->user_id;
         } else {
             $employee_id = isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ? $_GET["employee_id"] : "";
         }
-        
         $data['employee_id'] = $employee_id;
+
         $data['inc_page'] = 'task/add'; // views/task/add.php page
         $this->load->view('manager_layout', $data);
     }
@@ -99,45 +106,48 @@ class Task extends CI_Controller
     public function save()
     {
 
+        $file_id = 0;
+        if( isset($_FILES["attachement"]) ) {
 
-        $upload_path                = "uploads/tasks";
-        if( !is_dir( $upload_path ) ) {
-            mkdir( $upload_path, 0777, true );
-        }
-        
-        $file                       = array();
-        $config['upload_path']      = $upload_path;
-        $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
-
-        $this->load->library('upload', $config);
-
-        if ( ! $this->upload->do_upload('attachement')) {
+            $upload_path                = "uploads/tasks";
+            if( !is_dir( $upload_path ) ) {
+                mkdir( $upload_path, 0777, true );
+            }
             
-        } else {
-            $file_data          = $this->upload->data();
-            //dd($file_data);
-            $file['f_title']    = $file_data["client_name"];
-            $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
-            $file['type']       = $file_data["file_type"];
-            $file['status']     = 0;
-            $file['is_deleted'] = 0;
+            $file                       = array();
+            $config['upload_path']      = $upload_path;
+            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
 
-            $this->db->insert("files", $file);
-            $file_id = $this->db->insert_id();
+            $this->load->library('upload', $config);
+
+            if ( ! $this->upload->do_upload('attachement')) {
+                
+            } else {
+                $file_data          = $this->upload->data();
+                //dd($file_data);
+                $file['f_title']    = $file_data["client_name"];
+                $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                $file['type']       = $file_data["file_type"];
+                $file['status']     = 0;
+                $file['is_deleted'] = 0;
+
+                $this->db->insert("files", $file);
+                $file_id = $this->db->insert_id();
+            }
         }
 
 		//server validation
     	$data = array(
     		't_title'         => $this->input->post('title'),
-    		't_code'          => rand(1000, 9999),
+    		't_code'          => $this->input->post('code'),
     		'department_id'   => $this->input->post('department'),
     		'parent_id'       => $this->input->post('parentId'),
     		'assignee'        => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
     		'reporter'        => $this->input->post('reporter'),
 			'attachment_id'   => $file_id,
     		't_description'   => $this->input->post('description'),
-    		'start_date'      => $this->input->post('start_date'),
-    		'end_date'        => $this->input->post('end_date'),
+    		'start_date'      => date( "Y-m-d", strtotime($this->input->post('start_date')) ),
+    		'end_date'        => date( "Y-m-d", strtotime($this->input->post('end_date')) ),
     		'created_by'      => (!empty($this->currentUser->id))? $this->currentUser->id: 0
     	);
 

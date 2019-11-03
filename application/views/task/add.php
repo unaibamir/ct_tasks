@@ -50,8 +50,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 						<div class="col-md-4 font-weight-bold ">
 							<div class="form-group">
 								<label>Task Codes</label>
-								<!--<input type="text" name="code" class="form-control" placeholder="Task Code" value="<?php /*echo $task_code; */?>" readonly>-->
-                                <p class="form-control">Task Code Will be auto generated</p>
+								<input type="text" name="code" class="form-control" placeholder="Task Code" value="<?php echo $last_task_id; ?>" readonly>
+                                <!-- <p class="form-control">Task Code Will be auto generated</p> -->
 							</div>
 							<div class="form-group">
 								<label>Add Task Title</label>
