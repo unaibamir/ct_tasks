@@ -268,32 +268,36 @@ class Report extends CI_Controller
 
 	public function save()
 	{
+	
+		$file_id = 0;
+		
+		if( isset($_FILES["report_file"]) ) {
+			$upload_path                = "uploads/tasks";
+			if( !is_dir( $upload_path ) ) {
+				mkdir( $upload_path, 0777, true );
+			}
+			
+			$file                       = array();
+			$config['upload_path']      = $upload_path;
+			$config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
 
-		$upload_path                = "uploads/tasks";
-        if( !is_dir( $upload_path ) ) {
-            mkdir( $upload_path, 0777, true );
-        }
-        
-        $file                       = array();
-        $config['upload_path']      = $upload_path;
-        $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
+			$this->load->library('upload', $config);
+			
+			if ( ! $this->upload->do_upload('report_file')) {
+				
+			} else {
+				$file_data          = $this->upload->data();
+				//dd($file_data);
+				$file['f_title']    = $file_data["client_name"];
+				$file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+				$file['type']       = $file_data["file_type"];
+				$file['status']     = 0;
+				$file['is_deleted'] = 0;
 
-        $this->load->library('upload', $config);
-        $file_id = 0;
-        if ( ! $this->upload->do_upload('report_file')) {
-            
-        } else {
-            $file_data          = $this->upload->data();
-            //dd($file_data);
-            $file['f_title']    = $file_data["client_name"];
-            $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
-            $file['type']       = $file_data["file_type"];
-            $file['status']     = 0;
-            $file['is_deleted'] = 0;
-
-            $this->db->insert("files", $file);
-            $file_id = $this->db->insert_id();
-        }
+				$this->db->insert("files", $file);
+				$file_id = $this->db->insert_id();
+			}
+		}
 
 		$task_id = $this->input->post('task_id');
 		//server validation
@@ -303,13 +307,53 @@ class Report extends CI_Controller
 			'berfore' => $this->input->post('befor'),
 			'after' => $this->input->post('after'),
 			'attachment_id' => $file_id,
-			'status' => $this->input->post('status')
+			'status' => $this->input->post('status'),
+			'reason' => $this->input->post('reason')
 		);
 
 		$this->db->insert('reports', $data);
-		//get task id and upload files
 
-		redirect(base_url('report/history/'.$task_id));
+		$report_id = $this->db->insert_id();
+		$task_id = $this->input->post('task_id');
+		$status_array = array("H", "C", "F");
+
+		$status = "";
+		switch ($this->input->post('status')) {
+			case 'Y':
+				$status = "in-progress";
+				break;
+
+			case 'N':
+				$status = "in-progress";
+				break;
+
+			case 'H':
+				$status = "hold";
+				break;
+
+			case 'C':
+				$status = "cancelled";
+				break;
+
+			case 'F':
+				$status = "completed";
+				break;
+			
+			default:
+				$status = "";
+				break;
+		}
+		
+		$task_data = array(
+			"t_status"	=>	$status,
+			"t_reason"	=>	$this->input->post('reason')
+		);
+		
+		$this->db->where('tid', $task_id);
+		$this->db->update('tasks', $task_data);
+
+		redirect(base_url('task/alert/?status=alert_success'));
+		//redirect(base_url('report/history/'.$task_id));
 	}
 
 	public function history($task_id = 0)

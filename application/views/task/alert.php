@@ -5,13 +5,13 @@
 </div>
 
 <style>
-.card label {
-    font-size: unset;
-    margin-bottom: 0;
-    padding-top: 0;
-    color: #000;
-    font-weight: bold;
-}
+	.card label {
+		font-size: unset;
+		margin-bottom: 0;
+		padding-top: 0;
+		color: #000;
+		font-weight: bold;
+	}
 </style>
 
 <?php
@@ -33,14 +33,27 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 			<div class="card card-chart text-center">
 
 				<div class="card-body center">
+					<?php
+					if (isset($_GET["status"]) && $_GET["status"] == "alert_success") {
+					?>
+						<div class="col-md-4 offset-4">
+							<div class="alert alert-success">
+								<span>
+									<b> Great!!</b> Task report has been submitted.
+								</span>
+							</div>
+						</div>
+					<?php
+					}
+					?>
 					<nav>
-                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily");?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>">Daily</a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly");?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>">Weekly</a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly");?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>">Monthly</a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time");?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>">One Time</a>
-                        </div>
-                    </nav>
+						<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>">Daily</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>">Weekly</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>">Monthly</a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>">One Time</a>
+						</div>
+					</nav>
 					<?php if (!empty($tasks)) : ?>
 						<div class="table-responsive">
 							<table class="table text-left">
@@ -50,107 +63,115 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 										<th colspan="2">Task Title</th>
 										<th colspan="2">Job Type</th>
 										<th colspan="2">Given</th>
+										<th colspan="2">Status</th>
 										<th class="text-right">Actions</th>
 									</tr>
 								</thead>
 								<tbody>
-									
-									<?php 
-									foreach ($tasks as $task) {
-										
-										$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
-										$given_by_key = array_search($t_given, array_column($users, "id"));
-										$follow_up_key = array_search($task->reporter, array_column($users, "id"));
-										
-										
-										//task
-										echo '<tr>';
-										echo '<td class="text-center">' . $task->t_code . '</td>';
-										echo '<td colspan="2">' . $task->t_title . '</td>';
-										echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
-										echo '<td colspan="2">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
-										echo '<td class="td-actions text-right">';
-											if( $task->reported ) {
+
+									<?php
+										foreach ($tasks as $task) {
+
+											$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
+											$given_by_key = array_search($t_given, array_column($users, "id"));
+											$follow_up_key = array_search($task->reporter, array_column($users, "id"));
+
+
+											//task
+											echo '<tr>';
+											echo '<td class="text-center">' . $task->t_code . '</td>';
+											echo '<td colspan="2">' . $task->t_title . '</td>';
+											echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
+											echo '<td colspan="2">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+											echo '<td colspan="2">' . getStatusText($task->t_status) . '</td>';
+											echo '<td class="td-actions text-right">';
+
+											if ($task->t_status == "completed" || $task->t_status == "cancelled" || $task->t_status == "hold") {
+												//echo '<span style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already </span>';
+											} else if ($task->reported) {
 												echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already Reported</a>';
 											} else {
-												echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
+												echo '<a style="fons	t-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
 											}
-											echo '<a target="_blank" style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
+											echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
 
 											echo '<button data-id="' . $task->tid . '" type="button" title="view Details" class="btn btn-success btn-simple btn-icon btn-sm"  data-toggle="modal" data-target=".task-popup-' . $task->tid . '">
 											<i class="now-ui-icons education_glasses"></i>
 											</button>';
 											?>
-											<div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-												<div class="modal-dialog modal-lg">
-													<div class="modal-content">
-														<div class="modal-header">
-															<h5 class="modal-title h4" style="margin:0;">Task Code - <?php echo $task->t_code; ?> Details</h5>
-															<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-																<span aria-hidden="true">×</span>
-															</button>
-														</div>
-														<div class="modal-body">
-															<div class="container-fluid">
-																<div class="row">
-																	<div class="col-md-12">
-																		<!-- <div class="form-group row">
+										<div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+											<div class="modal-dialog modal-lg">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h5 class="modal-title h4" style="margin:0;">Task Code - <?php echo $task->t_code; ?> Details</h5>
+														<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+															<span aria-hidden="true">×</span>
+														</button>
+													</div>
+													<div class="modal-body">
+														<div class="container-fluid">
+															<div class="row">
+																<div class="col-md-12">
+																	<!-- <div class="form-group row">
 																			<label for="" class="col-sm-3 col-form-label">Task Code</label>
 																			<div class="col-md-9 text-left"><?php echo $task->t_code; ?></div>
 																		</div> -->
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Task Title</label>
-																			<div class="col-md-9 text-left"><?php echo $task->t_title; ?></div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Task Title</label>
+																		<div class="col-md-9 text-left"><?php echo $task->t_title; ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Task Description</label>
+																		<div class="col-md-9 text-left"><?php echo $task->t_description; ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Task Status</label>
+																		<div class="col-md-9 text-left"><?php echo getStatusText($task->t_status); ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Type</label>
+																		<div class="col-md-9 text-left"><?php echo $job_types[$task->parent_id]; ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Given By</label>
+																		<div class="col-md-9 text-left"><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Follow Up</label>
+																		<div class="col-md-9 text-left"><?php echo $users[$follow_up_key]["first_name"] . " " . $users[$follow_up_key]["last_name"]; ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Start Date</label>
+																		<div class="col-md-9 text-left">
+																			<?php echo date($this->config->item('date_format'), strtotime($task->start_date)); ?>
 																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Task Description</label>
-																			<div class="col-md-9 text-left"><?php echo $task->t_description; ?></div>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">End Date</label>
+																		<div class="col-md-9 text-left">
+																			<?php echo date($this->config->item('date_format'), strtotime($task->end_date)); ?>
 																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Type</label>
-																			<div class="col-md-9 text-left"><?php echo $job_types[$task->parent_id]; ?></div>
-																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Given By</label>
-																			<div class="col-md-9 text-left"><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></div>
-																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Follow Up</label>
-																			<div class="col-md-9 text-left"><?php echo $users[$follow_up_key]["first_name"] . " " . $users[$follow_up_key]["last_name"]; ?></div>
-																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Start Date</label>
-																			<div class="col-md-9 text-left">
-																				<?php echo date( $this->config->item('date_format'), strtotime($task->start_date) ); ?>
-																			</div>
-																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">End Date</label>
-																			<div class="col-md-9 text-left">
-																				<?php echo date( $this->config->item('date_format'), strtotime($task->end_date) ); ?>
-																			</div>
-																		</div>
-																		<div class="form-group row">
-																			<label for="" class="col-sm-3 col-form-label">Files</label>
-																			<div class="col-md-9 text-left">
-																				<?php
-																				if( !empty( $task->files ) ) {
-																					echo '<ul style="padding-left:16px;">';
-																					foreach ( $task->files as $file) {
-																						?>
-																						<li>
+																	</div>
+																	<div class="form-group row">
+																		<label for="" class="col-sm-3 col-form-label">Files</label>
+																		<div class="col-md-9 text-left">
+																			<?php
+																					if (!empty($task->files)) {
+																						echo '<ul style="padding-left:16px;">';
+																						foreach ($task->files as $file) {
+																							?>
+																					<li>
 																						<a href="<?php echo $file["url"]; ?>" target="_blank">
 																							<?php echo $file["f_title"]; ?>
 																						</a>
-																						</li>
-																						<?php
+																					</li>
+																			<?php
+																						}
+																						echo '</ul>';
+																					} else {
+																						echo 'No Files Available';
 																					}
-																					echo '</ul>';
-																				} else {
-																					echo 'No Files Available';
-																				}
-																				?>
-																			</div>
+																					?>
 																		</div>
 																	</div>
 																</div>
@@ -159,16 +180,17 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 													</div>
 												</div>
 											</div>
-											<?php
-										echo '</td>';
-										echo '</tr>';
-									}
-									?>
-									
+										</div>
+									<?php
+											echo '</td>';
+											echo '</tr>';
+										}
+										?>
+
 								</tbody>
 							</table>
 						</div>
-					<?php else: ?>
+					<?php else : ?>
 						<br>
 						<div class="col-md-4 offset-4">
 							<div class="alert alert-primary">

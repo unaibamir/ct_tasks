@@ -38,11 +38,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 				<div class="card-body">
-				<?php
-				$currentdate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-				echo ' <label class="text-warning font-weight-bold " >Current Date: </label> ' . date("d / m / Y", $currentdate) . '<br>';
+					<?php
+					$currentdate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+					echo ' <label class="text-warning font-weight-bold " >Current Date: </label> ' . date("d / m / Y", $currentdate) . '<br>';
 
-				echo '<label class="text-warning font-weight-bold " >Current Month : </label> ' . date(" F Y") . '   ' ?>
+					echo '<label class="text-warning font-weight-bold " >Current Month : </label> ' . date(" F Y") . '   ' ?>
 					<!-- Form Start her-->
 					<?php echo form_open_multipart('task/save', array('id' => 'task_form')); ?>
 					<div class="row">
@@ -51,7 +51,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							<div class="form-group">
 								<label>Task Codes</label>
 								<input type="text" name="code" class="form-control" placeholder="Task Code" value="<?php echo $last_task_id; ?>" readonly>
-                                <!-- <p class="form-control">Task Code Will be auto generated</p> -->
+								<!-- <p class="form-control">Task Code Will be auto generated</p> -->
 							</div>
 							<div class="form-group">
 								<label>Add Task Title</label>
@@ -66,40 +66,40 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 						<div class="col-md-4 font-weight-bold">
 
-                            <div class="form-group">
-                                <label for="sel1">Job Type / Task Categories</label>
-                                <select class="form-control" id="sel1" name="parentId" required>
-                                    <option value="1">Daily</option>
-                                    <option value="2">Weekly</option>
-                                    <option value="3">Monthly</option>
-                                    <option value="4">One time</option>
-                                </select>
-                            </div>
+							<div class="form-group">
+								<label for="sel1">Job Type / Task Categories</label>
+								<select class="form-control" id="sel1" name="parentId" required>
+									<option value="1">Daily</option>
+									<option value="2">Weekly</option>
+									<option value="3">Monthly</option>
+									<option value="4">One time</option>
+								</select>
+							</div>
 
-                            <div class="form-group">
-                                <label for="sel1">Select Department</label>
-                                <select class="form-control" id="department" name="department" required>
-                                    <option>Select Department</option>
-                                    <?php
-                                    if (!empty($departments)) {
-                                        foreach ($departments as $key => $value) {
-                                            echo '<option value="' . $value->cid . '" >' . $value->c_name . '</option>';
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
+							<div class="form-group">
+								<label for="sel1">Select Department</label>
+								<select class="form-control" id="department" name="department" required>
+									<option>Select Department</option>
+									<?php
+									if (!empty($departments)) {
+										foreach ($departments as $key => $value) {
+											echo '<option value="' . $value->cid . '" >' . $value->c_name . '</option>';
+										}
+									}
+									?>
+								</select>
+							</div>
 
-                            <div class="input-daterange">
-                                <div class="form-group">
-                                    <label>Start Date</label>
-                                    <input type="text" name="start_date" class="form-control text-left" required id="start_date">
-                                </div>
-                                <div class="form-group">
-                                    <label>End Date</label>
-                                    <input type="text" name="end_date" class="form-control text-left" required id="end_date">
-                                </div>
-                            </div>
+							<div class="input-daterange">
+								<div class="form-group">
+									<label>Start Date</label>
+									<input type="text" name="start_date" readonly style="background-color: #FFF;" class="form-control text-left" required id="start_date">
+								</div>
+								<div class="form-group">
+									<label>End Date</label>
+									<input type="text" name="end_date" readonly style="background-color: #FFF;" class="form-control text-left" required id="end_date">
+								</div>
+							</div>
 
 						</div>
 
@@ -108,42 +108,42 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 
-                            <div class="form-group">
-                                <label for="sel1">Given</label>
-                                <select class="form-control" id="given_by" name="given_by" required>
-                                    <option>Select Given</option>
-                                    <?php
-                                    if (!empty($employees)) {
-                                        foreach ($employees as $key => $value) {
-                                            echo '<option value="' . $value->id . '" >' . $value->first_name . ' ' . $value->last_name . '</option>';
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="sel1">Reporter</label>
-                                <select class="form-control" id="follow_up" name="reporter" required>
-                                    <option>Select a Person</option>
-                                    <?php
-                                    if (!empty($employees)) {
-                                        foreach ($employees as $key => $value) {
-                                            echo '<option value="' . $value->id . '" >' . $value->first_name . ' ' . $value->last_name . '</option>';
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-
 							<div class="form-group">
-								<label for="sel1">Assign To</label>
-								<select class="form-control" id="assignee" name="assignee" <?php echo $employee_id != "" ? "" : ""; ?>  required>
+								<label for="sel1">Given</label>
+								<select class="form-control" id="given_by" name="given_by" required>
 									<option>Select Given</option>
 									<?php
 									if (!empty($employees)) {
 										foreach ($employees as $key => $value) {
-											$selected = $employee_id == $value->id ? 'selected="selected"' : '';
-											echo '<option value="' . $value->id . '" '.$selected.'>' . $value->first_name . ' ' . $value->last_name . '</option>';
+											echo '<option value="' . $value->id . '" >' . $value->first_name . ' ' . $value->last_name . '</option>';
+										}
+									}
+									?>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="sel1">Reporter</label>
+								<select class="form-control" id="follow_up" name="reporter" required>
+									<option>Select a Person</option>
+									<?php
+									if (!empty($employees)) {
+										foreach ($employees as $key => $value) {
+											echo '<option value="' . $value->id . '" >' . $value->first_name . ' ' . $value->last_name . '</option>';
+										}
+									}
+									?>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label for="sel1">Assign To</label>
+								<select class="form-control" id="assignee" name="assignee" <?php echo $employee_id != "" ? "disabled" : ""; ?> required>
+									<option>Select Given</option>
+									<?php
+									if (!empty($employees)) {
+										foreach ($employees as $key => $value) {
+											$selected = $employee_id == $value->id ? ' selected="selected" ' : '';
+											echo '<option value="' . $value->id . '" ' . $selected . '>' . $value->first_name . ' ' . $value->last_name . '</option>';
 										}
 									}
 									?>

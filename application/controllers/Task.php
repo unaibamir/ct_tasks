@@ -52,7 +52,11 @@ class Task extends CI_Controller
 
         if( $employee_id ) {
             $this->db->where('tasks.assignee', $employee_id);
-        }
+		}
+		
+		if($this->currentUserGroup[0]->name == "Employee" ) {
+			$this->db->where('tasks.assignee', $this->currentUser->id );
+		}
 
         $tasks = $this->db->get()->result();
 		
@@ -90,8 +94,9 @@ class Task extends CI_Controller
         $last_task_id = $this->db->query($sql)->result_array();
         
         $last_task_id = str_pad($last_task_id[0]["tid"], 4, '0', STR_PAD_LEFT);
-        $data["last_task_id"] = $last_task_id;
+        $data["last_task_id"] = $last_task_id + 1;
 
+		$employee_id = "";
         if( $this->currentUserGroup[0]->name == "Employee" ) {
             $employee_id = $this->currentUserGroup[0]->user_id;
         } else {
@@ -105,7 +110,7 @@ class Task extends CI_Controller
 
     public function save()
     {
-
+		
         $file_id = 0;
         if( isset($_FILES["attachement"]) ) {
 

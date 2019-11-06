@@ -44,3 +44,31 @@ function task_list_link( $job_type ) {
 
     return $url;
 }
+
+
+function getStatusText( $status = "in-progress" ) {
+	$text = "";
+	switch ($status) {
+		case 'in-progress':
+			$text = "In Progress";
+			break;
+
+		case 'hold':
+			$text = "Hold";
+			break;
+
+		case 'cancelled':
+			$text = "Cancelled";
+			break;
+
+		case 'completed':
+			$text = "Finished";
+			break;
+
+		default:
+			$text = "In Progress";
+			break;
+	}
+
+	return $text;
+}

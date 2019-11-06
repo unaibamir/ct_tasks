@@ -81,7 +81,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                             <td><?php echo $report_date; ?></td>
                             <td><?php echo $report->berfore; ?></td>
                             <td><?php echo $report->after; ?></td>
-                            <td><?php echo $report->status; ?></td>
+                            <td><?php echo getStatusText($report->task->t_status); ?></td>
                             <td>
                                 <a href="<?php echo base_url("/report/history/".$report->task->tid); ?>" class="btn btn-info btn-sm" style="padding: 5px; font-size: 10px;">
                                     View History

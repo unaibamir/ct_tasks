@@ -23,10 +23,10 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 				<div class="card-body">
 					<nav>
 						<div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo task_list_link("daily");?>"><kbd>Daily</kbd></a>
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo task_list_link("weekly");?>"><kbd>Weekly</kbd></a>
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo task_list_link("monthly");?>"><kbd>Monthly</kbd></a>
-							<a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo task_list_link("one-time");?>"><kbd>One Time</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo task_list_link("daily"); ?>"><kbd>Daily</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo task_list_link("weekly"); ?>"><kbd>Weekly</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo task_list_link("monthly"); ?>"><kbd>Monthly</kbd></a>
+							<a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo task_list_link("one-time"); ?>"><kbd>One Time</kbd></a>
 						</div>
 					</nav>
 					<?php if (!empty($tasks)) : ?>
@@ -40,9 +40,10 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 										<th>Given By</th>
 										<th>Department</th>
 										<th>Job Type</th>
-										<th> Follow Up </th>
+										<th>Follow Up </th>
 										<th>Start Date</th>
 										<th>End Date</th>
+										<th>Status</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -55,28 +56,29 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 											$end_date = date($this->config->item('date_format'), strtotime($task->end_date));
 											//task
 											echo '<tr>';
-											
-											echo '<td><b>GEW</b>_ <b>' . $users[$assigned_user_key]["username"] . "</b> _ <b>" .$task->t_code . '</b>  </td>';
+
+											echo '<td><b>GEW</b>_ <b>' . $users[$assigned_user_key]["username"] . "</b> _ <b>" . $task->t_code . '</b>  </td>';
 											echo '<td>' . $task->t_title . '</td>';
 
 											echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
-								
+
 											echo '<td> --- </td>';
-												
+
 											echo '<td>' . $task->c_name . '</td>';
 											echo '<td>' . $job_types[$task->parent_id] . '</td>';
-											
+
 											echo '<td> --- </td>';
-											
-											echo '<td>' .$start_date . '</td>';
+
+											echo '<td>' . $start_date . '</td>';
 											echo '<td>' . $end_date . '</td>';
+											echo '<td>' . getStatusText($task->t_status) . '</td>';
 											?>
-                                            <td>
-                                                <a href="<?php echo base_url("/report/history/".$task->tid); ?>" class="btn btn-info btn-sm">
-                                                    View History
-                                                </a>
-                                            </td>
-                                            <?php
+										<td>
+											<a href="<?php echo base_url("/report/history/" . $task->tid); ?>" class="btn btn-info btn-sm">
+												View History
+											</a>
+										</td>
+									<?php
 											echo '</tr>';
 										}
 										?>
@@ -114,7 +116,7 @@ echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key][
 
 
 <footer class="footer">
-<!--	<div class="container-fluid">
+	<!--	<div class="container-fluid">
 		<nav>
 			<ul>
 				<li>

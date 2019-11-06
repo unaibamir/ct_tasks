@@ -45,11 +45,13 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 		width: 100%;
 		display: inline-block;
 	}
-	.table > tbody > tr > td {
+
+	.table>tbody>tr>td {
 		padding: 10px 5px;
 	}
+
 	.table .thead-dark th {
-	    font-size: 1.15em;
+		font-size: 1.15em;
 	}
 </style>
 <?php
@@ -132,6 +134,7 @@ $job_types = array(
 									<th scope="col" style="width: 100px;">Job Type</th>
 									<th scope="col" style="width: 100px;">Start Date</th>
 									<th scope="col" style="width: 100px;">End Date</th>
+									<th scope="col" style="width: 100px;">Status</th>
 									<?php foreach ($month_dates as $date_dig => $date_alpha) {
 										?>
 										<th scope="col" style="width: 50px;"><?php echo $date_alpha . "- " . $date_dig ?></th>
@@ -161,41 +164,42 @@ $job_types = array(
 										<td style="width: 100px;"><?php echo $job_types[$task->parent_id]; ?></td>
 										<td style="width: 100px;"><?php echo $start_date; ?></td>
 										<td style="width: 100px;"><?php echo $end_date; ?></td>
+										<td style="width: 100px;"><?php echo getStatusText($task->t_status); ?></td>
 										<?php
-										foreach ($month_dates as $date_dig => $date_alpha) {
-										?>
-										<td style="width: 50px;">
-											<?php
-											$current_date 	= $date_dig . date("/{$month_date}/Y");
+											foreach ($month_dates as $date_dig => $date_alpha) {
+												?>
+											<td style="width: 50px;">
+												<?php
+														$current_date 	= $date_dig . date("/{$month_date}/Y");
 
-											$current_date_2 = strtotime(date( $date_dig . "-{$month_date}-Y" ));
-											$start_date 	= strtotime($task->start_date);
-											$end_date 		= strtotime($task->end_date);
-											$output 		= "-";
+														$current_date_2 = strtotime(date($date_dig . "-{$month_date}-Y"));
+														$start_date 	= strtotime($task->start_date);
+														$end_date 		= strtotime($task->end_date);
+														$output 		= "-";
 
-											if( !empty( $currentMonthReports ) ) {
-												foreach ($currentMonthReports as $report_key => $report) {
-													
-													$report_date 	= date($this->config->item('date_format'), strtotime($report->created_at));
-													$report_date_2 	= date('d-m-Y', strtotime($report->created_at));
+														if (!empty($currentMonthReports)) {
+															foreach ($currentMonthReports as $report_key => $report) {
 
-													if( ($current_date_2 >= $start_date) && ($current_date_2 <= $end_date) && $current_date_2 != strtotime($report->created_at) ) {
-														//$output = "AB";
-														//break;
-													}
-													
-													if ( $report->task_id == $task->tid && $current_date == $report_date ) {
-														$output = $report->status ;
-													}
-													//break;													
-												}
+																$report_date 	= date($this->config->item('date_format'), strtotime($report->created_at));
+																$report_date_2 	= date('d-m-Y', strtotime($report->created_at));
+
+																if (($current_date_2 >= $start_date) && ($current_date_2 <= $end_date) && $current_date_2 != strtotime($report->created_at)) {
+																	//$output = "AB";
+																	//break;
+																}
+
+																if ($report->task_id == $task->tid && $current_date == $report_date) {
+																	$output = $report->status;
+																}
+																//break;													
+															}
+														}
+														?>
+												<?php echo '<span class="table-status">' . $output . '</span>'; ?>
+											</td>
+										<?php
 											}
 											?>
-											<?php echo '<span class="table-status">' . $output. '</span>'; ?>
-										</td>
-										<?php
-										}
-										?>
 									</tr>
 								<?php
 								}
