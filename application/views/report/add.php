@@ -47,15 +47,15 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 							</div>
 
 							<div class="row ">
-								<h6 class=" m-1">Given: </h6>
+								<h6 class=" m-1">Given By: </h6>
 								<p class="card-text mx-1 text-warning"><?php echo $task->given; ?></p>
 							</div>
 							<div class="row ">
-								<h6 class="m-1">Reporter:</h6>
+								<h6 class="m-1">Follow Up:</h6>
 								<p class="card-text mx-2 text-warning"><?php echo $task->follow; ?></p>
 							</div>
 							<div class="row ">
-								<h6 class="m-1">Employee:</h6>
+								<h6 class="m-1">Assign To:</h6>
 								<p class="card-text mx-2 text-warning">
 									<?php echo $currentUser->first_name; ?> <?php echo $currentUser->last_name; ?>
 								</p>

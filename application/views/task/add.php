@@ -109,7 +109,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 							<div class="form-group">
-								<label for="sel1">Given</label>
+								<label for="sel1">Given By :</label>
 								<select class="form-control" id="given_by" name="given_by" required>
 									<option>Select Given</option>
 									<?php
@@ -122,7 +122,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 								</select>
 							</div>
 							<div class="form-group">
-								<label for="sel1">Reporter</label>
+								<label for="sel1">Follow Up :</label>
 								<select class="form-control" id="follow_up" name="reporter" required>
 									<option>Select a Person</option>
 									<?php

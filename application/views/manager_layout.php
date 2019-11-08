@@ -66,7 +66,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('task/alert'); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
-                                <p>New Task Alert</p>
+                                <p>All Assign Task</p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -74,7 +74,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('report/daily'); ?>">
                                 <i class="now-ui-icons files_paper"></i>
-                                <p>Daily Report</p>
+                                <p>Daily JoB Report - View </p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -82,33 +82,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('report/monthly'); ?>">
                                 <i class="now-ui-icons business_badge"></i>
-                                <p>Job Summary Monthy View</p>
+                                <p>Monthy Job Summary - View</p>
                             </a>
                         </li>
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('finish_task', $currentUserGroup)): ?>
-                        <li>
+                    <!--     <li>
                             <a href="<?php echo base_url('task/finish'); ?>">
                                 <i class="now-ui-icons ui-1_bell-53"></i>
                                 <p>Finish Task</p>
                             </a>
-                        </li>
+                        </li> -->
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('enquiry_form', $currentUserGroup)): ?>
-                        <li>
+                    <!--    <li>
                             <a href="<?php echo base_url('enquiry'); ?>">
                                 <i class="now-ui-icons business_badge"></i>
                                 <p>Enquiry Form</p>
                             </a>
-                        </li>
+                        </li> -->
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('profile_user', $currentUserGroup)): ?>
-                        <li>
+                      <!--  <li>
                             <a href="<?php echo base_url('user/'.$currentUser->username); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
                                 <p>Your Profile</p>
                             </a>
-                        </li>
+                        </li> -->
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)): ?>
                         <li>
@@ -246,8 +246,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                   </a>
               </li>
               <li>
-                <a href="http://blog.creative-tim.com">
+                <a href="http://www.gulfenviro.ae/">
                   Blog
+              </a>
+          </li>
+          <li>
+                <a href="https://email22.secureserver.net">
+                    Send Email :developer@gulfenviro.ae <strong>Click Here</strong> 
               </a>
           </li>
       </ul>
@@ -256,8 +261,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     &copy;
     <script>
       document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))
-  </script>, Desgin & Code by
-  <a href="http://www.gulfenviro.ae/" target="_blank">Amir Nisar</a>.
+  </script>, Design & Code by
+  <a href="http://www.gulfenviro.ae/" target="_blank">GEW Developer</a>.
 </div>
 </div>
 </footer>

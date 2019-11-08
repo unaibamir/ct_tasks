@@ -76,7 +76,7 @@ $job_types = array(
 				</div>
 				<div class="card-body">
 					<div id="calendar"></div>
-
+                <!--
 					<form>
 						<div class="row">
 							<div class="col-md-4 pr-1">
@@ -116,9 +116,25 @@ $job_types = array(
 
 						</div>
 					</form>
-
+                                -->
 					<h3 class="m-4">Monthly Job Summary View </h3>
 
+						<div class="row ">
+								<h6 class="m-1">Employee Name:</h6>
+								<p class="card-text mx-2 ">
+									<?php echo $currentUser->first_name; ?> <?php echo $currentUser->last_name; ?>
+								</p>
+							</div>
+							<div class="row ">
+								<h6 class=" m-1">Employee Code : </h6>
+								<p class="card-text mx-1 "><?php echo $currentUser->username; ?></p>
+							</div>
+							<div class="row">
+								<?php
+					$currentdate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+					echo ' <p class=" font-weight-bold " >Current Date  :  </p> ' . date("d / m / Y", $currentdate) . '<br>';
+
+					 ?></div>
 					<div class="table-responsive">
 						<table class="table table-bordered table-hover">
 							<thead class="thead-dark">

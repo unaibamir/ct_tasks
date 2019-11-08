@@ -160,7 +160,7 @@ class Task extends CI_Controller
 
 		//get task id and upload files
 
-    	redirect(base_url('task'));
+    	redirect(base_url('task/alert'));
     }
 
     public function assign()
