@@ -42,16 +42,16 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
             width="100%">
                 <thead class="thead-dark table-bordered">
                     <tr>
-                        <th class="th-sm" width="60px">Task code</th>
+                        <th class="th-sm" width="80px">Task code</th>
                         <th class="th-sm" width="150px;">Desctiption</th>
                         <th class="th-sm" width="100px;">Given By</th>
                         <th class="th-sm" width="100px;">Assigned</th>
                         <th class="th-sm" width="100px;">Start date</th>
                         <th class="th-sm" width="100px;">End Date</th>
                         <th class="th-sm" width="100px;">Report Date</th>
+                        <th class="th-sm" width="60px;">Status</th>
                         <th class="th-sm" width="250px;">Before</th>
                         <th class="th-sm" width="250px;">After</th>
-                        <th class="th-sm" width="40px;">Status</th>
                         <th class="th-sm" width="70px;">Action</th>
                     </tr>
                 </thead>
@@ -79,9 +79,9 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                             <td><?php echo $start_date; ?></td>
                             <td><?php echo $end_date; ?></td>
                             <td><?php echo $report_date; ?></td>
+                            <td><?php echo getStatusText($report->task->t_status); ?></td>
                             <td><?php echo $report->berfore; ?></td>
                             <td><?php echo $report->after; ?></td>
-                            <td><?php echo getStatusText($report->task->t_status); ?></td>
                             <td>
                                 <a href="<?php echo base_url("/report/history/".$report->task->tid); ?>" class="btn btn-info btn-sm" style="padding: 5px; font-size: 10px;">
                                     View History

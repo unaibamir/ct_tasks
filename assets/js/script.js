@@ -4,6 +4,7 @@ $( function() {
             .datepicker({
                 defaultDate: "+1w",
                 changeMonth: true,
+                minDate: new Date(),
                 numberOfMonths: 1
             })
             .on( "change", function() {

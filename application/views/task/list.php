@@ -48,17 +48,21 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 									</tr>
 								</thead>
 								<tbody>
-									<?php foreach ($tasks as $task) {
+									<?php 
+									foreach ($tasks as $task) {
 											$t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
 											$given_by_key = array_search($t_given, array_column($users, "id"));
 											$assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
 											$start_date = date($this->config->item('date_format'), strtotime($task->start_date));
 											$end_date = date($this->config->item('date_format'), strtotime($task->end_date));
+
+											$task_title = strlen( $task->t_title ) > 25 ? substr($task->t_title , 0, 25) . "..." : $task->t_title;
+
 											//task
 											echo '<tr>';
 
-											echo '<td><b>GEW</b>_ <b>' . $users[$assigned_user_key]["username"] . "</b> _ <b>" . $task->t_code . '</b>  </td>';
-											echo '<td>' . $task->t_title . '</td>';
+											echo '<td><b>GEW</b>_<b>' . $users[$assigned_user_key]["username"] . "</b>_<b>" . $task->t_code . '</b>  </td>';
+											echo '<td>' . $task_title . '</td>';
 
 											echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
 
@@ -73,13 +77,13 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 											echo '<td>' . $end_date . '</td>';
 											echo '<td>' . getStatusText($task->t_status) . '</td>';
 											?>
-										<td>
-											<a href="<?php echo base_url("/report/history/" . $task->tid); ?>" class="btn btn-info btn-sm">
-												View History
-											</a>
-										</td>
-									<?php
-											echo '</tr>';
+											<td>
+												<a href="<?php echo base_url("/report/history/" . $task->tid); ?>" class="btn btn-info btn-sm">
+													View History
+												</a>
+											</td>
+										</tr>
+										<?php
 										}
 										?>
 								</tbody>

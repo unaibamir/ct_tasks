@@ -8,7 +8,9 @@ class Auth extends CI_Controller
 	{
 		parent::__construct();
 
-        if($this->aauth->is_loggedin()){
+		$current_url = $this->uri->uri_string();
+
+        if( $current_url != "auth/logout" && $this->aauth->is_loggedin() ){
             redirect(base_url('/dashboard'));
         }
 	}

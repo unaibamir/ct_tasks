@@ -86,8 +86,6 @@ class Task extends CI_Controller
 		//select all employees
 		$data['employees'] = $this->getUsers('Employee');
 
-    	$data['currentUser'] = $this->currentUser;
-    	$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
 
         //dd(str_pad(555, 4, '0', STR_PAD_LEFT));
         $sql = "SELECT tid FROM `tasks` ORDER BY `tasks`.`tid`  DESC LIMIT 0, 1";
@@ -102,7 +100,15 @@ class Task extends CI_Controller
         } else {
             $employee_id = isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ? $_GET["employee_id"] : "";
         }
+
+        if( !empty( $employee_id ) ) {
+            $data[ 'employee_user' ] = $this->aauth->get_user( $employee_id );
+        }
+
         $data['employee_id'] = $employee_id;
+
+    	$data['currentUser'] = $this->currentUser;
+    	$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
 
         $data['inc_page'] = 'task/add'; // views/task/add.php page
         $this->load->view('manager_layout', $data);
@@ -110,7 +116,7 @@ class Task extends CI_Controller
 
     public function save()
     {
-		
+		dd($_POST);
         $file_id = 0;
         if( isset($_FILES["attachement"]) ) {
 

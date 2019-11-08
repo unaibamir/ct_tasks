@@ -42,22 +42,15 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
           width="100%">
           <thead class="thead-dark table-bordered">
             <tr>
-             <th class="th-sm">Shift
-             </th>
-             <th class="th-sm">Task code
-             </th>
-             <th class="th-sm">Desctiption
-             </th>
-             <th class="th-sm">given-By
-             </th>
-             <th class="th-sm">Follow up
-             </th>
-             <th class="th-sm">Start date
-             </th>
-             <th class="th-sm">End Date
-             </th>
-             <th class="th-sm"> Update</th>
-             <th class="th-sm"> Status</th>
+             <th class="th-sm">Shift</th>
+             <th class="th-sm">Task code</th>
+             <th class="th-sm">Desctiption</th>
+             <th class="th-sm">given-By</th>
+             <th class="th-sm">Follow up</th>
+             <th class="th-sm">Start date</th>
+             <th class="th-sm">End Date</th>
+             <th class="th-sm">Update</th>
+             <th class="th-sm">Status</th>
            </tr>
          </thead>
          <tbody>
