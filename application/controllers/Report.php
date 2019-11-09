@@ -229,6 +229,7 @@ class Report extends CI_Controller
         if (empty($task_id)) {
             redirect(base_url(''));
         }
+
         $this->load->library('form_validation');
 
         $sql = "SELECT T.*, D.c_name, assignee.first_name as given, reporter.first_name as follow FROM `tasks` AS T LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
@@ -241,7 +242,7 @@ class Report extends CI_Controller
 
         $sql = "SELECT * FROM `reports` WHERE task_id = ? AND DATE(created_at) = CURDATE()";
         $data['alreadReported'] = $this->db->query($sql, array($task_id))->row();
-
+        $data["can_submit"] = true;
         $data['heading1'] = 'Task from';
         $data['nav1'] = 'GEW Employee';
         //$data['task_code'] = $this->generateRandomString(4);
@@ -250,7 +251,14 @@ class Report extends CI_Controller
         //select all employees
         //$data['employees'] = $this->getUsers('Employee');
 
+        $today          = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+        $start_date     = strtotime($task->start_date);
+        $end_date       = strtotime($task->end_date);
 
+        if ($today > $end_date) {
+            $data["can_submit"] = false;
+        }
+        
 
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;

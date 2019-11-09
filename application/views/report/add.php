@@ -11,16 +11,28 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                 <div class="card-header">
                     <h5 class="title text-sm-center"><?php echo $task->t_code; ?> - Task Form</h5>
                     <?php
-                    if ($task->t_status != "in-progress") {
-                    ?>
-                    <div class="col-md-4 offset-4">
-                        <div class="alert alert-primary">
-                            <span>
-                                <b> Sorry!</b> You can add task report because of task status is <strong><?php echo getStatusText($task->t_status); ?></strong>
-                            </span>
+                    if (!empty($task->t_status) && $task->t_status != "in-progress") {
+                        ?>
+                        <div class="col-md-6 offset-3 text-sm-center">
+                            <div class="alert alert-primary">
+                                <span>
+                                    <b> Sorry!</b> You cannot add report because of task status is <strong><?php echo getStatusText($task->t_status); ?></strong>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                    <?php
+                        <?php
+                    }
+
+                    if (!$can_submit) {
+                        ?>
+                        <div class="col-md-6 offset-3 text-sm-center">
+                            <div class="alert alert-primary">
+                                <span>
+                                    <b> Sorry!</b> You cannot add report because task due time is expired.
+                                </span>
+                            </div>
+                        </div>
+                        <?php
                     }
                     ?>
                     
@@ -89,7 +101,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                         </div>
                         <div class="col-lg-6 rounded p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
                             <?php
-                            if ($task->t_status != "in-progress") {
+                            if (!empty($task->t_status) && $task->t_status != "in-progress" || !$can_submit) {
                             ?>
                             <div class="no-task-report">
                                 
@@ -120,16 +132,6 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                     $status = $alreadReported->status;
                                 }
                                 ?>
-                                <div class="col-md-10">
-                                    <span class="text-warning"><strong>Befor Break</strong></span>
-                                    <div class="input-group-prepend">
-                                        <textarea name="befor" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholder ?>" <?= $disabled ?> required></textarea>
-                                    </div>
-                                    <span class="text-warning"><strong>After Break</strong></span>
-                                    <div class="input-group-prepend  ">
-                                        <textarea name="after" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholderAfter ?>" <?= $disabled ?> required></textarea>
-                                    </div>
-                                </div>
                                 <div class="col-md-10 task-report-status">
                                     <span class="text-warning"><strong>Status</strong></span>
                                     <div class="clearfix clear"></div>
@@ -156,6 +158,17 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                         <textarea name="reason" class="col-md-12" rows="3" <?= $disabled ?>></textarea>
                                     </div>
                                 </div>
+                                <div class="col-md-10">
+                                    <span class="text-warning"><strong>Befor Break</strong></span>
+                                    <div class="input-group-prepend">
+                                        <textarea name="befor" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholder ?>" <?= $disabled ?> required></textarea>
+                                    </div>
+                                    <span class="text-warning"><strong>After Break</strong></span>
+                                    <div class="input-group-prepend  ">
+                                        <textarea name="after" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholderAfter ?>" <?= $disabled ?> required></textarea>
+                                    </div>
+                                </div>
+                                
                             </div>
                             <div class="row">
                                 <div class="col-md-8">
@@ -163,13 +176,13 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                         <span class="text-warning m-2" id="inputGroupFileAddon01">Upload File</span>
                                     </div>
                                     <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name="report_file" <?= $disabled ?>>
-                                        <label class="custom-file-label " for="inputGroupFile01">Choose file</label>
+                                        <input type="file" class="custom-file-input" id="report-file" aria-describedby="inputGroupFileAddon01" name="report_file" <?= $disabled ?>>
+                                        <label class="custom-file-label" for="report-file" id="report-file-label">Choose file</label>
                                     </div>
                                 </div>
                                 <div class="col-md-3 mt-4">
                                     <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>" />
-                                    <input type="submit" class="btn btn-info   " value="Save" <?= $disabled ?> />
+                                    <input type="submit" class="btn btn-info" value="Save" <?= $disabled ?> />
                                 </div>
                                 <?php echo form_close(); ?>
                                 <!-- Form End here-->

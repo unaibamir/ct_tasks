@@ -1,28 +1,31 @@
 $( function() {
-    var dateFormat = "mm/dd/yy",
-        from = $( "#start_date" )
-            .datepicker({
-                defaultDate: "+1w",
-                changeMonth: true,
-                minDate: new Date(),
-                numberOfMonths: 1
-            })
-            .on( "change", function() {
-                to.datepicker( "option", "minDate", getDate( this ) );
-            }),
-        to = $( "#end_date" ).datepicker({
-            defaultDate: "+1w",
-            changeMonth: true,
-            numberOfMonths: 1
-        })
-        .on( "change", function() {
-            from.datepicker( "option", "maxDate", getDate( this ) );
-        });
+    var dateformat = "dd/mm/yy";
+    
+    var from = $( "#start_date" ).datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        dateFormat: dateformat,
+        minDate: new Date(),
+        numberOfMonths: 1
+    })
+    .on( "change", function() {
+        to.datepicker( "option", "minDate", getDate( this ) );
+    });
+
+    var to = $( "#end_date" ).datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        dateFormat: dateformat,
+        numberOfMonths: 1
+    })
+    .on( "change", function() {
+        from.datepicker( "option", "maxDate", getDate( this ) );
+    });
 
     function getDate( element ) {
         var date;
         try {
-            date = $.datepicker.parseDate( dateFormat, element.value );
+            date = $.datepicker.parseDate( dateformat, element.value );
         } catch( error ) {
             date = null;
         }
@@ -49,4 +52,13 @@ $( function() {
             }});
         }
     });
-} );
+
+    $("#report-file").change(function(e){
+        var uploaded_file = e.target.files[0];
+        if( typeof uploaded_file != "undefined" ) {
+            var fileName = e.target.files[0].name;
+            $("#report-file-label").html( fileName );
+        }
+    });
+
+});

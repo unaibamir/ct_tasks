@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +54,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             <p><?php echo $nav1; ?></p>
                         </a>
                     </li>
-                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('task/add'); ?>">
                                 <i class="now-ui-icons gestures_tap-01 "></i>
@@ -62,7 +62,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('task/alert'); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
@@ -70,7 +70,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('report/daily'); ?>">
                                 <i class="now-ui-icons files_paper"></i>
@@ -78,7 +78,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('report/monthly'); ?>">
                                 <i class="now-ui-icons business_badge"></i>
@@ -86,7 +86,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('finish_task', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('finish_task', $currentUserGroup)) : ?>
                     <!--     <li>
                             <a href="<?php echo base_url('task/finish'); ?>">
                                 <i class="now-ui-icons ui-1_bell-53"></i>
@@ -94,7 +94,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li> -->
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('enquiry_form', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('enquiry_form', $currentUserGroup)) : ?>
                     <!--    <li>
                             <a href="<?php echo base_url('enquiry'); ?>">
                                 <i class="now-ui-icons business_badge"></i>
@@ -102,7 +102,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li> -->
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('profile_user', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('profile_user', $currentUserGroup)) : ?>
                       <!--  <li>
                             <a href="<?php echo base_url('user/'.$currentUser->username); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
@@ -110,7 +110,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li> -->
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('task'); ?>">
                                 <i class="now-ui-icons gestures_tap-01 "></i>
@@ -118,7 +118,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('employee/'); ?>">
                                 <i class="now-ui-icons users_single-02"></i>
@@ -134,7 +134,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                         </li>
 -->
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('assign_task', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('assign_task', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('task/assign'); ?>">
                                 <i class="now-ui-icons education_glasses"></i>
@@ -142,7 +142,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('history_task', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('history_task', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('task/history'); ?>">
                                 <i class="now-ui-icons business_badge"></i>
@@ -150,7 +150,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('forum', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('forum', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('forum'); ?>">
                                 <i class="now-ui-icons ui-1_bell-53"></i>
@@ -158,7 +158,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('search', $currentUserGroup)): ?>
+                    <?php if ($this->aauth->is_group_allowed('search', $currentUserGroup)) : ?>
                         <li style="background: #0c2442;border-right: 4px solid #eaebf0;">
                             <a href="<?php echo base_url('search'); ?>">
                                 <i class="now-ui-icons ui-1_zoom-bold"></i>
@@ -286,7 +286,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 
     <script src="<?php echo base_url('assets/demo/demo.js');?>"></script>
-    <script src="<?php echo base_url('assets/js/script.js');?>"></script>
+    <script src="<?php echo base_url('assets/js/script.js?ver='.time());?>"></script>
     <script>
     $(document).ready(function() {
         // Javascript method's body can be found in assets/js/demos.js

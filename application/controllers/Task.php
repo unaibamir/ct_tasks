@@ -181,6 +181,7 @@ class Task extends CI_Controller
 
     public function alert()
     {
+
         $data['nav1'] = 'GEW Employee';
         /*$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id WHERE T.assignee = ?";
         $data['tasks'] = $this->db->query($sql, $this->currentUser->id)->result();*/
