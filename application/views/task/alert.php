@@ -93,11 +93,14 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         echo '<td class="td-actions text-right">';
 
                                         if ($task->t_status == "completed" || $task->t_status == "cancelled" || $task->t_status == "hold") {
+											if($task->t_status == "hold") {
+												echo '<span style="font-size: 12px;font-style: italic;margin: 5px; color: #f96332;" >Resume</span>';
+											}
                                             //echo '<span style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already </span>';
                                         } elseif ($task->reported) {
                                             echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already Reported</a>';
                                         } else {
-                                            echo '<a style="fons	t-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
+                                            echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
                                         }
                                         echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
 

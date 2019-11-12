@@ -297,7 +297,9 @@ class Report extends CI_Controller
                 $this->db->insert("files", $file);
                 $file_id = $this->db->insert_id();
             }
-        }
+		}
+		
+		$reason = !empty($this->input->post('reason')) ? $this->input->post('reason') : "";
 
         $task_id = $this->input->post('task_id');
         //server validation
@@ -308,7 +310,7 @@ class Report extends CI_Controller
             'after' => $this->input->post('after'),
             'attachment_id' => $file_id,
             'status' => $this->input->post('status'),
-            'reason' => $this->input->post('reason')
+            'reason' => $reason
         );
 
         $this->db->insert('reports', $data);
@@ -346,7 +348,7 @@ class Report extends CI_Controller
         
         $task_data = array(
             "t_status"  =>  $status,
-            "t_reason"  =>  $this->input->post('reason')
+            "t_reason"  =>  $reason
         );
         
         $this->db->where('tid', $task_id);

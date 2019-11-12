@@ -2594,7 +2594,8 @@ Created using IcoMoon - icomoon.io
     overflow: auto;
     width: 260px;
     z-index: 4;
-    padding-bottom: 100px; }
+    padding-bottom: 100px;
+    background: #020955; }
     .sidebar .sidebar-wrapper .dropdown .dropdown-backdrop,
     .off-canvas-sidebar .sidebar-wrapper .dropdown .dropdown-backdrop {
       display: none !important; }
@@ -2637,6 +2638,8 @@ Created using IcoMoon - icomoon.io
       margin: 10px 15px 0;
       border-radius: 30px;
       color: #FFFFFF;
+      border-bottom: 1px solid #80808070;
+       border-top: 1px solid #80808070;
       display: block;
       text-decoration: none;
       position: relative;
@@ -2775,15 +2778,16 @@ Created using IcoMoon - icomoon.io
     left: 0; }
   .sidebar:after,
   .off-canvas-sidebar:after {
-    background: #888;
+    background: #f5efef;
     background: linear-gradient(#888 0%, #000 80%);
     z-index: 3; }
   .sidebar[data-color="blue"]:after,
   .off-canvas-sidebar[data-color="blue"]:after {
-    background: #2CA8FF; }
+    background: #d2dce3; }
   .sidebar[data-color="blue"] .nav li.active > a:not([data-toggle="collapse"]),
   .off-canvas-sidebar[data-color="blue"] .nav li.active > a:not([data-toggle="collapse"]) {
-    color: #2CA8FF; }
+   color: #98c4e3;
+    background: #2c3163; }
     .sidebar[data-color="blue"] .nav li.active > a:not([data-toggle="collapse"]) i,
     .off-canvas-sidebar[data-color="blue"] .nav li.active > a:not([data-toggle="collapse"]) i {
       color: #2CA8FF; }
@@ -2835,7 +2839,7 @@ Created using IcoMoon - icomoon.io
   color: #FFFFFF; }
 
 .off-canvas-sidebar .nav > li > a:focus {
-  background: rgba(200, 200, 200, 0.2); }
+  background: rgba(200, 200, 200, 0.02); }
 
 .main-panel {
   position: relative;
@@ -2869,7 +2873,7 @@ Created using IcoMoon - icomoon.io
   padding-bottom: 45px;
   background: #141E30;
   /* fallback for old browsers */
-  background: linear-gradient(to right, #0c2646 0%, #204065 60%, #2a5788 100%);
+  background: linear-gradient(to right, #020955 30%, #950606 80%, #be1212 100%);
   position: relative;
   overflow: hidden; }
   .panel-header .header .title {
