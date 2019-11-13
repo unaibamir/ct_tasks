@@ -166,7 +166,7 @@ $job_types = array(
 										continue;
 									}
 									$start_date = date($this->config->item('date_format'), strtotime($task->start_date));
-									$end_date = date($this->config->item('date_format'), strtotime($task->end_date));
+									$end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
 									?>
 									<tr class="d-flex" id="task-<?php echo $task->tid; ?>">
 										<td style="width: 80px;"><?php echo $task->t_code; ?></td>

@@ -88,7 +88,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                             </div>
                             <div class="row ">
                                 <h6 class="m-1">End Date :</h6>
-                                <p class="card-text mx-2 text-warning"><?php echo date($this->config->item('date_format'), strtotime($task->end_date)); ?></p>
+                                <p class="card-text mx-2 text-warning"><?php echo !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : ""; ?></p>
                             </div>
                             <div class="row ">
                                 <h6 class="m-1">Task Status :</h6>

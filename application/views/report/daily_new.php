@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed'); ?>
                         $assigned_user_key =  array_search($report->task->assignee, array_column($users, "id"));
 
                         $start_date = date($this->config->item('date_format'), strtotime($report->task->start_date));
-                        $end_date = date($this->config->item('date_format'), strtotime($report->task->end_date));
+                        $end_date = !empty($report->task->end_date) ? date($this->config->item('date_format'), strtotime($report->task->end_date)) : "";
                         $report_date = date($this->config->item('date_format'), strtotime($report->created_at));
                         ?>
                         <tr id="report-<?php echo $report->rid; ?>">

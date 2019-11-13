@@ -117,7 +117,7 @@ class Task extends CI_Controller
 
     public function save()
     {
-        
+        dd($_POST);
         $file_id = 0;
         if (isset($_FILES["attachement"])) {
             $upload_path                = "uploads/tasks";

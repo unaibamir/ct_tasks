@@ -41,11 +41,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             <div class="input-daterange">
                                 <div class="form-group">
                                     <label>Start Date</label>
-                                    <input type="text" name="start_date" readonly style="background-color: #FFF;" class="form-control text-left" required id="start_date">
+                                    <input type="text" name="start_date" autocomplete="off" style="background-color: #FFF;" class="form-control text-left" required id="start_date">
                                 </div>
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="text" name="end_date" readonly style="background-color: #FFF;" class="form-control text-left" required id="end_date">
+                                    <input type="text" name="end_date" autocomplete="off" style="background-color: #FFF;" class="form-control text-left" required id="end_date">
                                 </div>
                             </div>
                             <div class="form-group">
