@@ -101,7 +101,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                         </div>
                         <div class="col-lg-6 rounded p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
                             <?php
-                            if (!empty($task->t_status) && $task->t_status != "in-progress" || !$can_submit) {
+                            if (!empty($alreadReported) || !empty($task->t_status) && $task->t_status != "in-progress" || !$can_submit) {
                             ?>
                             <div class="no-task-report">
                                 

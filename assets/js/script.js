@@ -1,4 +1,7 @@
 $( function() {
+
+    $('#table-list').DataTable();
+
     var dateformat = "dd/mm/yy";
     
     var from = $( "#start_date" ).datepicker({
@@ -32,6 +35,14 @@ $( function() {
 
         return date;
     }
+
+
+    $(".datepicker").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: "dd-mm-yy",
+        maxDate: new Date()
+    });
 
 
     $("#department").on("change", function(event){

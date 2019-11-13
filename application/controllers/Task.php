@@ -117,7 +117,7 @@ class Task extends CI_Controller
 
     public function save()
     {
-        dd($_POST);
+
         $file_id = 0;
         if (isset($_FILES["attachement"])) {
             $upload_path                = "uploads/tasks";
@@ -157,8 +157,8 @@ class Task extends CI_Controller
             'given_by'        => $this->input->post('given_by'),
             'attachment_id'   => $file_id,
             't_description'   => $this->input->post('description'),
-            'start_date'      => date("Y-m-d", strtotime($this->input->post('start_date'))),
-            'end_date'        => date("Y-m-d", strtotime($this->input->post('end_date'))),
+            'start_date'      => date("Y-m-d H:i:s", strtotime( !empty( $this->input->post('start_date') ) ? $this->input->post('start_date') : time() )),
+            'end_date'        => date("Y-m-d H:i:s", strtotime($this->input->post('end_date'))),
             'created_by'      => (!empty($this->currentUser->id))? $this->currentUser->id: 0
         );
 

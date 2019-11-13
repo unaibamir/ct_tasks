@@ -100,12 +100,126 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 							</div>
 
 							<?php
-							if (!empty($taskHistory)) {
+
+							if( !empty( $dates_reports ) ) {
+								foreach ($dates_reports as $date_report) {
+
+									$report = $date_report["report"];
+
+									?>
+									<div class="row bg-light border-bottom ">
+										<div class="col-md-2 text-info font-weight-bold border-right pt-5 pb-5">
+											<?php echo $date_report["date"]; ?>
+										</div>
+
+										<?php if( !empty( (array) $report ) ) { ?>
+											<div class="col-md-4 bg-light p-3 border-right">
+													<p><?php echo $report->berfore; ?></p>
+													<hr>
+													<p><?php echo $report->after; ?></p>
+											</div>
+
+											<div class="col-md-2 bg-light p-3 border-right ">
+												<?php
+												if (!empty( (array) $report->files )) {
+													echo '<ul style="padding-left:0px;list-style: none;">';
+													foreach ($report->files as $file) {
+														?>
+														<li>
+															<a href="<?php echo $file->url; ?>" target="_blank">
+																<img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width="40" height="40"> <?php echo $file->f_title; ?>
+															</a>
+														</li>
+														<?php
+													}
+													echo '</ul>';
+												} else {
+													echo 'No Files Available';
+												}
+												?>
+											</div>
+
+											<div class="col-md-1 text-primary t-3 text-sm-center border-right pt-5">
+												<label><b><?php echo $report->status; ?></b></label>
+											</div>
+
+											<div class="col-md-3 text-primary t-3 text-sm-left  pt-5">
+												<label><b><?php echo $report->reason; ?></b></label>
+											</div>
+
+										<?php }
+										else {
+											echo '<div class="col-md-10 bg-light pt-5 border-right text-sm-left">'. $this->config->item('no_report_history') .'</div>';
+										}
+										?>
+									</div>
+									<?php
+								}
+							}
+
+							/*foreach ($dates as $key => $date) {
+								?>
+								<div class="row bg-light border-bottom ">
+									<div class="col-md-2 text-info font-weight-bold border-right pt-5 pb-5">
+										<?php echo $date; ?>
+									</div>
+								<?php
+
+								if( !empty($taskHistory) ) {
+
+									foreach ($taskHistory as $row => $report) {
+
+										$report_date = date("d-m-Y", strtotime($report->created_at));
+
+										if( $report_date != $date ) {
+											continue;
+										}
+
+										?>
+											<div class="col-md-4 bg-light p-3 border-right">
+												<p><?php echo $report->berfore; ?></p>
+												<hr>
+												<p><?php echo $report->after; ?></p>
+											</div>
+
+											<div class="col-md-2 bg-light p-3 border-right ">
+												<?php
+												if (!empty($value->files)) {
+													echo '<ul style="padding-left:0px;list-style: none;">';
+													foreach ($report->files as $file) {
+														?>
+														<li>
+															<a href="<?php echo $file["url"]; ?>" target="_blank">
+																<img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width="40" height="40"> <?php echo $file["f_title"]; ?>
+															</a>
+														</li>
+														<?php
+													}
+													echo '</ul>';
+												} else {
+													echo 'No Files Available';
+												}
+												?>
+											</div>
+
+											<div class="col-md-1 text-primary t-3 text-sm-center border-right pt-5"><label><b><?php echo $report->status; ?></b></label></div>
+
+											<div class="col-md-3 text-primary t-3 text-sm-left  pt-5"><label><b><?php echo $report->reason; ?></b></label></div>
+										<?php
+									}
+								}
+								?>
+								</div>
+								<?php
+							}*/
+
+
+							/*if (!empty($taskHistory)) {
 								echo '<div class="overflow-autos">';
 								foreach ($taskHistory as $key => $value) {
 									$newDate = date("d-M-y", strtotime($value->created_at));
-									echo '<div class="row    bg-light  border-bottom ">';
-									echo '<div class="col-md-2 text-info font-weight-bold border-right pt-5 ">' . $newDate . '</div>';
+									echo '<div id="report-'.$value->rid.'" class="row bg-light  border-bottom ">';
+									echo '<div class="col-md-2 text-info font-weight-bold border-right pt-5 pb-5">' . $newDate . '</div>';
 									echo '<div class="col-md-4 bg-light p-3 border-right "><p>' . $value->berfore . '</p><hr><p>' . $value->after . '</p></div>';
 									echo '<div class="col-md-2 bg-light p-3 border-right ">';
 									if (!empty($value->files)) {
@@ -140,7 +254,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 									</div>
 								</div>
 							<?php
-							}
+							}*/
 
 							?>
 

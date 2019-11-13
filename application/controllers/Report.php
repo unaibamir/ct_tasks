@@ -7,19 +7,27 @@ class Report extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        
         if (!$this->aauth->is_loggedin()) {
             redirect(base_url(''));
         }
         $this->currentUser = $this->aauth->get_user();
         $this->currentUserGroup = $this->aauth->get_user_groups();
+        
 
-        $this->load->helper(array('form', 'url', 'file','directory'));
+        $this->load->helper(array('form', 'url', 'file', 'directory'));
     }
 
     public function daily()
     {
+
+        $data["selected_task"] = isset($_GET["task_id"]) && !empty($_GET["task_id"]) ? $_GET["task_id"] : "" ;
+        $data["selected_date"] = isset($_GET["report_date"]) && !empty($_GET["report_date"]) ? $_GET["report_date"] : "" ;
+
+
         $this->db->select('*');
         $this->db->from('reports');
+
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
             $this->db->where('user_id', $_GET["employee_id"]);
         }
@@ -28,7 +36,19 @@ class Report extends CI_Controller
             $this->db->where('user_id', $this->currentUser->id);
         }
 
-        $reports = $this->db->get()->result();
+        if( !empty( $data["selected_task"] ) ) {
+            $this->db->where('task_id', $data["selected_task"] );
+        }
+
+        if( !empty( $data["selected_date"] ) ) {
+            $this->db->where("DATE(created_at)", date( "Y-m-d", strtotime($data["selected_date"]) ));
+        }
+        
+        /*$query      = $this->db->get_compiled_select();
+        dd($query);*/
+        
+        $reports    = $this->db->get()->result();
+        
 
         if (!empty($reports)) {
             foreach ($reports as $key => $report) {
@@ -42,6 +62,14 @@ class Report extends CI_Controller
         }
 
         $data['reports'] = $reports;
+
+        $this->db->select('*');
+        $this->db->from('tasks');
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            $this->db->where('assignee', $this->currentUser->id);
+        }
+        $tasks = $this->db->get()->result();
+        $data["tasks"]  =   $tasks;
 
         $data['users'] = $this->db->get("aauth_users")->result_array();
         $data['heading1'] = 'Daily Job Report View';
@@ -240,8 +268,11 @@ class Report extends CI_Controller
             redirect(base_url(''));
         }
 
+
+
         $sql = "SELECT * FROM `reports` WHERE task_id = ? AND DATE(created_at) = CURDATE()";
         $data['alreadReported'] = $this->db->query($sql, array($task_id))->row();
+
         $data["can_submit"] = true;
         $data['heading1'] = 'Task from';
         $data['nav1'] = 'GEW Employee';
@@ -363,12 +394,17 @@ class Report extends CI_Controller
         if (empty($task_id)) {
             redirect(base_url(''));
         }
+
         $this->load->library('form_validation');
 
         $sql = "SELECT T.*, D.c_name, assignee.first_name as given, assignee.username as user_code, reporter.first_name as follow FROM `tasks` AS T LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
         $data['task'] = $this->db->query($sql, array($task_id))->row();
 
-        $this->db->select('*');
+        if (empty($data['task'])) {
+            redirect(base_url(''));
+        }
+
+        /*$this->db->select('*');
         $this->db->from('files');
         $this->db->where('files.fid', $data['task']->attachment_id);
         $files = $this->db->get()->result_array();
@@ -383,25 +419,50 @@ class Report extends CI_Controller
             $this->db->where('files.fid', $history->attachment_id);
             $files = $this->db->get()->result_array();
             $history->files = $files;
-        }
+        }*/
 
-        /*$period = new DatePeriod(
-            new DateTime($data['task']->start_date),
-            new DateInterval('P1D'),
-            new DateTime($data['task']->end_date)
-        );
+        $start_date     = new DateTime($data['task']->start_date);
+        $end_date       = new DateTime($data['task']->end_date);
+        $end_date       = $end_date->modify( "+1 day" );
 
+
+        $period = new DatePeriod( $start_date, new DateInterval('P1D'), $end_date);
+        $dates = array();
         foreach ($period as $key => $value) {
-            dd($value->format('Y-m-d'), false);
+            $dates[] = $value->format('d-m-Y');
         }
-        dd($period, false);*/
+        
+        $data["dates"] = $dates;
 
-        $data['taskHistory'] = $task_history;
-        //dd($data['taskHistory']);
+        $dates_reports = array();
 
-        if (empty($data['task'])) {
-            redirect(base_url(''));
+        foreach ($dates as $key => $date) {
+
+            $report_files = '';
+            $report = $this->db->select('*')
+                        ->from('reports')
+                        ->where("task_id", $task_id)
+                        ->where("DATE(created_at)", date( "Y-m-d", strtotime($date) ))
+                        ->get()->result();
+
+            $dates_reports[$key]["date"]    = $date;
+            $dates_reports[$key]["report"]  = isset($report[0]) && !empty($report[0]) ? $report[0] : new StdClass;
+
+            if( isset($report[0]) && !empty($report[0]) ) {
+                $this->db->select('*');
+                $this->db->from('files');
+                $this->db->where('files.fid', $report[0]->attachment_id);
+                $files = $this->db->get()->result();
+                $report_files = $files;
+                
+                $dates_reports[$key]["report"]->files  = isset($report_files) && !empty( $report_files ) ? $report_files : new StdClass;
+            }
+
+            
         }
+        
+        $data["dates_reports"] = $dates_reports;
+        //dd($data["dates_reports"]);
 
         $data['heading1'] = 'Task History';
         $data['nav1'] = 'GEW Employee';
