@@ -421,8 +421,17 @@ class Report extends CI_Controller
             $history->files = $files;
         }*/
 
+        if( strpos($data['task']->start_date, '0000-00-00') !== false 
+            || strpos($data['task']->end_date, '0000-00-00') !== false 
+            || empty($data['task']->start_date)  ){
+            
+            redirect(base_url('/dashboard/?error'));
+        }
+
+        
+
         $start_date     = new DateTime($data['task']->start_date);
-        $end_date       = new DateTime($data['task']->end_date);
+        $end_date       = new DateTime( !empty( $data['task']->end_date ) ? $data['task']->end_date : date( 'd-m-Y', time() ) );
         $end_date       = $end_date->modify( "+1 day" );
 
 

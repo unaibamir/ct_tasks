@@ -23,6 +23,18 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                         <?php
                     }
 
+                    if( !empty($alreadReported) ) {
+                        ?>
+                        <div class="col-md-6 offset-3 text-sm-center">
+                            <div class="alert alert-primary">
+                                <span>
+                                    <b> Sorry!</b> You cannot add report again on this task.
+                                </span>
+                            </div>
+                        </div>
+                        <?php
+                    }
+
                     if (!$can_submit) {
                         ?>
                         <div class="col-md-6 offset-3 text-sm-center">
