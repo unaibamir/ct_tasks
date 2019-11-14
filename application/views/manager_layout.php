@@ -52,6 +52,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <a href="<?php echo base_url('dashboard'); ?>">
                             <i class="now-ui-icons design_app"></i>
                             <p><?php echo $nav1; ?></p>
+
+
                         </a>
                     </li>
                     <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
@@ -125,14 +127,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <p>View Employees Report</p>
                             </a>
                         </li>
-<!--
-                        <li>
+                        <!--<li>
                             <a href="<?php echo base_url('employee/all'); ?>">
                                 <i class="now-ui-icons users_single-02"></i>
                                 <p>View All Employees</p>
                             </a>
                         </li>
--->
+
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('assign_task', $currentUserGroup)) : ?>
                         <li>
@@ -158,6 +159,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
+                    -->
+
                     <?php if ($this->aauth->is_group_allowed('search', $currentUserGroup)) : ?>
                         <li style="background: #0c2442;border-right: 4px solid #eaebf0;">
                             <a href="<?php echo base_url('search'); ?>">
@@ -175,16 +178,71 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
                 <div class="container-fluid">
-                    <div class="navbar-wrapper">
-                        <div class="navbar-toggle">
-                            <button type="button" class="navbar-toggler">
-                                <span class="navbar-toggler-bar bar1"></span>
-                                <span class="navbar-toggler-bar bar2"></span>
-                                <span class="navbar-toggler-bar bar3"></span>
-                            </button>
-                        </div>
-                        <a class="navbar-brand" href=""><?php echo $heading1?></a>
-                    </div>
+                <div class="col-lg-2"> 
+                        <div class=" navbar-wrapper">
+                            <div class="navbar-toggle">
+                                <button type="button" class="navbar-toggler">
+                                    <span class="navbar-toggler-bar bar1"></span>
+                                    <span class="navbar-toggler-bar bar2"></span>
+                                    <span class="navbar-toggler-bar bar3"></span>
+                                </button>
+                            </div>
+                            <a class="navbar-brand" href=""><?php echo $heading1?></a>
+
+                            <!-- nav bar is updating from here -->
+                      </div> 
+             </div>
+
+                    <div class="row">
+                              <div class="row" >
+                                <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                                    <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">Add New Task</a>
+                              
+                                  <?php endif; ?>
+
+
+                                  <!-- Manager Side / Task listing  -->
+                                   <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                                        <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">Task Listing </a>
+                                    <?php endif; ?>
+
+                                     
+                                <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                       
+                                        <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">View Employees Report</a>
+        
+                                <?php endif; ?>
+
+                                <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                                    <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">Employee list</a>
+                                    <?php endif; ?>
+
+                                    <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                            
+                                    <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">All Assign Task</a>
+                                
+                                    <?php endif; ?>
+                                    <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
+                              
+                                    <a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">Daily JoB Report - View </a>
+                            
+                                    <?php endif; ?>
+                                    <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+                                    
+                                    <a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                        Monthy Job Summary - View
+                                    </a>
+                         
+                                    <?php endif; ?>
+                                     <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+                                    
+                                    <a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
+                                        Send An Email
+                                    </a>
+                         
+                                    <?php endif; ?>
+                             </div> 
+                </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar navbar-kebab"></span>
                         <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -193,6 +251,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
                         <form action="">
                             <div class="input-group no-border">
+
                                 <input type="text" value="" class="form-control" placeholder="Search...">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
@@ -201,6 +260,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </div>
                             </div>
                         </form>
+
+
+
                         <ul class="navbar-nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="#pablo">
@@ -208,6 +270,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <p><span class="d-lg-none d-md-block">Stats</span></p>
                                 </a>
                             </li>
+                           
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="now-ui-icons location_world"></i>
@@ -223,12 +286,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <p><span class="d-lg-none d-md-block">Account</span></p>
                                 </a>
                             </li>
+
                         </ul>
                     </div>
+                   
+     
                 </div>
-            </nav>
+ 
+                
+             </nav> 
             <!-- End Navbar -->
 
+
+            
             <?php echo $this->load->view($inc_page, '', true); ?>
 
             <footer class="footer">
@@ -284,13 +354,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-    <!-- <script src="https://cdn.datatables.net/buttons/1.6.0/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.flash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.6.0/js/buttons.print.min.js"></script> -->
 
     <script src="<?php echo base_url('assets/demo/demo.js');?>"></script>
     <script src="<?php echo base_url('assets/js/script.js?ver='.time());?>"></script>
@@ -299,7 +362,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
         // Javascript method's body can be found in assets/js/demos.js
         //demo.initDashboardPageCharts();
 
-
+        //$('#table-list').DataTable();
     });
 </script>
 </body>

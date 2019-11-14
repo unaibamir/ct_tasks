@@ -115,8 +115,25 @@ class Task extends CI_Controller
         $this->load->view('manager_layout', $data);
     }
 
-    public function save()
-    {
+    public function save() {
+
+        if( !empty( $this->input->post('start_date') ) ) {
+            $start_date_arr = explode("/", $this->input->post('start_date'));
+            $start_date = $start_date_arr[0] . '-' . $start_date_arr[1] . '-' . $start_date_arr[2];
+            $start_date = date("Y-m-d H:i:s", strtotime($start_date) );
+        } else {
+            $start_date = date("Y-m-d H:i:s", time() );
+        }
+
+
+        if( !empty( $this->input->post('end_date') ) ) {
+            $end_date_arr = explode("/", $this->input->post('end_date'));
+            $end_date = $end_date_arr[0] . '-' . $end_date_arr[1] . '-' . $end_date_arr[2];
+            $end_date = date("Y-m-d H:i:s", strtotime($end_date) );
+        } else {
+            $end_date = "";
+        }
+
 
         $file_id = 0;
         if (isset($_FILES["attachement"])) {
@@ -157,8 +174,8 @@ class Task extends CI_Controller
             'given_by'        => $this->input->post('given_by'),
             'attachment_id'   => $file_id,
             't_description'   => $this->input->post('description'),
-            'start_date'      => date("Y-m-d H:i:s", strtotime( !empty( $this->input->post('start_date') ) ? $this->input->post('start_date') : time() )),
-            'end_date'        => date("Y-m-d H:i:s", strtotime($this->input->post('end_date'))),
+            'start_date'      => $start_date,
+            'end_date'        => $end_date,
             'created_by'      => (!empty($this->currentUser->id))? $this->currentUser->id: 0
         );
 
