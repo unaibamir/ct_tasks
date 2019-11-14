@@ -43,7 +43,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 					<div class="row">
 						<div class="col-md-3">
 							<label>Select Task</label>
-							<select class="form-control" id="task_id" name="task_id" style="padding: 10px 18px 10px 18px;" required>
+							<select class="form-control" id="task_id" name="task_id" style="padding: 10px 18px 10px 18px;">
 								<option value="">Select Task</option>
 								<?php
 								if( !empty( $tasks ) ) {
