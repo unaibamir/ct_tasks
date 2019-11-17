@@ -62,7 +62,27 @@ class Task extends CI_Controller
         $tasks = $this->db->get()->result();
         
         $data['tasks'] = $tasks;
+
+        $this->db->select(array(
+            "tasks.parent_id as type",
+            "count(tasks.parent_id) as total"
+        ));
+        $this->db->from("tasks");
         
+        if ($employee_id) {
+            $this->db->where('tasks.assignee', $employee_id);
+        }
+        
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            $this->db->where('tasks.assignee', $this->currentUser->id);
+        }
+
+        $this->db->group_by("tasks.parent_id");
+        $tasks_count = $this->db->get()->result_array();
+        
+        //dd($tasks_count, false);
+        $data["tasks_count"] = $tasks_count;
+
         $data['heading1'] = 'Task Listing';
         $data['nav1'] = $this->currentUserGroup[0]->name;
         $data['users'] = $this->db->get("aauth_users")->result_array();
