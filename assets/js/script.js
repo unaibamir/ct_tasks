@@ -72,4 +72,43 @@ $( function() {
         }
     });
 
+
+    $(".task-report-status input:radio[name='status']").on("change", function(event){
+    if ($(this).is(':checked')) {
+        var status = $(this).val();
+
+        /*if ( status != "Y" ) {
+            $(".task-report-reason").show();
+            $(".task-report-reason textarea").prop("required", true);
+        } else {
+            $(".task-report-reason").hide();
+            $(".task-report-reason textarea").prop("required", false);
+        }*/
+
+
+        if( status == "Y" ) {
+            $(".task-report-reason textarea").prop("required", false);
+            $(".task-report-reason").hide();
+
+            $("#before textarea, #after textarea").prop("required", true);
+            $("#before, #after").show();
+        }
+        else if( status == "N" || status == "H" || status == "C" ) {
+
+            $("#before textarea, #after textarea").prop("required", false);
+            $("#before, #after").hide();
+
+            $(".task-report-reason textarea").prop("required", true);
+            $(".task-report-reason").show();
+
+        } else if( status == "F" ) {
+            $(".task-report-reason textarea").prop("required", true);
+            $(".task-report-reason").show();
+
+            $("#before textarea, #after textarea").prop("required", true);
+            $("#before, #after").show();
+        }
+    }
+});
+
 });

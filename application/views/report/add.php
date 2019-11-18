@@ -179,13 +179,17 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                     </div>
                                 </div>
                                 <div class="col-md-10">
-                                    <span class="text-warning"><strong>Befor Break</strong></span>
-                                    <div class="input-group-prepend">
-                                        <textarea name="befor" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholder ?>" <?= $disabled ?> required></textarea>
+                                    <div id="before">
+                                        <span class="text-warning"><strong>Befor Break</strong></span>
+                                        <div class="input-group-prepend">
+                                            <textarea name="befor" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholder ?>" <?= $disabled ?> required></textarea>
+                                        </div>
                                     </div>
-                                    <span class="text-warning"><strong>After Break</strong></span>
-                                    <div class="input-group-prepend  ">
-                                        <textarea name="after" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholderAfter ?>" <?= $disabled ?> required></textarea>
+                                    <div id="after">
+                                        <span class="text-warning"><strong>After Break</strong></span>
+                                        <div class="input-group-prepend  ">
+                                            <textarea name="after" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholderAfter ?>" <?= $disabled ?> required></textarea>
+                                        </div>
                                     </div>
                                 </div>
                                 

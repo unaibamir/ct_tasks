@@ -279,16 +279,3 @@ function toggleSibling(sibling) {
   }
   sibling.style.display = sibling.style.display == 'table-row' ? 'none' : 'table-row';
 }
-
-$(".task-report-status input:radio[name='status']").on("change", function(event){
-	if ($(this).is(':checked')) {
-		var status = $(this).val();
-		if ( status != "Y" ) {
-			$(".task-report-reason").show();
-			$(".task-report-reason textarea").prop("required", true);
-		} else {
-			$(".task-report-reason").hide();
-			$(".task-report-reason textarea").prop("required", false);
-		}
-	}
-});

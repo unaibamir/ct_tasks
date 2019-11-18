@@ -319,7 +319,7 @@ class Report extends CI_Controller
 
         $sql = "SELECT T.*,
         giver.first_name as given_f,
-        giver.last_name as giver_l,
+        giver.last_name as given_l,
         created_by.first_name as created_by_f,
         created_by.last_name as created_by_l,
         assignee.first_name as assignee,
@@ -406,16 +406,28 @@ class Report extends CI_Controller
         
         $reason = !empty($this->input->post('reason')) ? $this->input->post('reason') : "";
 
+        if( !empty($this->input->post('befor')) ) {
+            $before = $this->input->post('befor');
+        } else {
+            $before = $this->config->item( "no_before" );
+        }
+
+        if( !empty($this->input->post('after')) ) {
+            $after = $this->input->post('after');
+        } else {
+            $after = $this->config->item( "no_after" );
+        }
+
         $task_id = $this->input->post('task_id');
         //server validation
         $data = array(
-            'task_id' => $this->input->post('task_id'),
-            'user_id' => $this->currentUser->id,
-            'berfore' => $this->input->post('befor'),
-            'after' => $this->input->post('after'),
+            'task_id'   => $this->input->post('task_id'),
+            'user_id'   => $this->currentUser->id,
+            'berfore'   => $before,
+            'after'     => $after,
             'attachment_id' => $file_id,
-            'status' => $this->input->post('status'),
-            'reason' => $reason
+            'status'    => $this->input->post('status'),
+            'reason'    => $reason
         );
 
         $this->db->insert('reports', $data);
