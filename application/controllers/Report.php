@@ -313,8 +313,29 @@ class Report extends CI_Controller
 
         $this->load->library('form_validation');
 
-        $sql = "SELECT T.*, D.c_name, assignee.first_name as given, reporter.first_name as follow FROM `tasks` AS T LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
+        $sql = "SELECT T.*, D.c_name,
+        assignee.first_name as given,
+        reporter.first_name as follow FROM `tasks` AS T LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
+
+        $sql = "SELECT T.*,
+        giver.first_name as given_f,
+        giver.last_name as giver_l,
+        created_by.first_name as created_by_f,
+        created_by.last_name as created_by_l,
+        assignee.first_name as assignee,
+        assignee.last_name as assignee_l,
+        reporter.first_name as follow,
+        reporter.last_name as follow_l,
+
+        D.c_name FROM `tasks` AS T
+        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
+        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
+        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN departments AS D on D.cid = T.department_id  WHERE T.tid = ?";
+
         $task = $this->db->query($sql, array($task_id))->row();
+        //dd($task);
         $data['task'] = $task;
 
         if (empty($data['task'])) {
@@ -335,9 +356,9 @@ class Report extends CI_Controller
         //select all employees
         //$data['employees'] = $this->getUsers('Employee');
 
-        $today          = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+        $today          = time();
         $start_date     = strtotime($task->start_date);
-        $end_date       = strtotime($task->end_date);
+        $end_date       = !empty( $task->end_date ) ? strtotime($task->end_date) : time() + 86400;
 
         if ($today > $end_date) {
             $data["can_submit"] = false;
