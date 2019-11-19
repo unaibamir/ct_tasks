@@ -150,33 +150,6 @@ class Report extends CI_Controller
         $this->load->view('manager_layout', $data);
     }
 
-    public function monthly_old()
-    {
-        $data['CurrentMonthDates'] = $this->getCurrentMonthDates();
-        $sql = "SELECT 
-		T.*, 
-		assignee.first_name as given,
-		reporter.first_name as follow,
-		D.c_name
-		FROM `tasks` AS T
-		LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-		LEFT JOIN departments AS D on D.cid = T.department_id";
-        $data['tasks'] = $this->db->query($sql)->result();
-
-        $sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        $data['currentMonthReports'] = $this->db->query($sql)->result();
-
-
-        $data['heading1'] = 'Monthly Status';
-        $data['nav1'] = ($this->currentUserGroup[0]->name == 'Manager')? 'Manager' : 'GEW Employee';
-
-        $data['currentUser'] = $this->currentUser;
-        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
-        $data['inc_page'] = 'report/monthly'; // views/display.php page
-        $this->load->view('manager_layout', $data);
-    }
-
     public function getCurrentMonthDates_old()
     {
         $year = date('Y');
@@ -236,7 +209,8 @@ class Report extends CI_Controller
             $sql .= " WHERE T.assignee = {$_GET["employee_id"]}";
         }
 
-        $data['tasks'] = $this->db->query($sql)->result();
+        $tasks = $this->db->query($sql)->result();
+        $data['tasks'] = $tasks;
 
         $this->db->select(array(
             "tasks.parent_id as type",
@@ -251,18 +225,19 @@ class Report extends CI_Controller
         }
         $this->db->group_by("tasks.parent_id");
         $tasks_count = $this->db->get()->result_array();
-        //dd($tasks_count);
+        
         $data["tasks_count"] = $tasks_count;
         
-        /*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";*/
         $data["month_date"] = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : date('m');
 
         $sql_month_date = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : "MONTH(CURRENT_DATE())";
-        $sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        $result = $this->db->query($sql)->result();
 
-        $data['currentMonthReports'] = $result;
-
+        foreach ($tasks as $key => $task) {
+            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+            $report_result = $this->db->query($sql)->result();
+            $task->reports = $report_result;
+        }
+        
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
             $employee = $this->aauth->get_user($_GET["employee_id"]);
         }
@@ -674,8 +649,14 @@ class Report extends CI_Controller
         $month_date = !empty($month) ? $month : date('m');
 
         $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
-        $sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        $result = $this->db->query($sql)->result();
+        /*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+        $result = $this->db->query($sql)->result();*/
+
+        foreach ($tasks as $key => $task) {
+            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+            $report_result = $this->db->query($sql)->result();
+            $task->reports = $report_result;
+        }
 
         //dd($tasks);
 
@@ -741,14 +722,12 @@ class Report extends CI_Controller
                 $end_date       = strtotime($task->end_date);
                 $output         = "-";
 
-                if (!empty($result)) {
-                    foreach ($result as $report_key => $report) {
+                if( !empty($task->reports) ) {
+                    foreach ($task->reports as $report_key => $report) {
                         $report_date    = date($date_format, strtotime($report->created_at));
-                        $report_date_2  = date('d-m-Y', strtotime($report->created_at));
-
-                        if ($report->task_id == $task->tid && $current_date == $report_date) {
+                        if ($current_date == $report_date) {
                             $output = $report->status;
-                            //continue;
+                            break;
                         }
                     }
                 }
@@ -813,8 +792,15 @@ class Report extends CI_Controller
         $month_date = !empty($month) ? $month : date('m');
 
         $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
-        $sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        $result = $this->db->query($sql)->result();
+        /*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+        $result = $this->db->query($sql)->result();*/
+
+        foreach ($tasks as $key => $task) {
+            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+            $report_result = $this->db->query($sql)->result();
+            $task->reports = $report_result;
+        }
+
 
         //dd($tasks);
 
@@ -882,14 +868,12 @@ class Report extends CI_Controller
                 $end_date       = strtotime($task->end_date);
                 $output         = "-";
 
-                if (!empty($result)) {
-                    foreach ($result as $report_key => $report) {
+                if( !empty($task->reports) ) {
+                    foreach ($task->reports as $report_key => $report) {
                         $report_date    = date($date_format, strtotime($report->created_at));
-                        $report_date_2  = date('d-m-Y', strtotime($report->created_at));
-
-                        if ($report->task_id == $task->tid && $current_date == $report_date) {
+                        if ($current_date == $report_date) {
                             $output = $report->status;
-                            //continue;
+                            break;
                         }
                     }
                 }

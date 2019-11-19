@@ -217,20 +217,16 @@ $job_types = array(
                                         $start_date     = strtotime($task->start_date);
                                         $end_date       = strtotime($task->end_date);
                                         $output         = "-";
-	                                    if (!empty($currentMonthReports)) {
-	                                        foreach ($currentMonthReports as $report_key => $report) {
+
+                                        if( !empty($task->reports) ) {
+                                            foreach ($task->reports as $report_key => $report) {
                                                 $report_date    = date($date_format, strtotime($report->created_at));
-                                                /*$report_date_2  = date('d-m-Y', strtotime($report->created_at));
-	                                            if (($current_date_2 >= $start_date) && ($current_date_2 <= $end_date) && $current_date_2 != strtotime($report->created_at)) {
-	                                                //$output = "AB";
-	                                                //break;
-	                                            }*/
-	                                            if ($report->task_id == $task->tid && $current_date == $report_date) {
-	                                                $output = $report->status;
+                                                if ($current_date == $report_date) {
+                                                    $output = $report->status;
                                                     break;
-	                                            }
-	                                        }
-	                                    }
+                                                }
+                                            }
+                                        }
                                         ?>
                                         <?php echo '<span class="table-status">' . $output . '</span>'; ?>
                                     </td>
