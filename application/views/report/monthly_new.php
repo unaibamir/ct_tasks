@@ -61,6 +61,11 @@ font-size: 9px;
 font-family: monospace;
 border: 1px solid #e9e8e81f;
     }
+.all-icons .font-icon-detail p {
+    font-size: 1em;
+    font-weight: bold;
+    color: #5f5f5f;
+}
 </style>
 <?php
 $job_types = array(
@@ -76,51 +81,52 @@ $job_types = array(
 <div class="content">
     <div class="row">
         <div class="col-md-12">
+
             <div class="card">
                 <div class="card-header">
-                    <!-- <h5 class="title"> Task Form</h5> -->
+                    <h5 class="title">Jobs Count</h5>
+                </div>
+                <div class="card-body all-icons">
+                    <div class="row">
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                            <div class="font-icon-detail">
+                                <h5 class="title"><?php echo !empty($tasks_count[0]["total"])? $tasks_count[0]["total"] : 0; ?></h5>
+                                <p>Daily</p>
+                            </div>
+                        </div>
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                            <div class="font-icon-detail">
+                                <h5 class="title"><?php echo !empty($tasks_count[1]["total"])? $tasks_count[1]["total"] : 0; ?></h5>
+                                <p>Weekly</p>
+                            </div>
+                        </div>
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                            <div class="font-icon-detail">
+                                <h5 class="title"><?php echo !empty($tasks_count[2]["total"])? $tasks_count[2]["total"] : 0; ?></h5>
+                                <p>Monthly</p>
+                            </div>
+                        </div>
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                            <div class="font-icon-detail">
+                                <h5 class="title"><?php echo !empty($tasks_count[3]["total"])? $tasks_count[3]["total"] : 0; ?></h5>
+                                <p>One Time</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-lg-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="title">Monthly Job Summary View</h5>
                 </div>
                 <div class="card-body">
                     <div id="calendar"></div>
-                    <!--
-                                        <form>
-                                                <div class="row">
-                                                        <div class="col-md-4 pr-1">
-                                                                <div class="form-group">
-                                                                        <label>Employee Code</label>
-                                                                        <input type="text" class="form-control" placeholder="admin Job" value="">
-                                                                </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                        <label>Given By</label>
-                                                                        <input type="text" class="form-control" placeholder="Person Name" value="">
-                                                                </div>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                        <label>Follow Up</label>
-                                                                        <input type="text" class="form-control" placeholder="admin Job" value="">
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                                <div class="row">
-                                                        <div class="col-md-4 pr-1">
-                                                                <div class="form-group">
-                                                                        <label>Start Date</label>
-                                                                        <input type="date" name="bday" max="3000-12-31" min="1000-01-01" class="form-control">
-                                                                </div>
-                                                        </div>
-                                                        <div class="col-md-4 pl-1">
-                                                                <div class="form-group">
-                                                                        <label>End Date</label>
-                                                                        <input type="date" name="bday" min="1000-01-01" max="3000-12-31" class="form-control">
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                        </form>
-                    -->
-                    <h3 class="m-4">Monthly Job Summary View </h3>
+                    <!-- <h3 class="m-4">Monthly Job Summary View </h3> -->
                     <div class="row ">
                     	<?php //dd(var_export($employee, true)); ?>
                     	<?php if( $employee ): ?>
@@ -139,8 +145,8 @@ $job_types = array(
                         <div class="col-md-3">
                             <h6 class="m-1">Current Date:</h6>
                             <?php
-                            $currentdate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-                            echo '<p class="car}d-text mx-2 ">' . date("d / m / Y", $currentdate) . '</p>';
+
+                            echo '<p class="car}d-text mx-2 ">' . date("d / m / Y", time() ) . '</p>';
                             ?>
                         </div>
                         <div class="col-md-3">
@@ -151,20 +157,12 @@ $job_types = array(
                         </div>
                         
                     </div>
-                    <!--        <div class="row ">
-                            <h6 class=" m-1">Employee Code : </h6>
-                        <p class="card-text mx-1 "><?php echo $currentUser->username; ?></p>
-                    </div> -->
-                    <!--    <div class="row">
-                        <?php
-                        $currentdate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-                        echo ' <p class=" font-weight-bold " >Current Date  :  </p> ' . date("d / m / Y", $currentdate) . '<br>';
-                    ?></div> -->
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover bg-light">
                             <thead class="thead-dark">
                                 <tr class="d-flex">
+                                    <th>#</th>
                                     <th scope="col"  style="width: 40px!important; font-size: 9px; ">Task Code</th>
                                     <th  colspan="4" style="width: 139px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Task Title</th>
                                     <!-- <th scope="col" style="width: 300px;">Desctiption</th>
@@ -186,14 +184,17 @@ $job_types = array(
                             </thead>
                             <tbody>
                                 <?php
+                                $date_format = $this->config->item('date_format');
+                                $counter = 1;
                                 foreach ($tasks as $key => $task) {
                                     if ($currentUserGroup == "Employee" && $currentUser->id != $task->assignee) {
                                         continue;
                                     }
-                                    $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
-                                    $end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+                                    $start_date = date($date_format, strtotime($task->start_date));
+                                    $end_date = !empty($task->end_date) ? date($date_format, strtotime($task->end_date)) : "";
                                 ?>
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
+                                    <td style="font-weight: 600; font-size: 9px;"><?php echo $counter; ?></td>
                                     <td style="width: 40px!important; font-weight: 600; font-size: 9px;"><?php echo $task->t_code; ?></td>
                                     <td style="width: 139px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
                                     <!-- <td style="width: 300px;"><?php echo $task->t_description; ?></td>
@@ -218,16 +219,16 @@ $job_types = array(
                                         $output         = "-";
 	                                    if (!empty($currentMonthReports)) {
 	                                        foreach ($currentMonthReports as $report_key => $report) {
-	                                                $report_date    = date($this->config->item('date_format'), strtotime($report->created_at));
-	                                                $report_date_2  = date('d-m-Y', strtotime($report->created_at));
+                                                $report_date    = date($date_format, strtotime($report->created_at));
+                                                /*$report_date_2  = date('d-m-Y', strtotime($report->created_at));
 	                                            if (($current_date_2 >= $start_date) && ($current_date_2 <= $end_date) && $current_date_2 != strtotime($report->created_at)) {
 	                                                //$output = "AB";
 	                                                //break;
-	                                            }
+	                                            }*/
 	                                            if ($report->task_id == $task->tid && $current_date == $report_date) {
 	                                                $output = $report->status;
+                                                    break;
 	                                            }
-	                                                                                                //break;
 	                                        }
 	                                    }
                                         ?>
@@ -238,6 +239,7 @@ $job_types = array(
                                     ?>
                                 </tr>
                                 <?php
+                                $counter++;
                                 }
                                 ?>
                             </tbody>
@@ -248,4 +250,5 @@ $job_types = array(
         </div>
     </div>
 </div>
+
 <!-- Dashboard for User body-->

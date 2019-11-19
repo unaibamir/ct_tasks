@@ -237,6 +237,22 @@ class Report extends CI_Controller
         }
 
         $data['tasks'] = $this->db->query($sql)->result();
+
+        $this->db->select(array(
+            "tasks.parent_id as type",
+            "count(tasks.parent_id) as total"
+        ));
+        $this->db->from("tasks");
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
+            $this->db->where('tasks.assignee', $_GET["employee_id"]);
+        }
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            $this->db->where('tasks.assignee', $this->currentUser->id);
+        }
+        $this->db->group_by("tasks.parent_id");
+        $tasks_count = $this->db->get()->result_array();
+        //dd($tasks_count);
+        $data["tasks_count"] = $tasks_count;
         
         /*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = MONTH(CURRENT_DATE()) AND YEAR(created_at) = YEAR(CURRENT_DATE())";*/
         $data["month_date"] = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : date('m');
@@ -244,6 +260,7 @@ class Report extends CI_Controller
         $sql_month_date = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : "MONTH(CURRENT_DATE())";
         $sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
         $result = $this->db->query($sql)->result();
+
         $data['currentMonthReports'] = $result;
 
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {

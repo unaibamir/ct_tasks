@@ -251,8 +251,21 @@ class Task extends CI_Controller
                 $this->db->where('tasks.parent_id', 1);
                 break;
         }
-
+        
         $tasks = $this->db->get()->result();
+
+        $this->db->select(array(
+            "tasks.parent_id as type",
+            "count(tasks.parent_id) as total"
+        ));
+        $this->db->from("tasks");
+        
+        $this->db->where('tasks.assignee', $this->currentUser->id);
+
+        $this->db->group_by("tasks.parent_id");
+        $tasks_count = $this->db->get()->result_array();
+        $data["tasks_count"] = $tasks_count;
+
         foreach ($tasks as $key => $task) {
             $reported = $this->db->query("SELECT * FROM `reports` WHERE task_id ={$task->tid} AND user_id = {$this->currentUser->id} AND DATE(created_at) = CURDATE()")->result_array();
             if (!empty($reported) && isset($reported[0])) {

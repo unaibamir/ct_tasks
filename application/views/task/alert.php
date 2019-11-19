@@ -48,15 +48,15 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                     ?>
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>"><kbd>Daily</kbd></a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>"><kbd>Weekly</kbd></a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>"><kbd>Monthly</kbd></a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>"><kbd>One Time</kbd></a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>"><kbd>Daily <span class="badge badge-light"><?php echo !empty($tasks_count[0]["total"])? $tasks_count[0]["total"] : 0; ?></span> </kbd> </a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>"><kbd>Weekly <span class="badge badge-light"><?php echo !empty($tasks_count[1]["total"])? $tasks_count[1]["total"] : 0; ?></span></kbd> </a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>"><kbd>Monthly <span class="badge badge-light"><?php echo !empty($tasks_count[2]["total"])? $tasks_count[2]["total"] : 0; ?></span></kbd> </a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>"><kbd>One Time <span class="badge badge-light"><?php echo !empty($tasks_count[3]["total"])? $tasks_count[3]["total"] : 0; ?></span></kbd> </a>
                         </div>
                     </nav>
                     <?php if (!empty($tasks)) : ?>
                         <div class="table-responsive">
-                            <table class="table text-left">
+                            <table class="table text-left" id="table-list">
                                 <thead>
                                     <tr>
                                         <th class="text-center">Task Code</th>
