@@ -342,7 +342,11 @@ class Report extends CI_Controller
             redirect(base_url(''));
         }
 
-
+        $this->db->select('*');
+        $this->db->from('files');
+        $this->db->where('files.fid', $data['task']->attachment_id);
+        $files = $this->db->get()->result_array();
+        $data['task_files'] = $files;
 
         $sql = "SELECT * FROM `reports` WHERE task_id = ? AND DATE(created_at) = CURDATE()";
         $data['alreadReported'] = $this->db->query($sql, array($task_id))->row();
@@ -483,19 +487,51 @@ class Report extends CI_Controller
 
         $this->load->library('form_validation');
 
-        $sql = "SELECT T.*, D.c_name, assignee.first_name as given, assignee.username as user_code, reporter.first_name as follow FROM `tasks` AS T LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
-        $data['task'] = $this->db->query($sql, array($task_id))->row();
+        /*$sql = "SELECT T.*, 
+        D.c_name,
+        assignee.first_name as given, 
+        assignee.username as user_code, 
+        reporter.first_name as follow 
+        FROM `tasks` AS T 
+        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
+        $data['task'] = $this->db->query($sql, array($task_id))->row();*/
+
+         $sql = "SELECT T.*,
+        giver.first_name as given_f,
+        giver.last_name as given_l,
+        created_by.first_name as created_by_f,
+        created_by.last_name as created_by_l,
+        assignee.first_name as assignee,
+        assignee.last_name as assignee_l,
+        assignee.username as user_code, 
+        reporter.first_name as follow,
+        reporter.last_name as follow_l,
+        D.c_name,
+
+        D.c_name FROM `tasks` AS T
+        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
+        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
+        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
+
+        $task = $this->db->query($sql, array($task_id))->row();
+        //dd($task);
+        $data['task'] = $task;
 
         if (empty($data['task'])) {
             redirect(base_url(''));
         }
 
-        /*$this->db->select('*');
+        $this->db->select('*');
         $this->db->from('files');
         $this->db->where('files.fid', $data['task']->attachment_id);
         $files = $this->db->get()->result_array();
         $data['task_files'] = $files;
 
+        /*
         $sql = "SELECT * FROM reports WHERE task_id = ?";
         $task_history = $this->db->query($sql, array($task_id))->result();
 

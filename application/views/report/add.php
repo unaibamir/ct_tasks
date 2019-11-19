@@ -99,7 +99,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                             <div class="row ">
                                 <h6 class="m-1">Assign To:</h6>
                                 <p class="card-text mx-2 text-warning">
-                                    <?php echo $currentUser->first_name; ?> <?php echo $currentUser->last_name; ?>
+                                    <?php echo $task->assignee . " " . $task->assignee_l; ?>
                                 </p>
                             </div>
                             <div class="row ">
@@ -117,6 +117,28 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                             <div class="row ">
                                 <h6 class=" m-1 ">Task Description :</h6>
                                 <p class=" card-text m-2 text-warning"><?php echo $task->t_description; ?></p>
+                            </div>
+                            <div class="row">
+                                <h6 class=" m-1 ">Task Files:</h6>
+                                <div class="col-md-12">
+                                    <?php
+                                    if (!empty($task_files)) {
+                                        echo '<ul style="padding-left:0px;list-style: none;">';
+                                        foreach ($task_files as $file) {
+                                            ?>
+                                            <li>
+                                                <a href="<?php echo $file["url"]; ?>" target="_blank">
+                                                    <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width="40" height="40"> <?php echo $file["f_title"]; ?>
+                                                </a>
+                                            </li>
+                                    <?php
+                                        }
+                                        echo '</ul>';
+                                    } else {
+                                        echo 'No Files Available';
+                                    }
+                                    ?>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-6 rounded p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
