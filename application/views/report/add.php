@@ -82,7 +82,15 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                             </div>
                             <div class="row ">
                                 <h6 class=" m-1">Given: </h6>
-                                <p class="card-text mx-1 text-warning"><?php echo $task->given; ?></p>
+                                <p class="card-text mx-1 text-warning">
+                                    <?php 
+                                    if( !empty( $task->given_f ) ) {
+                                        echo $task->given_f . " " . $task->given_l;
+                                    } else {
+                                        echo $task->created_by_f . " " . $task->created_by_l;
+                                    }
+                                    ?>
+                                </p>
                             </div>
                             <div class="row ">
                                 <h6 class="m-1">Follow Up:</h6>
@@ -171,13 +179,17 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                     </div>
                                 </div>
                                 <div class="col-md-10">
-                                    <span class="text-warning"><strong>Befor Break</strong></span>
-                                    <div class="input-group-prepend">
-                                        <textarea name="befor" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholder ?>" <?= $disabled ?> required></textarea>
+                                    <div id="before">
+                                        <span class="text-warning"><strong>Befor Break</strong></span>
+                                        <div class="input-group-prepend">
+                                            <textarea name="befor" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholder ?>" <?= $disabled ?> required></textarea>
+                                        </div>
                                     </div>
-                                    <span class="text-warning"><strong>After Break</strong></span>
-                                    <div class="input-group-prepend  ">
-                                        <textarea name="after" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholderAfter ?>" <?= $disabled ?> required></textarea>
+                                    <div id="after">
+                                        <span class="text-warning"><strong>After Break</strong></span>
+                                        <div class="input-group-prepend  ">
+                                            <textarea name="after" class="col-md-12" aria-label="With textarea" rows="5" placeholder=" <?= $placeholderAfter ?>" <?= $disabled ?> required></textarea>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -187,10 +199,37 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                     <div class="input-group-prepend">
                                         <span class="text-warning m-2" id="inputGroupFileAddon01">Upload File</span>
                                     </div>
-                                    <div class="custom-file">
+
+                                    <div id="repeater-fields">
+                                        <div class="entry input-group col-xs-3">
+                                            <input name="report_files[]" type="file" class="file-input">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success btn-add">
+                                                    <i class="now-ui-icons ui-1_simple-add"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- <div id="repeater-fields">
+                                        <div class="entry input-group col-xs-3">
+                                            <div class="custom-file">
+                                                <input type="file" class="custom-file-input report-file" name="report_files[]">
+                                                <label class="custom-file-label report-file-label" for="report-file">Choose file</label>
+                                            </div>
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-success btn-add">
+                                                    <i class="now-ui-icons ui-1_simple-add"></i>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </div> -->
+
+
+                                    <!-- <div class="custom-file">
                                         <input type="file" class="custom-file-input" id="report-file" aria-describedby="inputGroupFileAddon01" name="report_file" <?= $disabled ?>>
                                         <label class="custom-file-label" for="report-file" id="report-file-label">Choose file</label>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class="col-md-3 mt-4">
                                     <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>" />

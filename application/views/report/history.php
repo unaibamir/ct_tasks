@@ -100,11 +100,11 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 
 							<div class="row font-weight-bold text-danger border">
-								<div class="col-md-2"><label>Date</label></div>
-								<div class="col-md-4"><label>Update</label></div>
-								<div class="col-md-2"><label>Files</label></div>
+								<div class="col-md-1"><label>Date</label></div>
+								<div class="col-md-5"><label>Update</label></div>
 								<div class="col-md-1"><label>Status</label></div>
 								<div class="col-md-3"><label>Reason</label></div>
+								<div class="col-md-2"><label>Files</label></div>
 							</div>
 
 							<?php
@@ -116,24 +116,34 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 									?>
 									<div class="row bg-light border-bottom ">
-										<div class="col-md-2 text-info font-weight-bold border-right pt-5 pb-5">
+										<div class="col-md-1 text-info font-weight-bold border-right pt-5 pb-5 p-1">
 											<?php echo $date_report["date"]; ?>
 										</div>
 
 										<?php if( !empty( (array) $report ) ) { ?>
-											<div class="col-md-4 bg-light p-3 border-right">
+											<div class="col-md-5 bg-light p-3 border-right">
 													<p><?php echo $report->berfore; ?></p>
 													<hr>
 													<p><?php echo $report->after; ?></p>
 											</div>
 
+
+											<div class="col-md-1 text-primary t-3 text-sm-center border-right pt-5">
+												<label><b><?php echo $report->status; ?></b></label>
+											</div>
+
+											<div class="col-md-3 text-primary t-3 text-sm-left border-right pt-5">
+												<label><b><?php echo $report->reason; ?></b></label>
+											</div>
+
 											<div class="col-md-2 bg-light p-3 border-right ">
 												<?php
+
 												if (!empty( (array) $report->files )) {
 													echo '<ul style="padding-left:0px;list-style: none;">';
 													foreach ($report->files as $file) {
 														?>
-														<li>
+														<li style="margin-bottom: 5px;">
 															<a href="<?php echo $file->url; ?>" target="_blank">
 																<img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width="40" height="40"> <?php echo $file->f_title; ?>
 															</a>
@@ -146,15 +156,6 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 												}
 												?>
 											</div>
-
-											<div class="col-md-1 text-primary t-3 text-sm-center border-right pt-5">
-												<label><b><?php echo $report->status; ?></b></label>
-											</div>
-
-											<div class="col-md-3 text-primary t-3 text-sm-left  pt-5">
-												<label><b><?php echo $report->reason; ?></b></label>
-											</div>
-
 										<?php }
 										else {
 											echo '<div class="col-md-10 bg-light pt-5 border-right text-sm-left">'. $this->config->item('no_report_history') .'</div>';

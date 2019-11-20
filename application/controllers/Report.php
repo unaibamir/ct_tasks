@@ -339,35 +339,6 @@ class Report extends CI_Controller
 
     public function save()
     {
-    
-        $file_id = 0;
-        
-        if (isset($_FILES["report_file"])) {
-            $upload_path                = "uploads/tasks";
-            if (!is_dir($upload_path)) {
-                mkdir($upload_path, 0777, true);
-            }
-            
-            $file                       = array();
-            $config['upload_path']      = $upload_path;
-            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
-
-            $this->load->library('upload', $config);
-            
-            if (! $this->upload->do_upload('report_file')) {
-            } else {
-                $file_data          = $this->upload->data();
-                //dd($file_data);
-                $file['f_title']    = $file_data["client_name"];
-                $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
-                $file['type']       = $file_data["file_type"];
-                $file['status']     = 0;
-                $file['is_deleted'] = 0;
-
-                $this->db->insert("files", $file);
-                $file_id = $this->db->insert_id();
-            }
-        }
         
         $reason = !empty($this->input->post('reason')) ? $this->input->post('reason') : "";
 
@@ -390,7 +361,7 @@ class Report extends CI_Controller
             'user_id'   => $this->currentUser->id,
             'berfore'   => $before,
             'after'     => $after,
-            'attachment_id' => $file_id,
+            'attachment_id' => 0,
             'status'    => $this->input->post('status'),
             'reason'    => $reason
         );
@@ -400,6 +371,56 @@ class Report extends CI_Controller
         $report_id = $this->db->insert_id();
         $task_id = $this->input->post('task_id');
         $status_array = array("H", "C", "F");
+
+        if( !empty($_FILES["report_files"]) ) {
+
+            $upload_path                = "uploads/tasks";
+
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+
+            $config['upload_path']      = $upload_path;
+            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
+
+            $this->load->library('upload', $config);
+
+            $file_count = 0;
+            $file_ids   = array();
+
+            foreach ($_FILES["report_files"] as $key => $file) {
+
+                if( empty($file) || !isset($_FILES['report_files']['name'][$file_count])) {
+                    continue;
+                }
+                
+                $_FILES['attachments[]']['name']        = $_FILES['report_files']['name'][$file_count];
+                $_FILES['attachments[]']['type']        = $_FILES['report_files']['type'][$file_count];
+                $_FILES['attachments[]']['tmp_name']    = $_FILES['report_files']['tmp_name'][$file_count];
+                $_FILES['attachments[]']['error']       = $_FILES['report_files']['error'][$file_count];
+                $_FILES['attachments[]']['size']        = $_FILES['report_files']['size'][$file_count];
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('attachments[]')) {
+
+                    $file_data              = $this->upload->data();
+                    $new_file['f_title']    = $file_data["client_name"];
+                    $new_file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                    $new_file['type']       = $file_data["file_type"];
+                    $new_file['status']     = 0;
+                    $new_file['is_deleted'] = 0;
+                    $new_file['post_id']    = $report_id;
+                    $new_file['post_type']  = "report";
+
+                    $this->db->insert("files", $new_file);
+                    $file_id = $this->db->insert_id();
+                    $file_ids[] = $file_id;
+                }
+                
+                $file_count++;
+            }
+        }
 
         $status = "";
         switch ($this->input->post('status')) {
@@ -552,7 +573,15 @@ class Report extends CI_Controller
                 $this->db->from('files');
                 $this->db->where('files.fid', $report[0]->attachment_id);
                 $files = $this->db->get()->result();
-                $report_files = $files;
+                
+
+
+                $this->db->select('*');
+                $this->db->from('files');
+                $this->db->where('files.post_id', $report[0]->rid);
+                $new_files = $this->db->get()->result();
+
+                $report_files = array_merge($files, $new_files);
                 
                 $dates_reports[$key]["report"]->files  = isset($report_files) && !empty($report_files) ? $report_files : new StdClass;
             }

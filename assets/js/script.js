@@ -64,28 +64,11 @@ $( function() {
         }
     });
 
-    $("#report-file").change(function(e){
-        var uploaded_file = e.target.files[0];
-        if( typeof uploaded_file != "undefined" ) {
-            var fileName = e.target.files[0].name;
-            $("#report-file-label").html( fileName );
-        }
-    });
-
 
     $(".task-report-status input:radio[name='status']").on("change", function(event){
         if ($(this).is(':checked')) {
             var status = $(this).val();
-
-            /*if ( status != "Y" ) {
-                $(".task-report-reason").show();
-                $(".task-report-reason textarea").prop("required", true);
-            } else {
-                $(".task-report-reason").hide();
-                $(".task-report-reason textarea").prop("required", false);
-            }*/
-
-
+            console.log(status);
             if( status == "Y" ) {
                 $(".task-report-reason textarea").prop("required", false);
                 $(".task-report-reason").hide();
@@ -113,9 +96,14 @@ $( function() {
 
     $(document).on('click', '.btn-add', function(e){
         e.preventDefault();
-        var controlForm = $('#repeater-fields:first'),
-            currentEntry = $(this).parents('.entry:first'),
-            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+        
+        var controlForm = $('#repeater-fields:first');
+        var currentEntry = $(this).parents('.entry:first');
+
+        //currentEntry.find(".report-file-label").empty();
+        
+        var newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
         newEntry.find('input').val('');
         controlForm.find('.entry:not(:last) .btn-add')
             .removeClass('btn-add').addClass('btn-remove')
@@ -125,6 +113,24 @@ $( function() {
         e.preventDefault();
         $(this).parents('.entry:first').remove();
         return false;
+    });
+
+
+    $("#report-file").change(function(e){
+        var uploaded_file = e.target.files[0];
+        if( typeof uploaded_file != "undefined" ) {
+            var fileName = e.target.files[0].name;
+            $("#report-file-label").html( fileName );
+        }
+    });
+
+
+    $(".custom-file-input.report-file").on("change", function( e ){
+        var uploaded_file = e.target.files[0];
+        if( typeof uploaded_file != "undefined" ) {
+            var fileName = e.target.files[0].name;
+            $(this).next(".report-file-label").html( fileName );
+        }
     });
 
 });
