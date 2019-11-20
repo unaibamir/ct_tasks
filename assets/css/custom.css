@@ -18,3 +18,7 @@
     top: 0;
     left: 0;
 }
+.file-input {
+    padding-top: 14px;
+    width: calc(100% - 60px);
+}

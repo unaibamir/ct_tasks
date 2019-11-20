@@ -137,7 +137,18 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             ?>
                             <div class=" file-upload-wrapper mt-4">
                                 <label>Attach File</label>
-                                <input type="file" id="input-file-now" name="attachement" class="file-upload" />
+                                <!-- <input type="file" id="input-file-now" name="attachement" class="file-upload" /> -->
+                                <br>
+                                <div id="repeater-fields">
+                                    <div class="entry input-group col-xs-3">
+                                        <input name="files[]" type="file" class="file-input">
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-success btn-add">
+                                                <i class="now-ui-icons ui-1_simple-add"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12 text-right font-weight-bold">

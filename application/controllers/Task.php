@@ -155,31 +155,51 @@ class Task extends CI_Controller
         }
 
 
-        $file_id = 0;
-        if (isset($_FILES["attachement"])) {
-            $upload_path                = "uploads/tasks";
+        if( !empty($_FILES["files"]) ) {
+
+            $upload_path                = "uploads/tasks/test";
+
             if (!is_dir($upload_path)) {
                 mkdir($upload_path, 0777, true);
             }
-            
-            $file                       = array();
+
             $config['upload_path']      = $upload_path;
             $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
 
             $this->load->library('upload', $config);
 
-            if (! $this->upload->do_upload('attachement')) {
-            } else {
-                $file_data          = $this->upload->data();
-                //dd($file_data);
-                $file['f_title']    = $file_data["client_name"];
-                $file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
-                $file['type']       = $file_data["file_type"];
-                $file['status']     = 0;
-                $file['is_deleted'] = 0;
+            $file_count = 0;
+            $file_ids   = array();
 
-                $this->db->insert("files", $file);
-                $file_id = $this->db->insert_id();
+            foreach ($_FILES["files"] as $key => $file) {
+
+                if( empty($file) || !isset($_FILES['files']['name'][$file_count])) {
+                    continue;
+                }
+                
+                $_FILES['attachments[]']['name']        = $_FILES['files']['name'][$file_count];
+                $_FILES['attachments[]']['type']        = $_FILES['files']['type'][$file_count];
+                $_FILES['attachments[]']['tmp_name']    = $_FILES['files']['tmp_name'][$file_count];
+                $_FILES['attachments[]']['error']       = $_FILES['files']['error'][$file_count];
+                $_FILES['attachments[]']['size']        = $_FILES['files']['size'][$file_count];
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('attachments[]')) {
+
+                    $file_data              = $this->upload->data();
+                    $new_file['f_title']    = $file_data["client_name"];
+                    $new_file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                    $new_file['type']       = $file_data["file_type"];
+                    $new_file['status']     = 0;
+                    $new_file['is_deleted'] = 0;
+
+                    $this->db->insert("files", $new_file);
+                    $file_id = $this->db->insert_id();
+                    $file_ids[] = $file_id;
+                }
+                
+                $file_count++;
             }
         }
 
@@ -192,7 +212,7 @@ class Task extends CI_Controller
             'assignee'        => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
             'reporter'        => $this->input->post('reporter'),
             'given_by'        => $this->input->post('given_by'),
-            'attachment_id'   => $file_id,
+            'attachment_id'   => 0,
             't_description'   => $this->input->post('description'),
             'start_date'      => $start_date,
             'end_date'        => $end_date,
@@ -200,8 +220,59 @@ class Task extends CI_Controller
         );
 
         $this->db->insert('tasks', $data);
+        $task_id = $this->db->insert_id();
 
         //get task id and upload files
+
+        if( !empty($_FILES["files"]) ) {
+
+            $upload_path                = "uploads/tasks/test";
+
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+
+            $config['upload_path']      = $upload_path;
+            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
+
+            $this->load->library('upload', $config);
+
+            $file_count = 0;
+            $file_ids   = array();
+
+            foreach ($_FILES["files"] as $key => $file) {
+
+                if( empty($file) || !isset($_FILES['files']['name'][$file_count])) {
+                    continue;
+                }
+                
+                $_FILES['attachments[]']['name']        = $_FILES['files']['name'][$file_count];
+                $_FILES['attachments[]']['type']        = $_FILES['files']['type'][$file_count];
+                $_FILES['attachments[]']['tmp_name']    = $_FILES['files']['tmp_name'][$file_count];
+                $_FILES['attachments[]']['error']       = $_FILES['files']['error'][$file_count];
+                $_FILES['attachments[]']['size']        = $_FILES['files']['size'][$file_count];
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('attachments[]')) {
+
+                    $file_data              = $this->upload->data();
+                    $new_file['f_title']    = $file_data["client_name"];
+                    $new_file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                    $new_file['type']       = $file_data["file_type"];
+                    $new_file['status']     = 0;
+                    $new_file['is_deleted'] = 0;
+                    $new_file['post_id']    = $task_id;
+                    $new_file['post_type']  = "task";
+
+                    $this->db->insert("files", $new_file);
+                    $file_id = $this->db->insert_id();
+                    $file_ids[] = $file_id;
+                }
+                
+                $file_count++;
+            }
+        }
 
         redirect(base_url('task'));
     }

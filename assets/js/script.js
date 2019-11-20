@@ -74,41 +74,57 @@ $( function() {
 
 
     $(".task-report-status input:radio[name='status']").on("change", function(event){
-    if ($(this).is(':checked')) {
-        var status = $(this).val();
+        if ($(this).is(':checked')) {
+            var status = $(this).val();
 
-        /*if ( status != "Y" ) {
-            $(".task-report-reason").show();
-            $(".task-report-reason textarea").prop("required", true);
-        } else {
-            $(".task-report-reason").hide();
-            $(".task-report-reason textarea").prop("required", false);
-        }*/
+            /*if ( status != "Y" ) {
+                $(".task-report-reason").show();
+                $(".task-report-reason textarea").prop("required", true);
+            } else {
+                $(".task-report-reason").hide();
+                $(".task-report-reason textarea").prop("required", false);
+            }*/
 
 
-        if( status == "Y" ) {
-            $(".task-report-reason textarea").prop("required", false);
-            $(".task-report-reason").hide();
+            if( status == "Y" ) {
+                $(".task-report-reason textarea").prop("required", false);
+                $(".task-report-reason").hide();
 
-            $("#before textarea, #after textarea").prop("required", true);
-            $("#before, #after").show();
+                $("#before textarea, #after textarea").prop("required", true);
+                $("#before, #after").show();
+            }
+            else if( status == "N" || status == "H" || status == "C" ) {
+
+                $("#before textarea, #after textarea").prop("required", false);
+                $("#before, #after").hide();
+
+                $(".task-report-reason textarea").prop("required", true);
+                $(".task-report-reason").show();
+
+            } else if( status == "F" ) {
+                $(".task-report-reason textarea").prop("required", true);
+                $(".task-report-reason").show();
+
+                $("#before textarea, #after textarea").prop("required", true);
+                $("#before, #after").show();
+            }
         }
-        else if( status == "N" || status == "H" || status == "C" ) {
+    });
 
-            $("#before textarea, #after textarea").prop("required", false);
-            $("#before, #after").hide();
-
-            $(".task-report-reason textarea").prop("required", true);
-            $(".task-report-reason").show();
-
-        } else if( status == "F" ) {
-            $(".task-report-reason textarea").prop("required", true);
-            $(".task-report-reason").show();
-
-            $("#before textarea, #after textarea").prop("required", true);
-            $("#before, #after").show();
-        }
-    }
-});
+    $(document).on('click', '.btn-add', function(e){
+        e.preventDefault();
+        var controlForm = $('#repeater-fields:first'),
+            currentEntry = $(this).parents('.entry:first'),
+            newEntry = $(currentEntry.clone()).appendTo(controlForm);
+        newEntry.find('input').val('');
+        controlForm.find('.entry:not(:last) .btn-add')
+            .removeClass('btn-add').addClass('btn-remove')
+            .removeClass('btn-success').addClass('btn-danger')
+            .html('<i class="now-ui-icons ui-1_simple-delete"></i>');
+    }).on('click', '.btn-remove', function(e){
+        e.preventDefault();
+        $(this).parents('.entry:first').remove();
+        return false;
+    });
 
 });

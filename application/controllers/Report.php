@@ -486,11 +486,20 @@ class Report extends CI_Controller
             redirect(base_url(''));
         }
 
+        $files = $task_files = array();
         $this->db->select('*');
         $this->db->from('files');
         $this->db->where('files.fid', $data['task']->attachment_id);
         $files = $this->db->get()->result_array();
-        $data['task_files'] = $files;
+        
+        $this->db->select('*');
+        $this->db->from('files');
+        $this->db->where('files.post_id', $data['task']->tid);
+        $task_files = $this->db->get()->result_array();
+
+        $final_files = array_merge($files, $task_files);
+
+        $data['task_files'] = $final_files;
 
         /*
         $sql = "SELECT * FROM reports WHERE task_id = ?";
