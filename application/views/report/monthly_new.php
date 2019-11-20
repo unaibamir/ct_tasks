@@ -88,25 +88,25 @@ $job_types = array(
                 </div>
                 <div class="card-body all-icons">
                     <div class="row">
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count[0]["total"])? $tasks_count[0]["total"] : 0; ?></h5>
                                 <p>Daily</p>
                             </div>
                         </div>
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger ">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count[1]["total"])? $tasks_count[1]["total"] : 0; ?></h5>
                                 <p>Weekly</p>
                             </div>
                         </div>
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count[2]["total"])? $tasks_count[2]["total"] : 0; ?></h5>
                                 <p>Monthly</p>
                             </div>
                         </div>
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6">
+                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count[3]["total"])? $tasks_count[3]["total"] : 0; ?></h5>
                                 <p>One Time</p>
@@ -162,8 +162,8 @@ $job_types = array(
                         <table class="table table-bordered table-hover bg-light">
                             <thead class="thead-dark">
                                 <tr class="d-flex">
-                                    <th>#</th>
-                                    <th scope="col"  style="width: 40px!important; font-size: 9px; ">Task Code</th>
+                                    <th scope="col"  style="width: 50px !important;  ">Job Code</th>
+                                    <th scope="col"  style="width: 40px!important; font-size: 9px;  ">Task Code</th>
                                     <th  colspan="4" style="width: 139px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Task Title</th>
                                     <!-- <th scope="col" style="width: 300px;">Desctiption</th>
                                     <th style="width: 100px;">Job Types</th>
@@ -194,8 +194,8 @@ $job_types = array(
                                     $end_date = !empty($task->end_date) ? date($date_format, strtotime($task->end_date)) : "";
                                 ?>
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
-                                    <td style="font-weight: 600; font-size: 9px;"><?php echo $counter; ?></td>
-                                    <td style="width: 40px!important; font-weight: 600; font-size: 9px;"><?php echo $task->t_code; ?></td>
+                                    <td style="font-weight: 600; font-size: 9px; width: 50px !important;">Job -<?php echo $counter; ?></td>
+                                    <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
                                     <td style="width: 139px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
                                     <!-- <td style="width: 300px;"><?php echo $task->t_description; ?></td>
                                     <td style="width: 100px;"><?php echo $job_types[$task->parent_id]; ?></td>
@@ -217,8 +217,7 @@ $job_types = array(
                                         $start_date     = strtotime($task->start_date);
                                         $end_date       = strtotime($task->end_date);
                                         $output         = "-";
-
-                                        if( !empty($task->reports) ) {
+	                                    if( !empty($task->reports) ) {
                                             foreach ($task->reports as $report_key => $report) {
                                                 $report_date    = date($date_format, strtotime($report->created_at));
                                                 if ($current_date == $report_date) {

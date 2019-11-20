@@ -42,7 +42,7 @@ class Dashboard extends CI_Controller
 		}
 		else
 		{
-			$data['heading1'] = 'You\'re Login as <h3>Manager - Account</h3> ';
+			$data['heading1'] = 'You\'re Login as <h3>Manager <br> Account</h3> ';
 			$data['nav1'] = 'Manager';
 		}
 

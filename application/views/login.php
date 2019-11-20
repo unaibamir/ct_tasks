@@ -31,7 +31,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     /*display: block;*/
 }
 </style>
-<body >
+<body class="bg">
 <div class="row m-4">
   <div class=" col-md-6 d-flex">
   <img src="<?php echo base_url('assets/img/logo.png'); ?>">
@@ -101,15 +101,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
       </div>
     </div>
   </div>
-</div>
+
 <div class="row">
   <div class="col-md-3"></div>
-  <div class="col-md-6"><div class="footer-copyright text-center py-3">© 2019 Copyright:
-    <a href="http://www.gulfenviro.ae/"> gulfenviro.ae</a>
+  <div class="col-md-6"><div class="footer-copyright text-center py-3"><kbd>© 2019 Copyright:
+    <a href="http://www.gulfenviro.ae/"> gulfenviro.ae</a> </kbd>
   </div></div>
   <div class="col-md-3"></div>
 </div>
-
+</div>
   <!--   Core JS Files   -->
   <script src="<?php echo base_url('assets/js/core/jquery.min.js'); ?>"></script>
   <script src="<?php echo base_url('assets/js/core/popper.min.js'); ?>"></script>

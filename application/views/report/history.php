@@ -40,8 +40,8 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 							<div class="row ">
 								<h6 class=" m-1">Given By : </h6>
 								<p class="card-text mx-1 m-1 text-warning">
-									<?php
-                                    if( !empty( $task->given_f ) ) {
+									<?php 
+									if( !empty( $task->given_f ) ) {
                                         echo $task->given_f . " " . $task->given_l;
                                     } else {
                                         echo $task->created_by_f . " " . $task->created_by_l;
@@ -49,12 +49,6 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                     ?>
 								</p>
 							</div>
-							<div class="row ">
-                                <h6 class="m-1">Assign To:</h6>
-                                <p class="card-text mx-2 text-warning">
-                                    <?php echo $task->assignee . " " . $task->assignee_l; ?>
-                                </p>
-                            </div>
 							<div class="row ">
 								<h6 class="m-1">Follow Up :</h6>
 								<p class="card-text mx-2 m-1 text-warning"><?php echo $task->follow; ?></p>

@@ -3,13 +3,15 @@
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
 html,body{
-background-image: url('https://images.pexels.com/photos/785529/pexels-photo-785529.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260');
+/*background-image: url('https://images.pexels.com/photos/785529/pexels-photo-785529.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260'); */
 background-size: cover;
 background-repeat: no-repeat;
 height: auto;
 font-family: 'Numans', sans-serif;
 }
-
+body.bg {
+    background-image: url(https://www.crystolenergy.com/wp-content/uploads/2018/09/Digitalisation.jpg);
+}
 .container{
 height: 100%;
 align-content: center;

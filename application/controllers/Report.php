@@ -74,6 +74,40 @@ class Report extends CI_Controller
         $tasks = $this->db->get()->result();
         $data["tasks"]  =   $tasks;
 
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+            $employee = $this->aauth->get_user($_GET["employee_id"]);
+        }
+
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            $employee = $this->currentUser;
+        }
+
+        $data["employee"] = isset($employee) && !empty($employee) ? $employee : false;
+
+        $arr1 = $arr2 = $arr3 = array();
+
+        if( !empty($data["employee"]) ) {
+            $arr1 = array(
+                "employee"  =>  $data["employee"]->id
+            );
+        }
+
+        if( isset($_GET["report_date"]) && !empty($_GET["report_date"]) ) {
+            $arr2 = array(
+                "report_date"  =>  $_GET["report_date"]
+            );
+        }
+
+        if( isset($_GET["task_id"]) && !empty($_GET["task_id"]) ) {
+            $arr3 = array(
+                "task_id"  =>  $_GET["task_id"]
+            );
+        }
+
+        $url_arr = array_merge($arr1, $arr2, $arr3);
+        $export_url = base_url( "report/export/daily/?" . http_build_query($url_arr) );
+        $data["export_url"] = $export_url;
+
         $data['users'] = $this->db->get("aauth_users")->result_array();
         $data['heading1'] = 'Daily Job Report View';
         $data['nav1'] = 'GEW Employee';
@@ -82,71 +116,6 @@ class Report extends CI_Controller
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'report/daily_new'; // views/display.php page
-        $this->load->view('manager_layout', $data);
-    }
-
-    public function daily_old()
-    {
-        $sql = "SELECT 
-		T.*, 
-		assignee.first_name as given,
-		reporter.first_name as follow,
-		D.c_name,
-		R.rid,
-		R.berfore,
-		R.after,
-		R.status
-
-		FROM `tasks` AS T
-		LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-		LEFT JOIN departments AS D on D.cid = T.department_id
-		LEFT JOIN reports AS R on R.task_id = T.tid";
-
-        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
-            $sql .= " WHERE T.assignee = {$_GET["employee_id"]}";
-        }
-
-        if ($this->currentUserGroup[0]->name == "Employee") {
-            $sql .= " WHERE T.assignee = {$this->currentUser->id}";
-        }
-        
-        $tasks = $this->db->query($sql)->result();
-
-
-        $evening = $morning = $Ids = array();
-        
-        if (!empty($tasks)) {
-            foreach ($tasks as $key => $value) {
-                if (!in_array($value->tid, $Ids)) {
-                    $Ids[] = $value->tid;
-                    $morning[$value->tid] = $value;
-                    $evening[$value->tid] = $value;
-                }
-
-                if (!empty($value->berfore)) {
-                    $morning[$value->tid]->morningReports['update'][] = $value->berfore;
-                    $morning[$value->tid]->morningReports['status'][] = $value->status;
-                }
-
-                if (!empty($value->after)) {
-                    $evening[$value->tid]->eveningReports['update'][] = $value->after;
-                    $evening[$value->tid]->eveningReports['status'][] = $value->status;
-                }
-            }
-        }
-
-        
-        $data['morning'] = $morning;
-        $data['evening'] = $evening;
-
-        $data['heading1'] = 'Daily Job Report View';
-        $data['nav1'] = 'GEW Employee';
-        $data['nav1'] = ($this->currentUserGroup[0]->name == 'Manager')? 'Manager' : 'GEW Employee';
-
-        $data['currentUser'] = $this->currentUser;
-        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
-        $data['inc_page'] = 'report/daily'; // views/display.php page
         $this->load->view('manager_layout', $data);
     }
 
@@ -596,22 +565,19 @@ class Report extends CI_Controller
 
     public function export() {
 
-        $month = isset( $_GET["month"] ) ? $_GET["month"] : date('m');
-        if( isset($_GET["employee"]) ) {            
-            $this->getEmployeeMonthlyReport( $_GET["employee"], $month );
-        } else {
-            $this->getFullMonthlyReport( $month );
+        $type = $this->uri->segment(3);
+        if( $type == "monthly" ) {
+            $month = isset( $_GET["month"] ) ? $_GET["month"] : date('m');
+            if( isset($_GET["employee"]) ) {            
+                $this->getEmployeeMonthlyReport( $_GET["employee"], $month );
+            } else {
+                $this->getFullMonthlyReport( $month );
+            }
         }
 
-        /*$url_params = $this->uri->segment_array();
-        if( $url_params[3] == "monthly" ) {
-            if( $url_params[4] == "employee" ) {
-
-                $this->getEmployeeMonthlyReport( $url_params[5] );
-            } else {
-                $this->getFullMonthlyReport();
-            }
-        }*/
+        if( $type == "daily" ) {
+            $this->getDailyReport($_GET);
+        }
     }
 
     public function getEmployeeMonthlyReport( $user_id, $month = "" ) {
@@ -748,8 +714,6 @@ class Report extends CI_Controller
         header('Cache-Control: max-age=0');
         
         $writer->save('php://output');
-        
-
     }
 
     public function getFullMonthlyReport( $month = "" ) {
@@ -783,27 +747,18 @@ class Report extends CI_Controller
         if( $this->currentUserGroup[0]->name == "Employee" ) {
             $sql .= " WHERE T.assignee = {$this->currentUser->id}";
         }
-        
 
-        //$sql .= " LIMIT 0, 100";
-        
         $tasks = $this->db->query($sql)->result();
 
         $month_date = !empty($month) ? $month : date('m');
 
         $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
-        /*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        $result = $this->db->query($sql)->result();*/
 
         foreach ($tasks as $key => $task) {
             $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
             $report_result = $this->db->query($sql)->result();
             $task->reports = $report_result;
         }
-
-
-        //dd($tasks);
-
 
         $spreadsheet = new Spreadsheet();
 
@@ -823,16 +778,6 @@ class Report extends CI_Controller
             $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col, $row, $alpha .'-'. $dig );
             $header_col++;
         }
-
-        /*$spreadsheet->getActiveSheet()->mergeCells('A1:B1');
-        $spreadsheet->getActiveSheet()->setCellValue('A1', "Employee Name:" );
-        $spreadsheet->getActiveSheet()->getStyle("A1")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->setCellValue('C1', $employee->first_name . ' ' . $employee->last_name );
-
-        $spreadsheet->getActiveSheet()->mergeCells('F1:G1');
-        $spreadsheet->getActiveSheet()->setCellValue('F1', "Employee Code:" );
-        $spreadsheet->getActiveSheet()->getStyle("F1")->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->setCellValue('H1', $employee->username );*/
 
         $spreadsheet->getActiveSheet()->mergeCells('A1:B1');
         $spreadsheet->getActiveSheet()->setCellValue('A1', "Report Month:" );
@@ -888,6 +833,134 @@ class Report extends CI_Controller
         $writer = new Xlsx($spreadsheet);
  
         $filename = 'monthly-report-employee-' . date("M-Y") . substr(time(), 5);
+ 
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+        
+        $writer->save('php://output');
+    }
+
+    public function getDailyReport($args) {
+
+        $date_format    = $this->config->item('date_format');
+
+        $users = $this->db->get("aauth_users")->result_array();
+
+        $job_types = array(
+            1 => "Daily",
+            2 => "Weekly",
+            3 => "Monthly",
+            4 => "One Time"
+        );
+
+        $this->db->select('*');
+        $this->db->from('reports');
+
+        if (isset($args["employee"]) && !empty($args["employee"])) {
+            $this->db->where('user_id', $args["employee"]);
+        }
+
+        if (!empty($args["task_id"])) {
+            $this->db->where('task_id', $args["task_id"]);
+        }
+
+        if (!empty($args["report_date"])) {
+            $this->db->where("DATE(created_at)", date("Y-m-d", strtotime($args["report_date"])));
+        }
+        
+        /*$query      = $this->db->get_compiled_select();
+        dd($query);*/
+        
+        $reports    = $this->db->get()->result();
+        
+
+        if (!empty($reports)) {
+            foreach ($reports as $key => $report) {
+                $this->db->select('*');
+                $this->db->from('tasks');
+                $this->db->where('tid', $report->task_id);
+                $task = $this->db->get()->row();
+                
+                $report->task = $task;
+            }
+        }
+
+        $spreadsheet = new Spreadsheet();
+
+        $spreadsheet->getActiveSheet()->setCellValue('A3', 'Task Code');
+        $spreadsheet->getActiveSheet()->setCellValue('B3', 'Task Description');
+        $spreadsheet->getActiveSheet()->setCellValue('C3', 'Assigned');
+        $spreadsheet->getActiveSheet()->setCellValue('D3', 'Given By');
+        $spreadsheet->getActiveSheet()->setCellValue('E3', 'Follow Up');
+        $spreadsheet->getActiveSheet()->setCellValue('F3', 'Job Type');
+        $spreadsheet->getActiveSheet()->setCellValue('G3', 'Start Date');
+        $spreadsheet->getActiveSheet()->setCellValue('H3', 'End Date');
+        $spreadsheet->getActiveSheet()->setCellValue('I3', 'Report Date');
+        $spreadsheet->getActiveSheet()->setCellValue('J3', 'Status');
+        $spreadsheet->getActiveSheet()->setCellValue('K3', 'Before');
+        $spreadsheet->getActiveSheet()->setCellValue('L3', 'After');
+        $spreadsheet->getActiveSheet()->setCellValue('M3', 'Report Status');
+        $spreadsheet->getActiveSheet()->setCellValue('N3', 'Report Remarks');
+
+
+        $col_num = 4;
+        foreach ($reports as $key => $report) {
+
+            if (empty($report->task)) {
+                continue;
+            }
+
+            $t_given = !empty($report->task->given_by) ? $report->task->given_by : $report->task->created_by;
+            $given_by_key = array_search($t_given, array_column($users, "id"));
+            $assigned_user_key =  array_search($report->task->assignee, array_column($users, "id"));
+
+            $follow_user_key =  array_search($report->task->reporter, array_column($users, "id"));
+
+            $start_date = date( $date_format , strtotime($report->task->start_date));
+            $end_date = !empty($report->task->end_date) ? date( $date_format , strtotime($report->task->end_date)) : "";
+            $report_date = date( $date_format , strtotime($report->created_at));
+
+            $spreadsheet->getActiveSheet()->setCellValue('A'.$col_num, $report->task->t_code);
+            $spreadsheet->getActiveSheet()->setCellValue('B'.$col_num, $report->task->t_description);
+            $spreadsheet->getActiveSheet()->setCellValue('C'.$col_num, $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"]);
+            $spreadsheet->getActiveSheet()->setCellValue('D'.$col_num, $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]);
+            $spreadsheet->getActiveSheet()->setCellValue('E'.$col_num, $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"]);
+            $spreadsheet->getActiveSheet()->setCellValue('F'.$col_num, $job_types[$report->task->parent_id]);
+            $spreadsheet->getActiveSheet()->setCellValue('G'.$col_num, $start_date);
+            $spreadsheet->getActiveSheet()->setCellValue('H'.$col_num, $end_date);
+            $spreadsheet->getActiveSheet()->setCellValue('I'.$col_num, $report_date);
+            $spreadsheet->getActiveSheet()->setCellValue('J'.$col_num, getStatusText($report->task->t_status));
+            $spreadsheet->getActiveSheet()->setCellValue('K'.$col_num, $report->berfore);
+            $spreadsheet->getActiveSheet()->setCellValue('L'.$col_num, $report->after);
+            $spreadsheet->getActiveSheet()->setCellValue('M'.$col_num, $report->status);
+            $spreadsheet->getActiveSheet()->setCellValue('N'.$col_num, $report->reason);
+
+            $col_num++;
+        }
+
+        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+        //$spreadsheet->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+        /*$spreadsheet->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+        $spreadsheet->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);*/
+        $spreadsheet->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
+        /*$spreadsheet->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);*/
+
+
+        $spreadsheet->getActiveSheet()->getStyle("A3:N3")->getFont()->setBold(true);
+
+
+        $writer = new Xlsx($spreadsheet);
+ 
+        $filename = 'daily-report-' . date("D-M-Y") .'-'. substr(time(), 5);
  
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 

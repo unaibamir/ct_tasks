@@ -62,9 +62,12 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                 <input type="text" name="report_date" value="<?php echo $selected_date; ?>" autocomplete="off" class="form-control text-left datepicker" id="report_date">
                             </div>
 						</div>
-						<div class="col-md-2 text-right font-weight-bold mt-3">
+						<div class="col-md-3 text-right font-weight-bold mt-3">
 							<input type="submit" class="btn btn-info " value="Submit" style="background: #244973;">
 							<a class="btn btn-info" href="<?php echo base_url("report/daily"); ?>">RESET</a>
+							<?php if (!empty($reports)): ?>
+								<a class="btn btn-info" href="<?php echo $export_url; ?>">Download/Export</a>
+							<?php endif; ?>
 						</div>
 					</div>
 					</form>
@@ -95,6 +98,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 										if (empty($report->task)) {
 											continue;
 										}
+
 										$t_given = !empty($report->task->given_by) ? $report->task->given_by : $report->task->created_by;
 										$given_by_key = array_search($t_given, array_column($users, "id"));
 										$assigned_user_key =  array_search($report->task->assignee, array_column($users, "id"));

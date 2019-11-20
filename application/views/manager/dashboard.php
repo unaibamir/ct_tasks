@@ -5,7 +5,7 @@
 <!-- Star of dashboard -->
 <div class="panel-header panel-header-lg Center" style="text-align: center;">
   <!-- <canvas id="bigDashboardChart"></canvas> -->
- <a class="navbar-brand " href="">Task Assignment System <h3 class="display-1">Manager - Panel</h3> </a>
+ <a class="navbar-brand " href=""> <h4 class="display-1">Manager - Panel</h4> </a>
 </div>
 <div class="content">
   <div class="row">

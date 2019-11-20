@@ -48,15 +48,15 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                     ?>
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>"><kbd>Daily <span class="badge badge-light"><?php echo !empty($tasks_count[0]["total"])? $tasks_count[0]["total"] : 0; ?></span> </kbd> </a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>"><kbd>Weekly <span class="badge badge-light"><?php echo !empty($tasks_count[1]["total"])? $tasks_count[1]["total"] : 0; ?></span></kbd> </a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>"><kbd>Monthly <span class="badge badge-light"><?php echo !empty($tasks_count[2]["total"])? $tasks_count[2]["total"] : 0; ?></span></kbd> </a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>"><kbd>One Time <span class="badge badge-light"><?php echo !empty($tasks_count[3]["total"])? $tasks_count[3]["total"] : 0; ?></span></kbd> </a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo base_url("task/alert/?view=daily"); ?>"><kbd>Daily <span class="badge badge-light"><?php echo !empty($tasks_count[0]["total"])? $tasks_count[0]["total"] : 0; ?></span></kbd></a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo base_url("task/alert/?view=weekly"); ?>"><kbd>Weekly  <span class="badge badge-light"><?php echo !empty($tasks_count[1]["total"])? $tasks_count[1]["total"] : 0; ?></span></kbd></a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo base_url("task/alert/?view=monthly"); ?>"><kbd>Monthly <span class="badge badge-light"><?php echo !empty($tasks_count[2]["total"])? $tasks_count[2]["total"] : 0; ?></span></kbd></a>
+                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo base_url("task/alert/?view=one-time"); ?>"><kbd>One Time <span class="badge badge-light"><?php echo !empty($tasks_count[3]["total"])? $tasks_count[3]["total"] : 0; ?></span></kbd></a>
                         </div>
                     </nav>
                     <?php if (!empty($tasks)) : ?>
                         <div class="table-responsive">
-                            <table class="table text-left" id="table-list">
+                            <table class="table text-left">
                                 <thead>
                                     <tr>
                                         <th class="text-center">Task Code</th>
@@ -84,7 +84,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 
                                         //task
                                         echo '<tr>';
-                                        echo '<td><b>GEW</b>_<b>' . $users[$assigned_user_key]["username"] . "</b>_<b>" . $task->t_code . '</b>  </td>';
+                                        echo '<td  ><span >GEW</span>_' . $users[$assigned_user_key]["username"] . "_<b>" . $task->t_code . '</b>  </td>';
                                         echo '<td colspan="2">' . $task_title . '</td>';
                                         echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
                                         echo '<td colspan="1">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
