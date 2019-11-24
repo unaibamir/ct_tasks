@@ -122,9 +122,9 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 										<?php if( !empty( (array) $report ) ) { ?>
 											<div class="col-md-5 bg-light p-3 border-right">
-													<p><?php echo $report->berfore; ?></p>
+													<p><?php echo nl2br($report->berfore); ?></p>
 													<hr>
-													<p><?php echo $report->after; ?></p>
+													<p><?php echo nl2br($report->after); ?></p>
 											</div>
 
 

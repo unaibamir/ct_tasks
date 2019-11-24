@@ -71,14 +71,15 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                 <tbody>
 
                                     <?php
+                                    $date_format = $this->config->item('date_format');
                                     foreach ($tasks as $task) {
                                         $t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
                                         $given_by_key = array_search($t_given, array_column($users, "id"));
                                         $follow_up_key = array_search($task->reporter, array_column($users, "id"));
                                         $assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
                                         $follow_user_key =  array_search($task->reporter, array_column($users, "id"));
-                                        $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
-                                        $end_date = date($this->config->item('date_format'), strtotime($task->end_date));
+                                        $start_date = date($date_format, strtotime($task->start_date));
+                                        $end_date = date($date_format, strtotime($task->end_date));
 
                                         $task_title = strlen($task->t_title) > 25 ? substr($task->t_title, 0, 25) . "..." : $task->t_title;
 
@@ -152,13 +153,19 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                                                 <div class="form-group row">
                                                                     <label for="" class="col-sm-3 col-form-label">Start Date</label>
                                                                     <div class="col-md-9 text-left">
-                                                                        <?php echo date($this->config->item('date_format'), strtotime($task->start_date)); ?>
+                                                                        <?php echo date($date_format, strtotime($task->start_date)); ?>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group row">
                                                                     <label for="" class="col-sm-3 col-form-label">End Date</label>
                                                                     <div class="col-md-9 text-left">
-                                                                        <?php echo date($this->config->item('date_format'), strtotime($task->end_date)); ?>
+                                                                        <?php
+                                                                        if( !empty( $task->end_date ) ) {
+                                                                            echo date($date_format, strtotime($task->end_date));
+                                                                        } else {
+                                                                            echo $this->config->item("no_end_date");
+                                                                        }
+                                                                        ?>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-group row">

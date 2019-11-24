@@ -5,7 +5,6 @@ $( function() {
     var dateformat = "dd/mm/yy";
     
     var from = $( "#start_date" ).datepicker({
-        defaultDate: "+1w",
         changeMonth: true,
         dateFormat: dateformat,
         minDate: new Date(),
@@ -16,7 +15,6 @@ $( function() {
     });
 
     var to = $( "#end_date" ).datepicker({
-        defaultDate: "+1w",
         changeMonth: true,
         dateFormat: dateformat,
         numberOfMonths: 1

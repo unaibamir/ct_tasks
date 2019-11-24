@@ -45,7 +45,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </div>
                                 <div class="form-group">
                                     <label>End Date</label>
-                                    <input type="text" name="end_date" autocomplete="off" style="background-color: #FFF;" class="form-control text-left" required id="end_date">
+                                    <input type="text" name="end_date" autocomplete="off" style="background-color: #FFF;" class="form-control text-left" id="end_date">
                                 </div>
                             </div>
                             <div class="form-group">

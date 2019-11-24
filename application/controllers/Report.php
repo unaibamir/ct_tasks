@@ -451,7 +451,8 @@ class Report extends CI_Controller
         
         $task_data = array(
             "t_status"  =>  $status,
-            "t_reason"  =>  $reason
+            "t_reason"  =>  $reason,
+            "end_date"  =>  $status == "completed" ? date( "Y-m-d H:i:s", time() ) : ""
         );
         
         $this->db->where('tid', $task_id);
