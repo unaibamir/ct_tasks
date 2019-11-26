@@ -13,7 +13,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 	table.dataTable thead .sorting_desc:before,
 	table.dataTable thead .sorting_desc_disabled:after,
 	table.dataTable thead .sorting_desc_disabled:before {
-		bottom: .5em;
+		top: 11px !important;
 	}
 
 	thead {
@@ -70,6 +70,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 							<?php endif; ?>
 						</div>
 					</div>
+					
 					</form>
 				</div>
 				<div class="card-body">

@@ -1,6 +1,28 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!-- Main panel is starting from here -->
+<style type="text/css">
+    table.dataTable thead .sorting:after,
+    table.dataTable thead .sorting:before,
+    table.dataTable thead .sorting_asc:after,
+    table.dataTable thead .sorting_asc:before,
+    table.dataTable thead .sorting_asc_disabled:after,
+    table.dataTable thead .sorting_asc_disabled:before,
+    table.dataTable thead .sorting_desc:after,
+    table.dataTable thead .sorting_desc:before,
+    table.dataTable thead .sorting_desc_disabled:after,
+    table.dataTable thead .sorting_desc_disabled:before {
+        top: 11px !important;
+    }
 
+    thead {
+        font-size: 10px;
+    }
+
+    th,
+    td {
+        font-size: 10px;
+    }
+</style>
 <div class="panel-header panel-header-sm">
 </div>
 <?php
@@ -31,59 +53,59 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                     </nav>
                     <?php if (!empty($tasks)) : ?>
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover" id="table-list">
-                                <thead class=" thead-dark text-primary">
+                            <table class="table table-bordered table-hover table-sm" id="table-list" style="width: 100%;">
+                                <thead class="thead-dark table-bordered">
                                     <tr>
-                                        <th>Task Code</th>
-                                        <th>Ttile</th>
-                                        <th>Assigned To</th>
-                                        <th>Given By</th>
-                                        <th>Department</th>
-                                        <th>Job Type</th>
-                                        <th>Follow Up </th>
-                                        <th>Start Date</th>
-                                        <th>End Date</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th class="th-sm" style="max-width: 90px">Task Code</th>
+                                        <th class="th-sm">Title</th>
+                                        <th class="th-sm">Assigned To</th>
+                                        <th class="th-sm">Given By</th>
+                                        <th class="th-sm">Department</th>
+                                        <th class="th-sm">Job Type</th>
+                                        <th class="th-sm">Follow Up </th>
+                                        <th class="th-sm">Start Date</th>
+                                        <th class="th-sm">End Date</th>
+                                        <th class="th-sm">Status</th>
+                                        <th class="th-sm">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     foreach ($tasks as $task) {
-                                            $t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
-                                            $given_by_key = array_search($t_given, array_column($users, "id"));
-                                            
-                                            $assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
-                                            $follow_user_key =  array_search($task->reporter, array_column($users, "id"));
-                                            
-                                            $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
-                                            $end_date = !empty($task->end_date ) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+                                        $t_given            =   !empty($task->given_by) ? $task->given_by : $task->created_by;
+                                        $given_by_key       =   array_search($t_given, array_column($users, "id"));
+                                        
+                                        $assigned_user_key  =   array_search($task->assignee, array_column($users, "id"));
+                                        $follow_user_key    =   array_search($task->reporter, array_column($users, "id"));
+                                        
+                                        $start_date         =   date($this->config->item('date_format'), strtotime($task->start_date));
+                                        $end_date           =   !empty($task->end_date ) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
 
-                                            $task_title = strlen($task->t_title) > 25 ? substr($task->t_title, 0, 25) . "..." : $task->t_title;
+                                        $task_title         =   strlen($task->t_title) > 25 ? substr($task->t_title, 0, 25) . "..." : $task->t_title;
 
-                                            //task
-                                            echo '<tr>';
+                                        $history_url        =   base_url("/report/history/".$task->tid);
 
-                                            echo '<td><b>GEW</b>_<b>' . $users[$assigned_user_key]["username"] . "</b>_<b>" . $task->t_code . '</b>  </td>';
-                                            echo '<td>' . $task_title . '</td>';
-
-                                            echo '<td>' . $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"] . '</td>';
-
-                                            echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
-
-                                            echo '<td>' . $task->c_name . '</td>';
-                                            echo '<td>' . $job_types[$task->parent_id] . '</td>';
-
-                                            echo '<td>' . $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"] . '</td>';
-
-                                            echo '<td>' . $start_date . '</td>';
-                                            echo '<td>' . $end_date . '</td>';
-                                            echo '<td>' . getStatusText($task->t_status) . '</td>';
-                                            ?>
+                                        ?>
+                                        <tr>
+                                            <td><strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong></td>
+                                            <td><?php echo $task_title; ?></td>
+                                            <td><?php echo $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"]; ?></td>
+                                            <td><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></td>
+                                            <td><?php echo $task->c_name; ?></td>
+                                            <td><?php echo $job_types[$task->parent_id]; ?></td>
+                                            <td><?php echo $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"]; ?></td>
+                                            <td><?php echo $start_date; ?></td>
+                                            <td><?php echo $end_date; ?></td>
+                                            <td><?php echo getStatusText($task->t_status); ?></td>
                                             <td>
-                                                <a href="<?php echo base_url("/report/history/" . $task->tid); ?>" class="btn btn-info btn-sm">
-                                                    View History
-                                                </a>
+                                                <?php
+                                                if( $task->t_status == "hold" ) {
+                                                    ?>
+                                                    <!-- <a href="javascript:void(0);" class="btn btn-success btn-sm resume-task" data-task_id="<?php echo $task->tid; ?>" style="padding:5px;font-size:10px;">Resume Task</a> -->
+                                                    <?php
+                                                }
+                                                ?>
+                                                <a href="<?php echo $history_url; ?>" class="btn btn-info btn-sm" style="padding:5px;font-size:10px;">View History</a>
                                             </td>
                                         </tr>
                                         <?php

@@ -131,4 +131,10 @@ $( function() {
         }
     });
 
+    $(".resume-task").click(function(e){
+        e.preventDefault();
+        var task_id = $(this).attr("data-task_id");
+        alert(task_id);
+    });
+
 });

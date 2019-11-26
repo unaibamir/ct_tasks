@@ -128,20 +128,20 @@ $job_types = array(
                     <div id="calendar"></div>
                     <!-- <h3 class="m-4">Monthly Job Summary View </h3> -->
                     <div class="row ">
-                    	<?php //dd(var_export($employee, true)); ?>
-                    	<?php if( $employee ): ?>
-	                        <div class="col-md-3">
-	                            <h6 class=" m-1">Employee Code : </h6>
-	                            <p class="card-text mx-1 "><?php echo $employee->username; ?></p>
-	                        </div>
-	                        <div class="col-md-3">
-	                            
-	                            <h6 class="m-1">Employee Name:</h6>
-	                            <p class="card-text mx-2 ">
-	                                <?php echo $employee->first_name; ?> <?php echo $employee->last_name; ?>
-	                            </p>
-	                        </div>
-                    	<?php endif; ?>
+                        <?php //dd(var_export($employee, true)); ?>
+                        <?php if( $employee ): ?>
+                            <div class="col-md-3">
+                                <h6 class=" m-1">Employee Code : </h6>
+                                <p class="card-text mx-1 "><?php echo $employee->username; ?></p>
+                            </div>
+                            <div class="col-md-3">
+                                
+                                <h6 class="m-1">Employee Name:</h6>
+                                <p class="card-text mx-2 ">
+                                    <?php echo $employee->first_name; ?> <?php echo $employee->last_name; ?>
+                                </p>
+                            </div>
+                        <?php endif; ?>
                         <div class="col-md-3">
                             <h6 class="m-1">Current Date:</h6>
                             <?php
@@ -162,7 +162,7 @@ $job_types = array(
                         <table class="table table-bordered table-hover bg-light">
                             <thead class="thead-dark">
                                 <tr class="d-flex">
-                                    <th scope="col"  style="width: 50px !important;  ">Job Code</th>
+                                    <th scope="col"  style="width: 80px !important;  ">Job Code</th>
                                     <th scope="col"  style="width: 40px!important; font-size: 9px;  ">Task Code</th>
                                     <th  colspan="4" style="width: 139px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Task Title</th>
                                     <!-- <th scope="col" style="width: 300px;">Desctiption</th>
@@ -194,7 +194,7 @@ $job_types = array(
                                     $end_date = !empty($task->end_date) ? date($date_format, strtotime($task->end_date)) : "";
                                 ?>
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
-                                    <td style="font-weight: 600; font-size: 9px; width: 50px !important;">Job -<?php echo $counter; ?></td>
+                                    <td style="font-weight: 600; font-size: 9px; width: 80px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
                                     <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
                                     <td style="width: 139px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
                                     <!-- <td style="width: 300px;"><?php echo $task->t_description; ?></td>
@@ -213,11 +213,11 @@ $job_types = array(
                                     <td style="width: 55px; ">
                                     <?php
                                         $current_date   = $date_dig . date("/{$month_date}/Y");
-                                    	$current_date_2 = strtotime(date($date_dig . "-{$month_date}-Y"));
+                                        $current_date_2 = strtotime(date($date_dig . "-{$month_date}-Y"));
                                         $start_date     = strtotime($task->start_date);
                                         $end_date       = strtotime($task->end_date);
                                         $output         = "-";
-	                                    if( !empty($task->reports) ) {
+                                        if( !empty($task->reports) ) {
                                             foreach ($task->reports as $report_key => $report) {
                                                 $report_date    = date($date_format, strtotime($report->created_at));
                                                 if ($current_date == $report_date) {
