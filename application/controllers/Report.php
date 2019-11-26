@@ -163,8 +163,10 @@ class Report extends CI_Controller
 
         $sql = "SELECT T.*,  
         assignee.first_name as given,
-        giver.first_name as giver_f,
-        giver.last_name as giver_l,
+        giver.first_name as given_f,
+        giver.last_name as given_l,
+        created_by.first_name as created_by_f,
+        created_by.last_name as created_by_l,
         assignee.first_name as assignee_f,
         assignee.last_name as assignee_l,
         reporter.first_name as follow, 
@@ -172,6 +174,7 @@ class Report extends CI_Controller
 		LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
 		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
         LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
+        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
 		LEFT JOIN departments AS D on D.cid = T.department_id";
 
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
@@ -181,21 +184,55 @@ class Report extends CI_Controller
         $tasks = $this->db->query($sql)->result();
         $data['tasks'] = $tasks;
 
-        $this->db->select(array(
-            "tasks.parent_id as type",
-            "count(tasks.parent_id) as total"
-        ));
-        $this->db->from("tasks");
-        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
-            $this->db->where('tasks.assignee', $_GET["employee_id"]);
-        }
-        if ($this->currentUserGroup[0]->name == "Employee") {
-            $this->db->where('tasks.assignee', $this->currentUser->id);
-        }
-        $this->db->group_by("tasks.parent_id");
-        $tasks_count = $this->db->get()->result_array();
+
+        // Counting Task    
         
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 1 ]);
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
+        if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $daily = $this->db->get()->result_array();
+
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 2 ]);
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
+        if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $weekly = $this->db->get()->result_array();
+
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 3 ]);
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
+        if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $monthly = $this->db->get()->result_array();
+
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 4 ]);
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
+        if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $one_time = $this->db->get()->result_array();
+        
+        $tasks_count = array(
+            "daily"     =>  $daily,
+            "weekly"    =>  $weekly,
+            "monthly"   =>  $monthly,
+            "one_time"  =>  $one_time
+        );
+
         $data["tasks_count"] = $tasks_count;
+
+        
         
         $data["month_date"] = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : date('m');
 
@@ -644,6 +681,24 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
         LEFT JOIN departments AS D on D.cid = T.department_id";
 
+        $sql = "SELECT T.*,  
+        assignee.first_name as given,
+        giver.first_name as given_f,
+        giver.last_name as given_l,
+        created_by.first_name as created_by_f,
+        reporter.first_name as follow_f,
+        reporter.last_name as follow_l,
+        created_by.last_name as created_by_l,
+        assignee.first_name as assignee_f,
+        assignee.last_name as assignee_l,
+        reporter.first_name as follow, 
+        D.c_name FROM `tasks` AS T
+        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
+        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
+        LEFT JOIN departments AS D on D.cid = T.department_id";
+
         $sql .= " WHERE T.assignee = {$user_id}";
 
         //$sql .= " LIMIT 0, 100";
@@ -710,7 +765,13 @@ class Report extends CI_Controller
             
             $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
             $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
-            $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->giver_f . ' ' . $task->giver_l );
+
+            if( !empty($task->given_f) ) {
+                $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
+            } else {
+                $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->created_by_f . ' ' . $task->created_by_l );
+            }
+
             $spreadsheet->getActiveSheet()->setCellValue('D' . $content_col , $task->follow_f . ' ' . $task->follow_l );
             $spreadsheet->getActiveSheet()->setCellValue('E' . $content_col , $job_types[$task->parent_id] );
             $spreadsheet->getActiveSheet()->setCellValue('F' . $content_col , $start_date );
@@ -770,17 +831,22 @@ class Report extends CI_Controller
             4 => "One Time"
         );
 
-        $sql = "SELECT T.*,
-        giver.first_name as giver_f,
-        giver.last_name as giver_l,
-        assignee.first_name as assignee_f,
-        assignee.last_name as assignee_l,
+        $sql = "SELECT T.*,  
+        assignee.first_name as given,
+        giver.first_name as given_f,
+        giver.last_name as given_l,
+        created_by.first_name as created_by_f,
         reporter.first_name as follow_f,
         reporter.last_name as follow_l,
+        created_by.last_name as created_by_l,
+        assignee.first_name as assignee_f,
+        assignee.last_name as assignee_l,
+        reporter.first_name as follow, 
         D.c_name FROM `tasks` AS T
         LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
         LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
+        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
         LEFT JOIN departments AS D on D.cid = T.department_id";
 
         if( $this->currentUserGroup[0]->name == "Employee" ) {
@@ -835,7 +901,11 @@ class Report extends CI_Controller
             $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
             $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
             $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->assignee_f . ' ' . $task->assignee_l );
-            $spreadsheet->getActiveSheet()->setCellValue('D' . $content_col , $task->giver_f . ' ' . $task->giver_l );
+            if( !empty($task->given_f) ) {
+                $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
+            } else {
+                $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->created_by_f . ' ' . $task->created_by_l );
+            }
             $spreadsheet->getActiveSheet()->setCellValue('E' . $content_col , $task->follow_f . ' ' . $task->follow_l );
             $spreadsheet->getActiveSheet()->setCellValue('F' . $content_col , $job_types[$task->parent_id] );
             $spreadsheet->getActiveSheet()->setCellValue('G' . $content_col , $start_date );

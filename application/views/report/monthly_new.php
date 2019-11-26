@@ -90,25 +90,25 @@ $job_types = array(
                     <div class="row">
                         <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count[0]["total"])? $tasks_count[0]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo !empty($tasks_count["daily"])? $tasks_count["daily"][0]["total"] : 0; ?></h5>
                                 <p>Daily</p>
                             </div>
                         </div>
                         <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger ">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count[1]["total"])? $tasks_count[1]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo !empty($tasks_count["weekly"])? $tasks_count["weekly"][0]["total"] : 0; ?></h5>
                                 <p>Weekly</p>
                             </div>
                         </div>
                         <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count[2]["total"])? $tasks_count[2]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo !empty($tasks_count["monthly"])? $tasks_count["monthly"][0]["total"] : 0; ?></h5>
                                 <p>Monthly</p>
                             </div>
                         </div>
                         <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count[3]["total"])? $tasks_count[3]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo !empty($tasks_count["one_time"])? $tasks_count["one_time"][0]["total"] : 0; ?></h5>
                                 <p>One Time</p>
                             </div>
                         </div>
@@ -197,13 +197,18 @@ $job_types = array(
                                     <td style="font-weight: 600; font-size: 9px; width: 80px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
                                     <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
                                     <td style="width: 139px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
-                                    <!-- <td style="width: 300px;"><?php echo $task->t_description; ?></td>
-                                    <td style="width: 100px;"><?php echo $job_types[$task->parent_id]; ?></td>
-                                    <td style="width: 150px;"><?php echo $task->c_name; ?></td> -->
-                                    <!-- <td style="width: 150px;">Category HERE</td> -->
-                                    <td style="width: 64px !important; font-size: 9px;font-family: inherit;"><?php echo $task->given; ?></td>
+                                    
+                                    <td style="width: 64px !important; font-size: 9px;font-family: inherit;">
+                                        <?php 
+                                        if( !empty( $task->given_f ) ) {
+                                            echo $task->given_f . " " . $task->given_l;
+                                        } else {
+                                            echo $task->created_by_f . " " . $task->created_by_l;
+                                        }
+                                        ?>
+                                    </td>
                                     <td style="width: 65px !important; font-size: 8px;font-family: inherit;"><?php echo $task->follow; ?></td>
-                                    <td style="width: 50px !important; font-size: 9px;font-family: inherit;"><?php echo $job_types[$task->parent_id]; ?></td>
+                                    <td style="width: 50px !important; font-size: 9px;font-family: inherit;"><?php echo @$job_types[$task->parent_id]; ?></td>
                                     <td style="width: 60px !important; font-size: 8px;font-family: inherit;"><?php echo $start_date; ?></td>
                                     <td style="width: 55px !important; font-size: 8px;font-family: inherit;"><?php echo $end_date; ?></td>
                                     <!--    <td style="width: 51px !important; font-size: 8px;font-family: inherit;"><?php echo getStatusText($task->t_status); ?></td>  -->

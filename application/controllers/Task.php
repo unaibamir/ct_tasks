@@ -60,27 +60,50 @@ class Task extends CI_Controller
         }
 
         $tasks = $this->db->get()->result();
-        
+
         $data['tasks'] = $tasks;
 
-        $this->db->select(array(
-            "tasks.parent_id as type",
-            "count(tasks.parent_id) as total"
-        ));
+        // Counting Task    
+        
         $this->db->from("tasks");
-        
-        if ($employee_id) {
-            $this->db->where('tasks.assignee', $employee_id);
-        }
-        
-        if ($this->currentUserGroup[0]->name == "Employee") {
-            $this->db->where('tasks.assignee', $this->currentUser->id);
-        }
-
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 1 ]);
+        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
-        $tasks_count = $this->db->get()->result_array();
+        $daily = $this->db->get()->result_array();
+
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 2 ]);
+        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $weekly = $this->db->get()->result_array();
+
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 3 ]);
+        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $monthly = $this->db->get()->result_array();
+
+        $this->db->from("tasks");
+        $this->db->select(array("count(tasks.parent_id) as total"));
+        $this->db->where(["tasks.parent_id" => 4 ]);
+        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->group_by("tasks.parent_id");
+        $one_time = $this->db->get()->result_array();
         
-        //dd($tasks_count, false);
+        $tasks_count = array(
+            "daily"     =>  $daily,
+            "weekly"    =>  $weekly,
+            "monthly"   =>  $monthly,
+            "one_time"  =>  $one_time
+        );
+        
         $data["tasks_count"] = $tasks_count;
 
         $data['heading1'] = 'Task Listing';
@@ -283,6 +306,32 @@ class Task extends CI_Controller
         $weekly = $this->db->from("tasks")->select(array("count(tasks.parent_id) as total"))->where(['tasks.assignee' => $this->currentUser->id, "tasks.parent_id" => 2 ])->group_by("tasks.parent_id")->get()->result_array();
         $monthly = $this->db->from("tasks")->select(array("count(tasks.parent_id) as total"))->where(['tasks.assignee' => $this->currentUser->id, "tasks.parent_id" => 3 ])->group_by("tasks.parent_id")->get()->result_array();
         $one_time = $this->db->from("tasks")->select(array("count(tasks.parent_id) as total"))->where(['tasks.assignee' => $this->currentUser->id, "tasks.parent_id" => 4 ])->group_by("tasks.parent_id")->get()->result_array();
+
+        $daily = $this->db->from("tasks")
+            ->select(array("count(tasks.parent_id) as total"))
+            ->where(["tasks.parent_id" => 1, "tasks.assignee" => $this->currentUser->id ])
+            ->join('departments', 'departments.cid = tasks.department_id')
+            ->group_by("tasks.parent_id")
+            ->get()->result_array();
+        
+        $weekly = $this->db->from("tasks")
+            ->select(array("count(tasks.parent_id) as total"))
+            ->where(["tasks.parent_id" => 2, "tasks.assignee" => $this->currentUser->id ])
+            ->join('departments', 'departments.cid = tasks.department_id')
+            ->group_by("tasks.parent_id")
+            ->get()->result_array();
+        $monthly = $this->db->from("tasks")
+            ->select(array("count(tasks.parent_id) as total"))
+            ->where(["tasks.parent_id" => 3, "tasks.assignee" => $this->currentUser->id ])
+            ->join('departments', 'departments.cid = tasks.department_id')
+            ->group_by("tasks.parent_id")
+            ->get()->result_array();
+        $one_time = $this->db->from("tasks")
+            ->select(array("count(tasks.parent_id) as total"))
+            ->where(["tasks.parent_id" => 4, "tasks.assignee" => $this->currentUser->id ])
+            ->join('departments', 'departments.cid = tasks.department_id')
+            ->group_by("tasks.parent_id")
+            ->get()->result_array();
         
         $tasks_count = array(
             "daily"     =>  $daily,
@@ -292,7 +341,6 @@ class Task extends CI_Controller
         );
         
         $data["tasks_count"] = $tasks_count;
-        
         
         
         foreach ($tasks as $key => $task) {
