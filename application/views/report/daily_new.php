@@ -70,7 +70,14 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 							<?php endif; ?>
 						</div>
 					</div>
+					<?php
 					
+					if( $currentUserGroup == "Manager" && !empty($employee) ) {
+						?>
+						<input type="hidden" name="employee_id" value="<?php echo $employee->id; ?>">
+						<?php
+					}
+					?>
 					</form>
 				</div>
 				<div class="card-body">
