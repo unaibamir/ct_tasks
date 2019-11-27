@@ -486,6 +486,10 @@ class Task extends CI_Controller
         $this->db->where('tid', $this->input->post("task_id"));
         $this->db->update('tasks');
 
-        redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), $this->agent->referrer() ));
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), base_url("task/alert") ));
+        } else {
+            redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), base_url("task") ));
+        }
     }
 }
