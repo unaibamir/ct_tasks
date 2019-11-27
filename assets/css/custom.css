@@ -32,3 +32,8 @@
 #report-file-label {
     line-height: 22px;
 }
+a.btn.lower-btn {
+    display: inherit;
+    top: 5px !important;
+    position: relative;
+}

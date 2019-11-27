@@ -23,17 +23,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="<?php echo base_url('assets/demo/demo.css'); ?>" rel="stylesheet" />
-    <link href="<?php echo base_url('assets/css/custom.css'); ?>" rel="stylesheet" />
+    <link href="<?php echo base_url('assets/css/custom.css?ver='.time()); ?>" rel="stylesheet" />
 
     <script src="<?php echo base_url('assets/js/core/jquery.min.js');?>"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
- <script type="text/javascript">
-     var base_url = "<?php echo base_url("/")?>";
-     $('#myButton').click(function() {
-         $.scrollTo($('#myDiv'), 1000);
-     });
- </script>
+    <script type="text/javascript">
+        var base_url = "<?php echo base_url("/")?>";
+        $('#myButton').click(function() {
+            $.scrollTo($('#myDiv'), 1000);
+        });
+    </script>
 
 </head>
 
@@ -338,16 +337,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
 </footer>
 </div>
 </div>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <!--   Core JS Files   -->
     <script src="<?php echo base_url('assets/js/core/popper.min.js');?>"></script>
     <script src="<?php echo base_url('assets/js/core/bootstrap.min.js');?>"></script>
     <script src="<?php echo base_url('assets/js/plugins/perfect-scrollbar.jquery.min.js');?>"></script>
-    <!--  Google Maps Plugin    -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+
     <!-- Chart JS -->
-    <script src="<?php echo base_url('assets/js/plugins/chartjs.min.js');?>"></script>
     <!--  Notifications Plugin    -->
-    <script src="<?php echo base_url('assets/js/plugins/bootstrap-notify.js');?>"></script>
     <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="<?php echo base_url('assets/js/now-ui-dashboard.min.js?v=1.3.0');?>" type="text/javascript"></script>
     <!-- Now Ui Dashboard DEMO methods, don't include it in your project! -->

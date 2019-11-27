@@ -71,6 +71,10 @@ class Report extends CI_Controller
         if ($this->currentUserGroup[0]->name == "Employee") {
             $this->db->where('assignee', $this->currentUser->id);
         }
+
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
+            $this->db->where('assignee', $_GET["employee_id"]);
+        }
         $tasks = $this->db->get()->result();
         $data["tasks"]  =   $tasks;
 

@@ -1,6 +1,6 @@
 $( function() {
 
-    $('#table-list').DataTable();
+    var table_list = $('#table-list').DataTable();
 
     var dateformat = "dd/mm/yy";
     
@@ -40,6 +40,13 @@ $( function() {
         changeYear: true,
         dateFormat: "dd-mm-yy",
         maxDate: new Date()
+    });
+
+    $(".datepicker_min").datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: "dd/mm/yy",
+        minDate: new Date()
     });
 
 
@@ -131,10 +138,13 @@ $( function() {
         }
     });
 
-    $(".resume-task").click(function(e){
-        e.preventDefault();
-        var task_id = $(this).attr("data-task_id");
-        alert(task_id);
-    });
 
+    $('#table-list').on('draw.dt', function () { 
+        $(".datepicker_min").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "dd/mm/yy",
+            minDate: new Date()
+        });
+    });
 });

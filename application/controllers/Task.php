@@ -16,6 +16,7 @@ class Task extends CI_Controller
         $this->currentUserGroup = $this->aauth->get_user_groups();
 
         $this->load->helper(array('form', 'url', 'file','directory', 'date'));
+        $this->load->library('user_agent');
     }
 
     public function index()
@@ -24,6 +25,16 @@ class Task extends CI_Controller
         //$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
         $view = !empty($this->input->get('view')) ? $this->input->get('view') : "daily";
         $employee_id = !empty($this->input->get('employee_id')) ? $this->input->get('employee_id') : false;
+
+        $employee_id = false;
+
+        if( !empty($this->input->get('employee_id')) ) {
+            $employee_id = $this->input->get('employee_id');
+        }
+
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            $employee_id = $this->currentUser->id;
+        }
         
         $this->db->select('*');
         $this->db->from('tasks');
@@ -33,19 +44,15 @@ class Task extends CI_Controller
             case "daily":
                 $this->db->where('tasks.parent_id', 1);
                 break;
-
             case "weekly":
                 $this->db->where('tasks.parent_id', 2);
                 break;
-
             case "monthly":
                 $this->db->where('tasks.parent_id', 3);
                 break;
-
             case "one-time":
                 $this->db->where('tasks.parent_id', 4);
                 break;
-            
             default:
                 $this->db->where('tasks.parent_id', 1);
                 break;
@@ -58,13 +65,12 @@ class Task extends CI_Controller
         if ($this->currentUserGroup[0]->name == "Employee") {
             $this->db->where('tasks.assignee', $this->currentUser->id);
         }
-
+        
         $tasks = $this->db->get()->result();
 
         $data['tasks'] = $tasks;
 
-        // Counting Task    
-        
+        // Counting Task
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
         $this->db->where(["tasks.parent_id" => 1 ]);
@@ -172,7 +178,7 @@ class Task extends CI_Controller
         if( !empty( $this->input->post('end_date') ) ) {
             $end_date_arr = explode("/", $this->input->post('end_date'));
             $end_date = $end_date_arr[0] . '-' . $end_date_arr[1] . '-' . $end_date_arr[2];
-            $end_date = date("Y-m-d H:i:s", strtotime($end_date) );
+            $end_date = date("Y-m-d 23:59:59", strtotime($end_date) );
         } else {
             //$end_date = date("Y-m-d H:i:s", mktime(0,0,0,12,31,date('Y') ));
             $end_date = "";
@@ -462,5 +468,24 @@ class Task extends CI_Controller
 
     		<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal' data-whatever='@mdo'>Quick View</button>";
         }
+    }
+
+    public function resume_submit() {
+
+        if( !empty( $this->input->post('end_date') ) ) {
+            $end_date_arr = explode("/", $this->input->post('end_date'));
+            $end_date = $end_date_arr[0] . '-' . $end_date_arr[1] . '-' . $end_date_arr[2];
+            $end_date = date("Y-m-d 23:59:59", strtotime($end_date) );
+        } else {
+            $end_date = "";
+        }
+
+        $this->db->set('end_date', $end_date);
+        $this->db->set('t_status', "in-progress");
+
+        $this->db->where('tid', $this->input->post("task_id"));
+        $this->db->update('tasks');
+
+        redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), $this->agent->referrer() ));
     }
 }
