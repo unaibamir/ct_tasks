@@ -17,8 +17,7 @@ class Report extends CI_Controller
         $this->currentUser = $this->aauth->get_user();
         $this->currentUserGroup = $this->aauth->get_user_groups();
         
-
-        $this->load->helper(array('form', 'url', 'file', 'directory'));
+        $this->load->helper(array('form', 'url', 'file','directory', 'date'));
     }
 
     public function daily()
@@ -511,18 +510,7 @@ class Report extends CI_Controller
 
         $this->load->library('form_validation');
 
-        /*$sql = "SELECT T.*, 
-        D.c_name,
-        assignee.first_name as given, 
-        assignee.username as user_code, 
-        reporter.first_name as follow 
-        FROM `tasks` AS T 
-        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-        LEFT JOIN departments AS D ON D.cid = T.department_id WHERE T.tid = ?";
-        $data['task'] = $this->db->query($sql, array($task_id))->row();*/
-
-         $sql = "SELECT T.*,
+        $sql = "SELECT T.*,
         giver.first_name as given_f,
         giver.last_name as given_l,
         created_by.first_name as created_by_f,
@@ -564,29 +552,34 @@ class Report extends CI_Controller
 
         $data['task_files'] = $final_files;
 
-        /*
-        $sql = "SELECT * FROM reports WHERE task_id = ?";
-        $task_history = $this->db->query($sql, array($task_id))->result();
-
-        foreach ($task_history as $key => $history) {
-            $this->db->select('*');
-            $this->db->from('files');
-            $this->db->where('files.fid', $history->attachment_id);
-            $files = $this->db->get()->result_array();
-            $history->files = $files;
-        }*/
-
         if (strpos($data['task']->start_date, '0000-00-00') !== false
             || strpos($data['task']->end_date, '0000-00-00') !== false
             || empty($data['task']->start_date)  ) {
             redirect(base_url('/dashboard/?error'));
         }
 
-        
 
-        $start_date     = new DateTime($data['task']->start_date);
-        $end_date       = new DateTime(!empty($data['task']->end_date) ? $data['task']->end_date : date('d-m-Y', time()));
-        $end_date       = $end_date->modify("+1 day");
+        if( isset($_GET["search"]) && $_GET["search"] == "report_daily" ) {
+            
+            $g_start_date_arr = explode("/", $_GET["start_date"]);
+            $g_start_date = $g_start_date_arr[0] . '-' . $g_start_date_arr[1] . '-' . $g_start_date_arr[2];
+            $g_start_date = date("Y-m-d H:i:s", strtotime($g_start_date) );
+
+
+            $g_end_date_arr = explode("/", $_GET["end_date"]);
+            $g_end_date = $g_end_date_arr[0] . '-' . $g_end_date_arr[1] . '-' . $g_end_date_arr[2];
+            $g_end_date = date("Y-m-d 23:59:59", strtotime($g_end_date) );
+
+            $start_date     = new DateTime( $g_start_date );
+            $end_date       = new DateTime( $g_end_date );
+
+        } else {
+            $start_date     = new DateTime($data['task']->start_date);
+            $end_date       = new DateTime(!empty($data['task']->end_date) ? $data['task']->end_date : date('d-m-Y', time()));
+            $end_date       = $end_date->modify("+1 day");
+        }
+
+        
 
 
         $period = new DatePeriod($start_date, new DateInterval('P1D'), $end_date);

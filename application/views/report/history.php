@@ -94,10 +94,28 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 						</div>
 
 						<div class="col-lg-9 rounded  p-4 table-striped">
-
-
-
-
+							<form action="" method="get">
+								<div class="row">
+									<div class="col-md-3">
+		                                <div class="form-group">
+		                                    <label>Start Date</label>
+		                                    <input type="text" name="start_date" autocomplete="off" style="background-color: #FFF;" class="form-control text-left" required id="start_date" value="<?php echo @$_GET["start_date"]?>">
+		                                </div>
+									</div>
+									<div class="col-md-3">
+		                                <div class="form-group">
+		                                    <label>End Date</label>
+		                                    <input type="text" name="end_date" autocomplete="off" style="background-color: #FFF;" class="form-control text-left" required id="end_date" value="<?php echo @$_GET["end_date"]?>">
+		                                </div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<input type="hidden" name="search" value="report_daily">
+											<input type="submit" class="btn btn-info " value="Submit" style="background: #244973;margin-top: 23px;">
+										</div>
+									</div>
+								</div>
+							</form>
 
 							<div class="row font-weight-bold text-danger border">
 								<div class="col-md-1"><label>Date</label></div>

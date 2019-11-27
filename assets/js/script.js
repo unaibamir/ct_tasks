@@ -7,7 +7,6 @@ $( function() {
     var from = $( "#start_date" ).datepicker({
         changeMonth: true,
         dateFormat: dateformat,
-        minDate: new Date(),
         numberOfMonths: 1
     })
     .on( "change", function() {
