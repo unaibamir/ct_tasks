@@ -754,13 +754,13 @@ class Report extends CI_Controller
         $spreadsheet->getActiveSheet()->getStyle("A3:AM3")->getFont()->setBold(true);
 
         $content_col = 4;
-
+        $counter = 1;
         foreach ($tasks as $key => $task) {
             
             $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
             $end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
             
-            $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
+            $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
             $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
 
             if( !empty($task->given_f) ) {
@@ -800,6 +800,7 @@ class Report extends CI_Controller
             }
             
             $content_col++;
+            $counter++;
         }
 
         $writer = new Xlsx($spreadsheet);
@@ -889,13 +890,14 @@ class Report extends CI_Controller
         $spreadsheet->getActiveSheet()->getStyle("A3:AM3")->getFont()->setBold(true);
 
         $content_col = 4;
-
+        $counter = 1;
         foreach ($tasks as $key => $task) {
             
             $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
             $end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
             
-            $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
+            //$spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
+            $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
             $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
             $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->assignee_f . ' ' . $task->assignee_l );
             if( !empty($task->given_f) ) {
@@ -934,6 +936,7 @@ class Report extends CI_Controller
             }
             
             $content_col++;
+            $counter++;
         }
 
         $writer = new Xlsx($spreadsheet);
