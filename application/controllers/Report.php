@@ -151,18 +151,15 @@ class Report extends CI_Controller
 
         $data["month_dates"] = $month_dates;
 
-        $sql = "SELECT T.*,
-        giver.first_name as giver_f,
-        giver.last_name as giver_l,
-        assignee.first_name as assignee_f,
-        assignee.last_name as assignee_l,
-        reporter.first_name as follow_f,
-        reporter.last_name as follow_l,
-        D.c_name FROM `tasks` AS T
-        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
-        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-        LEFT JOIN departments AS D on D.cid = T.department_id";
+        if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
+            list( $year, $month )   =   explode("-", $_GET["month"]);
+        } else {
+            $month  = date("m");
+            $year   = date("Y");
+        }
+
+        $data["month_date"] = $month;
+        $sql_month_date = $month;
 
         $sql = "SELECT T.*,  
         assignee.first_name as given,
@@ -180,19 +177,20 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
 		LEFT JOIN departments AS D on D.cid = T.department_id";
 
+        $sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
+
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
-            $sql .= " WHERE T.assignee = {$_GET["employee_id"]}";
+            $sql .= " AND T.assignee = {$_GET["employee_id"]}";
         }
 
         $tasks = $this->db->query($sql)->result();
-        $data['tasks'] = $tasks;
-
 
         // Counting Task    
         
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
         $this->db->where(["tasks.parent_id" => 1 ]);
+        $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
@@ -202,6 +200,7 @@ class Report extends CI_Controller
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
         $this->db->where(["tasks.parent_id" => 2 ]);
+        $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
@@ -211,6 +210,7 @@ class Report extends CI_Controller
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
         $this->db->where(["tasks.parent_id" => 3 ]);
+        $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
@@ -220,6 +220,7 @@ class Report extends CI_Controller
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
         $this->db->where(["tasks.parent_id" => 4 ]);
+        $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
@@ -235,17 +236,57 @@ class Report extends CI_Controller
 
         $data["tasks_count"] = $tasks_count;
 
-        
-        
-        $data["month_date"] = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : date('m');
+        $sql_prev = "SELECT T.*,  
+        assignee.first_name as given,
+        giver.first_name as given_f,
+        giver.last_name as given_l,
+        created_by.first_name as created_by_f,
+        created_by.last_name as created_by_l,
+        assignee.first_name as assignee_f,
+        assignee.last_name as assignee_l,
+        reporter.first_name as follow, 
+        D.c_name FROM `tasks` AS T
+        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
+        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
+        LEFT JOIN departments AS D on D.cid = T.department_id";
 
-        $sql_month_date = isset($_GET["month"]) && !empty($_GET["month"]) ? $_GET["month"] : "MONTH(CURRENT_DATE())";
+        $prev_date = $year ."-". $month ."-". "01";
 
-        foreach ($tasks as $key => $task) {
-            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-            $report_result = $this->db->query($sql)->result();
-            $task->reports = $report_result;
+        $sql_prev .= " WHERE MONTH(T.t_created_at) = MONTH('".$prev_date."' - INTERVAL 1 MONTH)";
+
+        $sql_prev .= " AND `t_status` IN ('in-progress', 'hold')";
+
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
+            $sql_prev .= " AND T.assignee = {$_GET["employee_id"]}";
         }
+        
+        $tasks_prev = $this->db->query($sql_prev)->result();
+        $total_tasks = array_merge($tasks, $tasks_prev);
+
+        if( !empty($tasks) ) {
+            foreach ($tasks as $key => $task) {
+                $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+                $report_result = $this->db->query($sql)->result();
+                $task->reports = $report_result;
+            }
+        }
+
+        if( !empty($tasks_prev) ) {
+            foreach ($tasks_prev as $key => $task) {
+                $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = MONTH('".$prev_date."' - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+                $report_result = $this->db->query($sql)->result();
+                $task->reports = $report_result;
+            }
+        }
+        /*dd($tasks, false);
+        dd("AAAA", false);
+        dd($tasks_prev);*/
+
+        $data['tasks'] = $tasks;
+        $data['tasks_prev'] = $tasks_prev;
+        $data["total_tasks"] = $total_tasks;
         
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
             $employee = $this->aauth->get_user($_GET["employee_id"]);
@@ -287,10 +328,17 @@ class Report extends CI_Controller
 
     public function getCurrentMonthDates()
     {
-        $year = date('Y');
+        if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
+            list( $year, $month )   =   explode("-", $_GET["month"]);
+        } else {
+            $month  = date("m");
+            $year   = date("Y");
+        }
+
         $dates = array();
 
         date("L", mktime(0, 0, 0, 7, 7, $year)) ? $days = 366 : $days = 365;
+        
         for ($i = 1; $i <= $days; $i++) {
             $month = date('m', mktime(0, 0, 0, 1, $i, $year));
             $wk = date('W', mktime(0, 0, 0, 1, $i, $year));
@@ -300,7 +348,8 @@ class Report extends CI_Controller
             $dates[$month][$day] = $wkDay;
         }
 
-        $month_num = isset($_GET["month"]) ? $_GET["month"] : date('m');
+        
+        $month_num = $month;
 
         $dates = $dates[ $month_num ];
         return $dates;

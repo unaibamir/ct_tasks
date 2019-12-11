@@ -174,7 +174,7 @@ $job_types = array(
                                     <th scope="col" style="width: 50px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 13px;">Job Type</th>
                                     <th scope="col" style="width: 60px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 14px;">Start Date</th>
                                     <th scope="col" style="width: 55px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 14px;">End Date</th>
-                                    <!--        <th scope="col" style="width: 51px !important">Status</th> -->
+                                    <th scope="col" style="width: 51px !important">Status</th>
                                     <?php foreach ($month_dates as $date_dig => $date_alpha) {
                                     ?>
                                     <th scope="col" style="width: 51px; "><?php echo $date_alpha . "- " . $date_dig ?></th>
@@ -211,7 +211,7 @@ $job_types = array(
                                     <td style="width: 50px !important; font-size: 9px;font-family: inherit;"><?php echo @$job_types[$task->parent_id]; ?></td>
                                     <td style="width: 60px !important; font-size: 8px;font-family: inherit;"><?php echo $start_date; ?></td>
                                     <td style="width: 55px !important; font-size: 8px;font-family: inherit;"><?php echo $end_date; ?></td>
-                                    <!--    <td style="width: 51px !important; font-size: 8px;font-family: inherit;"><?php echo getStatusText($task->t_status); ?></td>  -->
+                                    <td style="width: 51px !important; font-size: 8px;font-family: inherit;"><?php echo getStatusText($task->t_status); ?></td>
                                     <?php
                                     foreach ($month_dates as $date_dig => $date_alpha) {
                                     ?>
