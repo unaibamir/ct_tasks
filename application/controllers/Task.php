@@ -23,6 +23,8 @@ class Task extends CI_Controller
     {
 
         //$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
+
+
         $view = !empty($this->input->get('view')) ? $this->input->get('view') : "daily";
         $employee_id = !empty($this->input->get('employee_id')) ? $this->input->get('employee_id') : false;
 
@@ -115,12 +117,9 @@ class Task extends CI_Controller
         $data['heading1'] = 'Task Listing';
         $data['nav1'] = $this->currentUserGroup[0]->name;
         $data['users'] = $this->db->get("aauth_users")->result_array();
-
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'task/list'; // views/display.php page
-        
-
         $this->load->view('manager_layout', $data);
     }
 
@@ -255,7 +254,7 @@ class Task extends CI_Controller
             }
         }
 
-        redirect(base_url('task'));
+        redirect(base_url('task/alert'));
     }
 
     public function assign()
@@ -276,6 +275,7 @@ class Task extends CI_Controller
         $data['tasks'] = $this->db->query($sql, $this->currentUser->id)->result();*/
 
         $view = !empty($this->input->get('view')) ? $this->input->get('view') : "daily";
+
 
         $this->db->select('*');
         $this->db->from('tasks');
@@ -432,41 +432,41 @@ class Task extends CI_Controller
             $taskDetail = $this->db->query($sql, $task_id)->row();
 
             echo "<div class='row'>
-    		<div class='col-lg-12'>
-    		<div class='card'>
-    		<div class='card-body'>
-    		<h3 class='card-subtitle mb-3 text-muted'>Task Details</h3> 
+            <div class='col-lg-12'>
+            <div class='card'>
+            <div class='card-body'>
+            <h3 class='card-subtitle mb-3 text-muted'>Task Details</h3> 
 
-    		<div class='row'>
-    		<div class='col-lg-6'>
-    		<p class='card-title'><h6>Task-Code </h6>  ".$taskDetail->t_code."</b></p>
-    		<p class='card-title'><h6> Start Date</h6>  ".$taskDetail->start_date."</b></p>
-    		<p class='card-title'><h6>Given By </h6>  ".$taskDetail->given."</b></p>
+            <div class='row'>
+            <div class='col-lg-6'>
+            <p class='card-title'><h6>Task-Code </h6>  ".$taskDetail->t_code."</b></p>
+            <p class='card-title'><h6> Start Date</h6>  ".$taskDetail->start_date."</b></p>
+            <p class='card-title'><h6>Given By </h6>  ".$taskDetail->given."</b></p>
 
-    		</div>
+            </div>
 
-    		<div class='col-lg-6'>
-    		<p class='card-title'><h6>Task Title</h6> ".$taskDetail->t_title."</b></p>
-    		<p class='card-title success'><h6>End Date </h6>  ".$taskDetail->end_date."</b></p>
-    		<p class='card-title'><h6>Follow up </h6>  ".$taskDetail->follow."</b></p>
+            <div class='col-lg-6'>
+            <p class='card-title'><h6>Task Title</h6> ".$taskDetail->t_title."</b></p>
+            <p class='card-title success'><h6>End Date </h6>  ".$taskDetail->end_date."</b></p>
+            <p class='card-title'><h6>Follow up </h6>  ".$taskDetail->follow."</b></p>
 
-    		</div>
-    		</div>
+            </div>
+            </div>
 
-    		<div class='row'>
-    		<div class='col-lg-12'>
-    		<h6 class='card-subtitle mb-2 text-muted'>Task Details</h6>
-    		<p class='card-text'>".$taskDetail->t_description."</p>
-    		<a href='http://gdlp01.c-wss.com/gds/0/0300004730/02/eosrt3-eos1100d-im2-c-en.pdf' download>
-    		<img src='https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png'  width='40' height='40'> View attachement</a>
-    		</div>
-    		</div>
-    		</div>
-    		</div>
-    		</div>
-    		</div>
+            <div class='row'>
+            <div class='col-lg-12'>
+            <h6 class='card-subtitle mb-2 text-muted'>Task Details</h6>
+            <p class='card-text'>".$taskDetail->t_description."</p>
+            <a href='http://gdlp01.c-wss.com/gds/0/0300004730/02/eosrt3-eos1100d-im2-c-en.pdf' download>
+            <img src='https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png'  width='40' height='40'> View attachement</a>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
 
-    		<button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal' data-whatever='@mdo'>Quick View</button>";
+            <button type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal' data-whatever='@mdo'>Quick View</button>";
         }
     }
 
@@ -486,10 +486,33 @@ class Task extends CI_Controller
         $this->db->where('tid', $this->input->post("task_id"));
         $this->db->update('tasks');
 
-        if( $this->currentUserGroup[0]->name == "Employee" ) {
-            redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), base_url("task/alert") ));
-        } else {
-            redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), base_url("task") ));
+        if ($this->currentUserGroup[0]->name == 'Employee')
+        {
+
+            $this->db->from('aauth_users');
+            $this->db->where('id', $this->currentUserGroup[0]->id );
+            $this->db->select('dept_id');
+            $dept_id = $this->db->get()->row_array();
+
+            $this->db->from('departments');
+            $this->db->where('departments.cid', $dept_id["dept_id"]);
+            $this->db->select('c_name');
+            $emp_dept = $this->db->get()->row_array();
+            
+            if( !empty($emp_dept) ) {
+                $emp_dept = $emp_dept["c_name"];
+            } else {
+                $emp_dept = "";
+            }
+            redirect('/task/alert', $this->agent->referrer() );
+           
         }
+        else
+        {
+            redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), $this->agent->referrer() ));
+        }
+
+        //redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), $this->agent->referrer() ));
+        //redirect('/task/alert', $this->agent->referrer() );
     }
 }

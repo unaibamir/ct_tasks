@@ -88,7 +88,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         $assigned_user_key =  array_search($task->assignee, array_column($users, "id"));
                                         $follow_user_key =  array_search($task->reporter, array_column($users, "id"));
                                         $start_date = date($date_format, strtotime($task->start_date));
-                                        $end_date = date($date_format, strtotime($task->end_date));
+                                        $end_date = !empty( $task->end_date ) ? date($date_format, strtotime($task->end_date)) : "";
 
                                         $task_title = strlen($task->t_title) > 25 ? substr($task->t_title, 0, 25) . "..." : $task->t_title;
 
