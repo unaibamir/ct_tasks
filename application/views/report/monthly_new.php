@@ -39,10 +39,10 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
     }
     .table>tbody>tr>td {
         
-    padding: 10px 5px;
+    padding: 10px 3px;
 height: 50px !important;
 
-width: 29px !important;
+width: 27px !important;
 font-size: 0.65em;
     }
     .table>tbody>tr>th {
@@ -54,9 +54,9 @@ font-size: 0.5em;
     }
     .table .thead-dark th {
     
-    padding: 10px 5px;
+    padding: 10px 3px;
 height: 55px !important;
-width: 29px !important;
+width: 27px !important;
 font-size: 9px;
 font-family: monospace;
 border: 1px solid #e9e8e81f;
@@ -162,11 +162,11 @@ $job_types = array(
                         <table class="table table-bordered table-hover bg-light">
                             <thead class="thead-dark">
                                 <tr class="d-flex">
-                                    <th scope="col"  style="width: 80px !important;  ">Job Code</th>
-                                    <th scope="col"  style="width: 40px!important; font-size: 9px;  ">Task Code</th>
-                                    <th  colspan="4" style="width: 139px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Task Title</th>
-                                    <!-- <th scope="col" style="width: 300px;">Desctiption</th>
-                                    <th style="width: 100px;">Job Types</th>
+                                    <th scope="col"  style="width:70px !important;  ">Job Code</th>
+                                    <th scope="col"  style="width: 40px!important; font-size: 9px;  ">Code</th>
+                                    <th colspan="4" style="width: 90px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Title</th>
+                                    <th scope="col" style="width: 90px !important;">Desctiption</th>
+                                    <!-- <th style="width: 100px;">Job Types</th>
                                     <th style="width: 150px;">Department</th> -->
                                     <!-- <th style="width: 150px;">Job Category</th> -->
                                     <th scope="col" style="width: 64px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 14px;">Given By</th>
@@ -194,10 +194,10 @@ $job_types = array(
                                     $end_date = !empty($task->end_date) ? date($date_format, strtotime($task->end_date)) : "";
                                 ?>
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
-                                    <td style="font-weight: 600; font-size: 9px; width: 80px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
+                                    <td style="font-weight: 600; font-size: 9px; width: 70px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
                                     <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
-                                    <td style="width: 139px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
-                                    
+                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
+                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Details</a></td>
                                     <td style="width: 64px !important; font-size: 9px;font-family: inherit;">
                                         <?php 
                                         if( !empty( $task->given_f ) ) {
@@ -237,6 +237,102 @@ $job_types = array(
                                     <?php
                                     }
                                     ?>
+                                    <div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title h4" style="margin:0;">Task Code - <?php echo $task->t_code; ?> Details</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container-fluid">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <!-- <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Task Code</label>
+                                                                        <div class="col-md-9 text-left"><?php echo $task->t_code; ?></div>
+                                                                    </div> -->
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Task Title</label>
+                                                                    <div class="col-md-9 text-left"><?php echo $task->t_title; ?></div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Task Description</label>
+                                                                    <div class="col-md-9 text-left"><?php echo $task->t_description; ?></div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Task Status</label>
+                                                                    <div class="col-md-9 text-left"><?php echo getStatusText($task->t_status); ?></div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Type</label>
+                                                                    <div class="col-md-9 text-left"><?php echo $job_types[$task->parent_id]; ?></div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Given By</label>
+                                                                    <div class="col-md-9 text-left">
+                                                                        <?php
+                                                                        if( !empty( $task->given_f ) ) {
+                                                                            echo $task->given_f . " " . $task->given_l;
+                                                                        } else {
+                                                                            echo $task->created_by_f . " " . $task->created_by_l;
+                                                                        }
+                                                                        ?>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Follow Up</label>
+                                                                    <div class="col-md-9 text-left"><?php echo $task->follow; ?></div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Start Date</label>
+                                                                    <div class="col-md-9 text-left">
+                                                                        <?php echo date($date_format, strtotime($task->start_date)); ?>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">End Date</label>
+                                                                    <div class="col-md-9 text-left">
+                                                                        <?php
+                                                                        if( !empty( $task->end_date ) ) {
+                                                                            echo date($date_format, strtotime($task->end_date));
+                                                                        } else {
+                                                                            echo $this->config->item("no_end_date");
+                                                                        }
+                                                                        ?>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-group row">
+                                                                    <label for="" class="col-sm-3 col-form-label">Files</label>
+                                                                    <div class="col-md-9 text-left">
+                                                                        <?php
+                                                                        if (!empty($task->files)) {
+                                                                            echo '<ul style="padding-left:16px;">';
+                                                                            foreach ($task->files as $file) {
+                                                                                ?>
+                                                                            <li>
+                                                                                <a href="<?php echo $file["url"]; ?>" target="_blank">
+                                                                                    <?php echo $file["f_title"]; ?>
+                                                                                        </a>
+                                                                                    </li>
+                                                                            <?php
+                                                                            }
+                                                                            echo '</ul>';
+                                                                        } else {
+                                                                            echo 'No Files Available';
+                                                                        }
+                                                                                ?>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                 </tr>
                                 <?php
                                 $counter++;
