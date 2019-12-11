@@ -162,10 +162,10 @@ $job_types = array(
                         <table class="table table-bordered table-hover bg-light">
                             <thead class="thead-dark">
                                 <tr class="d-flex">
-                                    <th scope="col"  style="width:70px !important;  ">Job Code</th>
-                                    <th scope="col"  style="width: 40px!important; font-size: 9px;  ">Code</th>
+                                    <th scope="col"  style="width:70px !important; padding: 14px 6px;">Job Code</th>
+                                    <th scope="col"  style="width: 40px!important; font-size: 9px; padding: 14px 6px;">Code</th>
                                     <th colspan="4" style="width: 90px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Title</th>
-                                    <th scope="col" style="width: 90px !important;">Desctiption</th>
+                                    <th scope="col" style="width: 90px !important; padding: 14px;">Desctiption</th>
                                     <!-- <th style="width: 100px;">Job Types</th>
                                     <th style="width: 150px;">Department</th> -->
                                     <!-- <th style="width: 150px;">Job Category</th> -->
@@ -174,7 +174,7 @@ $job_types = array(
                                     <th scope="col" style="width: 50px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 13px;">Job Type</th>
                                     <th scope="col" style="width: 60px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 14px;">Start Date</th>
                                     <th scope="col" style="width: 55px !important; font-size: 9px;font-family: inherit;  font-family: monospace; padding: 14px;">End Date</th>
-                                    <th scope="col" style="width: 51px !important">Status</th>
+                                    <th scope="col" style="width: 51px !important; padding: 14px 6px;">Status</th>
                                     <?php foreach ($month_dates as $date_dig => $date_alpha) {
                                     ?>
                                     <th scope="col" style="width: 51px; "><?php echo $date_alpha . "- " . $date_dig ?></th>
@@ -196,8 +196,8 @@ $job_types = array(
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
                                     <td style="font-weight: 600; font-size: 9px; width: 70px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
                                     <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
-                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><?php echo $task->t_title; ?></td>
-                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Details</a></td>
+                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $task->t_title; ?></td>
+                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td>
                                     <td style="width: 64px !important; font-size: 9px;font-family: inherit;">
                                         <?php 
                                         if( !empty( $task->given_f ) ) {
