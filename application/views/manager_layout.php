@@ -120,6 +120,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
+
                     <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('employee/'); ?>">
@@ -206,12 +207,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">Task Listing </a>
                                 <?php endif; ?>
 
+                            <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                                <a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link">View Novemeber Tasks</a>
+                            <?php endif; ?>
                                  
                             <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
                    
                                     <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">View Employees Report</a>
 
                             <?php endif; ?>
+
 
                             <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
                                 <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">Employee list</a>

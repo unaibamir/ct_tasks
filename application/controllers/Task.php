@@ -572,6 +572,109 @@ class Task extends CI_Controller
 
         $this->email->send();
 
+    }
 
+    public function nov()
+    {
+
+        //$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
+
+
+        $view = !empty($this->input->get('view')) ? $this->input->get('view') : "daily";
+        $employee_id = !empty($this->input->get('employee_id')) ? $this->input->get('employee_id') : false;
+
+        $employee_id = false;
+
+        if( !empty($this->input->get('employee_id')) ) {
+            $employee_id = $this->input->get('employee_id');
+        }
+
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            $employee_id = $this->currentUser->id;
+        }
+        
+        $this->db->select('*');
+        $this->db->from('tasks_nov');
+        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
+        
+        switch ($view) {
+            case "daily":
+                $this->db->where('tasks_nov.parent_id', 1);
+                break;
+            case "weekly":
+                $this->db->where('tasks_nov.parent_id', 2);
+                break;
+            case "monthly":
+                $this->db->where('tasks_nov.parent_id', 3);
+                break;
+            case "one-time":
+                $this->db->where('tasks_nov.parent_id', 4);
+                break;
+            default:
+                $this->db->where('tasks_nov.parent_id', 1);
+                break;
+        }
+
+        if ($employee_id) {
+            $this->db->where('tasks_nov.assignee', $employee_id);
+        }
+        
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            $this->db->where('tasks_nov.assignee', $this->currentUser->id);
+        }
+        
+        $tasks = $this->db->get()->result();
+
+        $data['tasks'] = $tasks;
+
+        // Counting Task
+        $this->db->from("tasks_nov");
+        $this->db->select(array("count(tasks_nov.parent_id) as total"));
+        $this->db->where(["tasks_nov.parent_id" => 1 ]);
+        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
+        $this->db->group_by("tasks_nov.parent_id");
+        $daily = $this->db->get()->result_array();
+
+        $this->db->from("tasks_nov");
+        $this->db->select(array("count(tasks_nov.parent_id) as total"));
+        $this->db->where(["tasks_nov.parent_id" => 2 ]);
+        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
+        $this->db->group_by("tasks_nov.parent_id");
+        $weekly = $this->db->get()->result_array();
+
+        $this->db->from("tasks_nov");
+        $this->db->select(array("count(tasks_nov.parent_id) as total"));
+        $this->db->where(["tasks_nov.parent_id" => 3 ]);
+        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
+        $this->db->group_by("tasks_nov.parent_id");
+        $monthly = $this->db->get()->result_array();
+
+        $this->db->from("tasks_nov");
+        $this->db->select(array("count(tasks_nov.parent_id) as total"));
+        $this->db->where(["tasks_nov.parent_id" => 4 ]);
+        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
+        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
+        $this->db->group_by("tasks_nov.parent_id");
+        $one_time = $this->db->get()->result_array();
+        
+        $tasks_count = array(
+            "daily"     =>  $daily,
+            "weekly"    =>  $weekly,
+            "monthly"   =>  $monthly,
+            "one_time"  =>  $one_time
+        );
+        
+        $data["tasks_count"] = $tasks_count;
+
+        $data['heading1'] = 'Task Listing';
+        $data['nav1'] = $this->currentUserGroup[0]->name;
+        $data['users'] = $this->db->get("aauth_users")->result_array();
+        $data['currentUser'] = $this->currentUser;
+        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        $data['inc_page'] = 'task/list_nov'; // views/display.php page
+        $this->load->view('manager_layout', $data);
     }
 }

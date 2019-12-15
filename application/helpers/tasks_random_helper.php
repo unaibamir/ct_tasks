@@ -23,8 +23,8 @@ function job_type_state( $current_type, $job_type ) {
 	return $state;
 }
 
-function task_list_link( $job_type ) {
-    $base_url = base_url("/task/?");
+function task_list_link( $job_type, $url = "/task/?" ) {
+    $base_url = base_url( $url );
     /*if( isset($_GET["view"]) && !empty( $_GET["view"] ) ) {
         $base_url .= "/?view=". $job_type;
     }
