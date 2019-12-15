@@ -16,7 +16,7 @@ class Task extends CI_Controller
         $this->currentUserGroup = $this->aauth->get_user_groups();
 
         $this->load->helper(array('form', 'url', 'file','directory', 'date'));
-        $this->load->library('user_agent');
+        $this->load->library(array( 'user_agent', 'email' ));
     }
 
     public function index()
@@ -203,7 +203,7 @@ class Task extends CI_Controller
         $task_id = $this->db->insert_id();
 
         //get task id and upload files
-
+        $file_ids   = array();
         if( !empty($_FILES["files"]) ) {
 
             $upload_path                = "uploads/tasks";
@@ -218,7 +218,6 @@ class Task extends CI_Controller
             $this->load->library('upload', $config);
 
             $file_count = 0;
-            $file_ids   = array();
 
             foreach ($_FILES["files"] as $key => $file) {
 
@@ -253,6 +252,8 @@ class Task extends CI_Controller
                 $file_count++;
             }
         }
+
+        $this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
 
         redirect(base_url('task/alert'));
     }
@@ -514,5 +515,63 @@ class Task extends CI_Controller
 
         //redirect(add_query_arg( array("status"=>"success", "msg"=>"task_update"), $this->agent->referrer() ));
         //redirect('/task/alert', $this->agent->referrer() );
+    }
+
+    public function sent_assigned_email( $data ) {
+
+        $view = $files= array();
+        $date_format = $this->config->item('date_format');
+        $job_types = array(
+            1 => "Daily",
+            2 => "Weekly",
+            3 => "Monthly",
+            4 => "One Time"
+        );
+
+        extract($data);
+
+        $assignee           =   $this->aauth->get_user( $data["assignee"] );
+
+        $view["heading"]    =  "A new task has been assigned to you. Please see the details as below:";
+        $view["task_title"] =   $data["t_title"];
+        $view["task_code"]  =   $data["t_code"];
+        $view["task_type"]  =   $job_types[$data["parent_id"]];
+        $view["assigned_to"]=   $assignee->first_name ." ". $assignee->last_name;
+
+        if( !empty($data["given_by"]) ) {
+            $given_by               =   $this->aauth->get_user( $data["given_by"] );
+            $view["assigned_by"]    =   $given_by->first_name ." ". $given_by->last_name;
+        } else {
+            $created_by             =   $this->aauth->get_user( $data["created_by"] );
+            $view["assigned_by"]    =   $created_by->first_name ." ". $created_by->last_name;
+        }
+
+        $followup           =   $this->aauth->get_user( $data["reporter"] );
+        $view["follow_up"]  =   $followup->first_name ." ". $followup->last_name;
+
+        $department         =   $this->db->from("departments")->where(["cid" => $data["department_id"] ])->select("c_name")->get()->result_array();
+        $view["department"] =   $department[0]["c_name"];
+        $view["start_date"] =   date( $date_format, strtotime( $data["start_date"] ) );
+        $view["end_date"]   =   date( $date_format, strtotime( $data["end_date"] ) );
+        $view["status"]     =  "In Progress";
+
+        if( !empty($file_ids) ) {
+            $files          = $this->db->from("files")->where_in("fid", $file_ids)->get()->result_array();
+            $view["files"]  = $files;
+        }
+        
+
+        $view["inc_email"]  =  "emails/task_assigned";
+        $content = $this->load->view('emails/layout', $view, true);
+        
+        $this->email->from($this->config->item( "from_email" ), $this->config->item( "from_name" ));
+        $this->email->to( $assignee->email );
+
+        $this->email->subject('New Task Assigned');
+        $this->email->message($content);
+
+        $this->email->send();
+
+
     }
 }

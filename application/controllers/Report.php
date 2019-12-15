@@ -18,6 +18,8 @@ class Report extends CI_Controller
         $this->currentUserGroup = $this->aauth->get_user_groups();
         
         $this->load->helper(array('form', 'url', 'file','directory', 'date'));
+
+        $this->load->library('email');
     }
 
     public function daily()
@@ -1142,5 +1144,25 @@ class Report extends CI_Controller
         header('Cache-Control: max-age=0');
         
         $writer->save('php://output');
+    }
+
+
+    public function emails() {
+        $data = array();
+
+        $data["inc_email"]  =  "emails/test";
+        dd($this->config->item( "from_email" ));
+        $content = $this->load->view('emails/layout', $data, true);
+        echo $content; exit;
+        $this->email->from('your@example.com', 'Your Name');
+        $this->email->to('someone@example.com');
+        $this->email->cc('another@another-example.com');
+        $this->email->bcc('them@their-example.com');
+
+        $this->email->subject('Email Test');
+        $this->email->message($content);
+
+        $this->email->send();
+
     }
 }

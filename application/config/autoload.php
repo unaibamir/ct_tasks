@@ -103,7 +103,7 @@ $autoload['helper'] = array('url', 'tasks_random');
 | config files.  Otherwise, leave it blank.
 |
 */
-$autoload['config'] = array( 'strings' );
+$autoload['config'] = array( 'strings', 'email' );
 
 /*
 | -------------------------------------------------------------------
