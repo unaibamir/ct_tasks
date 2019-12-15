@@ -84,29 +84,35 @@ $job_types = array(
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">Jobs Count</h5>
+                    <h5 class="title mb-0">Jobs Count</h5>
                 </div>
-                <div class="card-body all-icons">
+                <div class="card-body all-icons pt-0">
                     <div class="row">
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
+                        <div class="font-icon-list col col col-xs-6 text-danger">
+                            <div class="font-icon-detail">
+                                <h5 class="title"><?php echo !empty($tasks) ? count($tasks) : 0; ?></h5>
+                                <p>Total</p>
+                            </div>
+                        </div>
+                        <div class="font-icon-list col col col-xs-6 text-danger">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count["daily"])? $tasks_count["daily"][0]["total"] : 0; ?></h5>
                                 <p>Daily</p>
                             </div>
                         </div>
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger ">
+                        <div class="font-icon-list col col col-xs-6 text-danger ">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count["weekly"])? $tasks_count["weekly"][0]["total"] : 0; ?></h5>
                                 <p>Weekly</p>
                             </div>
                         </div>
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
+                        <div class="font-icon-list col col col-xs-6 text-danger">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count["monthly"])? $tasks_count["monthly"][0]["total"] : 0; ?></h5>
                                 <p>Monthly</p>
                             </div>
                         </div>
-                        <div class="font-icon-list col-lg-3 col-md-3 col-sm-4 col-xs-6 col-xs-6 text-danger">
+                        <div class="font-icon-list col col col-xs-6 text-danger">
                             <div class="font-icon-detail">
                                 <h5 class="title"><?php echo !empty($tasks_count["one_time"])? $tasks_count["one_time"][0]["total"] : 0; ?></h5>
                                 <p>One Time</p>
@@ -145,18 +151,30 @@ $job_types = array(
                         <div class="col-md-3">
                             <h6 class="m-1">Current Date:</h6>
                             <?php
-
                             echo '<p class="car}d-text mx-2 ">' . date("d / m / Y", time() ) . '</p>';
                             ?>
                         </div>
-                        <div class="col-md-3">
-                            <a href="<?php echo $export_url; ?>"  class="btn btn-primary btn-lg">
-                                Download / Export
-                            </a>
-                            
-                        </div>
                         
                     </div>
+
+                    <form action="<?php echo base_url("report/monthly");?>" method="GET">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="text" name="month" value="<?php echo $month_arg;?>" autocomplete="off" class="form-control text-left monthpicker" placeholder="Select Month" style="margin-top: 10px;">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-info " value="Submit" style="background: #244973;">
+                                <a class="btn btn-info" href="<?php echo base_url("report/monthly"); ?>">RESET</a>
+                                <?php if (!empty($tasks)): ?>
+                                    <a class="btn btn-info" href="<?php echo $export_url; ?>">Download/Export</a>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    </form>
 
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover bg-light">
@@ -164,8 +182,8 @@ $job_types = array(
                                 <tr class="d-flex">
                                     <th scope="col"  style="width:70px !important; padding: 14px 6px;">Job Code</th>
                                     <th scope="col"  style="width: 40px!important; font-size: 9px; padding: 14px 6px;">Code</th>
-                                    <th colspan="4" style="width: 90px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Title</th>
-                                    <th scope="col" style="width: 90px !important; padding: 14px;">Desctiption</th>
+                                    <th colspan="4" style="width: 160px !important; font-size: 9px;font-family: inherit; font-family: monospace; padding: 14px;">Title & Description</th>
+                                   <!-- <th scope="col" style="width: 90px !important; padding: 14px;">Desctiption</th> -->
                                     <!-- <th style="width: 100px;">Job Types</th>
                                     <th style="width: 150px;">Department</th> -->
                                     <!-- <th style="width: 150px;">Job Category</th> -->
@@ -196,8 +214,8 @@ $job_types = array(
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
                                     <td style="font-weight: 600; font-size: 9px; width: 70px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
                                     <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
-                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $task->t_title; ?></td>
-                                    <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td>
+                                    <td style="width: 160px !important; font-size: 9px;font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $task->t_title; ?> <br> <a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td>
+                                    <!-- <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td> -->
                                     <td style="width: 64px !important; font-size: 9px;font-family: inherit;">
                                         <?php 
                                         if( !empty( $task->given_f ) ) {

@@ -158,6 +158,8 @@ class Report extends CI_Controller
             $year   = date("Y");
         }
 
+        $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
+
         $data["month_date"] = $month;
         $sql_month_date = $month;
 
@@ -182,10 +184,13 @@ class Report extends CI_Controller
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
             $sql .= " AND T.assignee = {$_GET["employee_id"]}";
         }
+        elseif ( $this->currentUserGroup[0]->name == "Employee" ) {
+            $sql .= " AND T.assignee = {$this->currentUser->id}";
+        }
 
         $tasks = $this->db->query($sql)->result();
 
-        // Counting Task    
+        // Counting Task
         
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
@@ -705,9 +710,19 @@ class Report extends CI_Controller
     public function getEmployeeMonthlyReport( $user_id, $month = "" ) {
 
         $employee       = $this->aauth->get_user($user_id);
-        $current_month  = date("F");
         $month_dates    = $this->getCurrentMonthDates();
         $date_format    = $this->config->item('date_format');
+
+        $current_month  = date("F");
+
+        if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
+            list( $year, $month )   =   explode("-", $_GET["month"]);
+        } else {
+            $month  = date("m");
+            $year   = date("Y");
+        }
+
+        $sql_month_date = $month;
 
         $job_types = array(
             1 => "Daily",
@@ -745,7 +760,9 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
         LEFT JOIN departments AS D on D.cid = T.department_id";
 
-        $sql .= " WHERE T.assignee = {$user_id}";
+        $sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
+
+        $sql .= " AND T.assignee = {$user_id}";
 
         //$sql .= " LIMIT 0, 100";
         

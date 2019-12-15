@@ -19,6 +19,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <!-- CSS Files -->
     <link href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>" rel="stylesheet" />
     <link href="<?php echo base_url('assets/css/now-ui-dashboard.css?v=1.3.0'); ?>" rel="stylesheet" />
+    <link href="<?php echo base_url('assets/css/datepicker.min.css'); ?>" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- CSS Just for demo purpose, don't include it in your project -->
@@ -193,54 +194,54 @@ defined('BASEPATH') or exit('No direct script access allowed');
              </div>
 
                     <div class="row">
-                              <div class="row" >
-                                <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                                    <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">Add New Task</a>
-                              
-                                  <?php endif; ?>
+                          <div class="row" >
+                            <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                                <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">Add New Task</a>
+                          
+                              <?php endif; ?>
 
 
-                                  <!-- Manager Side / Task listing  -->
-                                   <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                                        <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">Task Listing </a>
-                                    <?php endif; ?>
-
-                                     
-                                <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-                       
-                                        <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">View Employees Report</a>
-        
+                              <!-- Manager Side / Task listing  -->
+                               <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                                    <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">Task Listing </a>
                                 <?php endif; ?>
 
-                                <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-                                    <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">Employee list</a>
-                                    <?php endif; ?>
+                                 
+                            <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                   
+                                    <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">View Employees Report</a>
 
-                                    <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                            <?php endif; ?>
+
+                            <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                                <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">Employee list</a>
+                                <?php endif; ?>
+
+                                <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                        
+                                <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">All Assign Task</a>
                             
-                                    <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">All Assign Task</a>
+                                <?php endif; ?>
+                                <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
+                          
+                                <a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">Daily JoB Report - View </a>
+                        
+                                <?php endif; ?>
+                                <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
                                 
-                                    <?php endif; ?>
-                                    <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
-                              
-                                    <a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">Daily JoB Report - View </a>
-                            
-                                    <?php endif; ?>
-                                    <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
-                                    
-                                    <a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-                                        Monthy Job Summary - View
-                                    </a>
-                         
-                                    <?php endif; ?>
-                                     <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
-                                    
-                                    <a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
-                                        Send An Email
-                                    </a>
-                         
-                                    <?php endif; ?>
-                             </div> 
+                                <a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                    Monthy Job Summary - View
+                                </a>
+                     
+                                <?php endif; ?>
+                                 <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+                                
+                                <a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
+                                    Send An Email
+                                </a>
+                     
+                            <?php endif; ?>
+                         </div> 
                 </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-bar navbar-kebab"></span>
@@ -338,6 +339,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 </div>
 </div>
 
+    <script src="<?php echo base_url('assets/js/bootstrap-datepicker.min.js');?>"></script>
+    <script>
+        var datepicker = $.fn.datepicker.noConflict();
+        $.fn.bootstrapBT = datepicker;
+
+        
+    </script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!--   Core JS Files   -->

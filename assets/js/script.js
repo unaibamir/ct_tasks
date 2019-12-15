@@ -146,4 +146,17 @@ $( function() {
             minDate: new Date()
         });
     });
+
+    $('.monthpicker').bootstrapBT({
+        autoclose: true,
+        minViewMode: 1,
+        format: 'yyyy-mm',
+        endDate: new Date()
+    });
+
 });
+
+// Call bootstrap datepicker function
+        
+
+
