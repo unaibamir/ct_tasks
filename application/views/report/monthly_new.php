@@ -174,6 +174,11 @@ $job_types = array(
                             </div>
                         </div>
                     </div>
+                    <?php
+                    if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+                        ?><input type="hidden" name="employee_id" value="<?php echo $_GET["employee_id"]; ?>"><?php
+                    }
+                    ?>
                     </form>
 
                     <div class="table-responsive">
