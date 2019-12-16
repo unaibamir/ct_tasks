@@ -166,6 +166,18 @@ $job_types = array(
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
+                                <select name="status" class="form-control" style="margin-top: 10px;">
+                                    <option value="">Please Select Status</option>
+                                    <option <?php echo isset($_GET["status"]) && $_GET["status"] == "all" ? "selected" : "" ?> value="all">All</option>
+                                    <option <?php echo isset($_GET["status"]) && $_GET["status"] == "in-progress" ? "selected" : "" ?> value="in-progress">In Progress</option>
+                                    <option <?php echo isset($_GET["status"]) && $_GET["status"] == "hold" ? "selected" : "" ?> value="hold">Hold</option>
+                                    <option <?php echo isset($_GET["status"]) && $_GET["status"] == "cancelled" ? "selected" : "" ?> value="cancelled">Cancelled</option>
+                                    <option <?php echo isset($_GET["status"]) && $_GET["status"] == "completed" ? "selected" : "" ?> value="completed">Finished</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
                                 <input type="submit" class="btn btn-info " value="Submit" style="background: #244973;">
                                 <a class="btn btn-info" href="<?php echo base_url("report/monthly"); ?>">RESET</a>
                                 <?php if (!empty($tasks)): ?>

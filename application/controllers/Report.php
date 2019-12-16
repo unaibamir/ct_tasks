@@ -175,11 +175,11 @@ class Report extends CI_Controller
         assignee.last_name as assignee_l,
         reporter.first_name as follow, 
         D.c_name FROM `tasks` AS T
-		LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-		LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
+        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
+        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
         LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
-		LEFT JOIN departments AS D on D.cid = T.department_id";
+        LEFT JOIN departments AS D on D.cid = T.department_id";
 
         $sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
 
@@ -189,7 +189,17 @@ class Report extends CI_Controller
         elseif ( $this->currentUserGroup[0]->name == "Employee" ) {
             $sql .= " AND T.assignee = {$this->currentUser->id}";
         }
-
+        
+        if (!isset($_GET["status"])) {
+            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
+            $sql .= ' AND T.t_status = "' . $_GET["status"] . '"';
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $sql .= " AND T.t_status != '' ";
+        } else {
+            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+        }
+        
         $tasks = $this->db->query($sql)->result();
 
         // Counting Task
@@ -200,6 +210,15 @@ class Report extends CI_Controller
         $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        if( !isset($_GET["status"]) ) {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        } elseif( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all" ) {
+            $this->db->where("tasks.t_status", $_GET["status"]);
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $this->db->where("tasks.t_status != ", "");
+        } else {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        }
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
         $daily = $this->db->get()->result_array();
@@ -210,6 +229,15 @@ class Report extends CI_Controller
         $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        if( !isset($_GET["status"]) ) {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        } elseif( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all" ) {
+            $this->db->where("tasks.t_status", $_GET["status"]);
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $this->db->where("tasks.t_status != ", "");
+        } else {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        }
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
         $weekly = $this->db->get()->result_array();
@@ -220,6 +248,15 @@ class Report extends CI_Controller
         $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        if( !isset($_GET["status"]) ) {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        } elseif( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all" ) {
+            $this->db->where("tasks.t_status", $_GET["status"]);
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $this->db->where("tasks.t_status != ", "");
+        } else {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        }
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
         $monthly = $this->db->get()->result_array();
@@ -230,6 +267,15 @@ class Report extends CI_Controller
         $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) $this->db->where([ "tasks.assignee" => $_GET["employee_id"] ]);
         if ($this->currentUserGroup[0]->name == "Employee") $this->db->where('tasks.assignee', $this->currentUser->id);
+        if( !isset($_GET["status"]) ) {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        } elseif( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all" ) {
+            $this->db->where("tasks.t_status", $_GET["status"]);
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $this->db->where("tasks.t_status != ", "");
+        } else {
+            $this->db->where_in( array( 'hold', 'in-progress' ) );
+        }
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
         $one_time = $this->db->get()->result_array();
@@ -269,8 +315,8 @@ class Report extends CI_Controller
             $sql_prev .= " AND T.assignee = {$_GET["employee_id"]}";
         }
         
-        $tasks_prev = $this->db->query($sql_prev)->result();
-        $total_tasks = array_merge($tasks, $tasks_prev);
+        //$tasks_prev = $this->db->query($sql_prev)->result();
+        //$total_tasks = array_merge($tasks, $tasks_prev);
 
         if( !empty($tasks) ) {
             foreach ($tasks as $key => $task) {
@@ -280,20 +326,20 @@ class Report extends CI_Controller
             }
         }
 
-        if( !empty($tasks_prev) ) {
+        /*if( !empty($tasks_prev) ) {
             foreach ($tasks_prev as $key => $task) {
                 $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = MONTH('".$prev_date."' - INTERVAL 1 MONTH) AND YEAR(created_at) = YEAR(CURRENT_DATE())";
                 $report_result = $this->db->query($sql)->result();
                 $task->reports = $report_result;
             }
-        }
+        }*/
         /*dd($tasks, false);
         dd("AAAA", false);
         dd($tasks_prev);*/
 
         $data['tasks'] = $tasks;
-        $data['tasks_prev'] = $tasks_prev;
-        $data["total_tasks"] = $total_tasks;
+        //$data['tasks_prev'] = $tasks_prev;
+        //$data["total_tasks"] = $total_tasks;
         
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
             $employee = $this->aauth->get_user($_GET["employee_id"]);
@@ -316,6 +362,12 @@ class Report extends CI_Controller
         if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
             $arr2 = array(
                 "month"  =>  $_GET["month"]
+            );
+        }
+
+        if( isset($_GET["status"]) && !empty($_GET["status"]) ) {
+            $arr3 = array(
+                "status" => $_GET["status"]
             );
         }
 
@@ -764,12 +816,20 @@ class Report extends CI_Controller
 
         $sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
 
-        $sql .= " AND T.assignee = {$user_id}";
+		$sql .= " AND T.assignee = {$user_id}";
 
+		if (!isset($_GET["status"])) {
+			$sql .= " AND T.t_status IN ('hold', 'in-progress')";
+		} elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
+			$sql .= ' AND T.t_status = "' . $_GET["status"] . '"';
+		} elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $sql .= " AND T.t_status != '' ";
+        } else {
+            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+        }
+		
         //$sql .= " LIMIT 0, 100";
-        
-        $tasks = $this->db->query($sql)->result();
-        
+        $tasks = $this->db->query($sql)->result();        
 
         $month_date = !empty($month) ? $month : date('m');
 
@@ -782,9 +842,6 @@ class Report extends CI_Controller
             $report_result = $this->db->query($sql)->result();
             $task->reports = $report_result;
         }
-
-        //dd($tasks);
-
 
         $spreadsheet = new Spreadsheet();
 
@@ -888,7 +945,15 @@ class Report extends CI_Controller
         $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
         $current_month  = date("F");
         $month_dates    = $this->getCurrentMonthDates();
-        $date_format    = $this->config->item('date_format');
+		$date_format    = $this->config->item('date_format');
+
+		if (isset($_GET["month"]) && !empty($_GET["month"])) {
+			list($year, $month)   =   explode("-", $_GET["month"]);
+		} else {
+			$month  = date("m");
+			$year   = date("Y");
+		}
+		$sql_month_date = $month;
 
         $job_types = array(
             1 => "Daily",
@@ -914,13 +979,23 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
         LEFT JOIN departments AS D on D.cid = T.department_id";
-
+		$sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
         if( $this->currentUserGroup[0]->name == "Employee" ) {
-            $sql .= " WHERE T.assignee = {$this->currentUser->id}";
+            $sql .= " AND T.assignee = {$this->currentUser->id}";
+		}
+
+        if (!isset($_GET["status"])) {
+            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
+            $sql .= ' AND T.t_status = "' . $_GET["status"] . '"';
+        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+            $sql .= " AND T.t_status != '' ";
+        } else {
+            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
         }
-
+		
         $tasks = $this->db->query($sql)->result();
-
+		
         $month_date = !empty($month) ? $month : date('m');
 
         $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
@@ -929,7 +1004,8 @@ class Report extends CI_Controller
             $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
             $report_result = $this->db->query($sql)->result();
             $task->reports = $report_result;
-        }
+		}
+		
 
         $spreadsheet = new Spreadsheet();
 
@@ -973,14 +1049,16 @@ class Report extends CI_Controller
             } else {
                 $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->created_by_f . ' ' . $task->created_by_l );
             }
-            $spreadsheet->getActiveSheet()->setCellValue('E' . $content_col , $task->follow_f . ' ' . $task->follow_l );
-            $spreadsheet->getActiveSheet()->setCellValue('F' . $content_col , $job_types[$task->parent_id] );
-            $spreadsheet->getActiveSheet()->setCellValue('G' . $content_col , $start_date );
+			$spreadsheet->getActiveSheet()->setCellValue('E' . $content_col , $task->follow_f . ' ' . $task->follow_l );
+			
+            $spreadsheet->getActiveSheet()->setCellValue('F' . $content_col , isset($task->parent_id) ? $job_types[$task->parent_id] : $job_types[1] );
+			
+			$spreadsheet->getActiveSheet()->setCellValue('G' . $content_col , $start_date );
             $spreadsheet->getActiveSheet()->setCellValue('H' . $content_col , $end_date );
             $spreadsheet->getActiveSheet()->setCellValue('I' . $content_col , getStatusText($task->t_status) );
             
 
-            $inner_col = 9;
+            $inner_col = 10;
             foreach ($month_dates as $date_dig => $date_alpha) {
 
                 $current_date   = $date_dig . date("/{$month_date}/Y");

@@ -253,7 +253,7 @@ class Task extends CI_Controller
             }
         }
 
-        $this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
+        //$this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
 
         redirect(base_url('task/alert'));
     }
