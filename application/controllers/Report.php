@@ -165,6 +165,8 @@ class Report extends CI_Controller
         $data["month_date"] = $month;
         $sql_month_date = $month;
 
+
+
         $sql = "SELECT T.*,  
         assignee.first_name as given,
         giver.first_name as given_f,
@@ -181,7 +183,14 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
         LEFT JOIN departments AS D on D.cid = T.department_id";
 
-        $sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
+        $sql .= " WHERE ";
+
+        if( $sql_month_date == date("m") ) {
+            $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
+        } else {
+            $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
+        }
+
 
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
             $sql .= " AND T.assignee = {$_GET["employee_id"]}";
@@ -199,6 +208,9 @@ class Report extends CI_Controller
         } else {
             $sql .= " AND T.t_status IN ('hold', 'in-progress')";
         }
+        
+        // order by 
+        $sql .= " ORDER BY T.t_created_at DESC ";
         
         $tasks = $this->db->query($sql)->result();
 
@@ -814,7 +826,13 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
         LEFT JOIN departments AS D on D.cid = T.department_id";
 
-        $sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
+        $sql .= " WHERE ";
+
+        if( $sql_month_date == date("m") ) {
+            $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
+        } else {
+            $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
+        }
 
 		$sql .= " AND T.assignee = {$user_id}";
 
@@ -827,6 +845,8 @@ class Report extends CI_Controller
         } else {
             $sql .= " AND T.t_status IN ('hold', 'in-progress')";
         }
+
+        $sql .= " ORDER BY T.t_created_at DESC ";
 		
         //$sql .= " LIMIT 0, 100";
         $tasks = $this->db->query($sql)->result();        
@@ -979,7 +999,15 @@ class Report extends CI_Controller
         LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
         LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
         LEFT JOIN departments AS D on D.cid = T.department_id";
-		$sql .= " WHERE MONTH(T.t_created_at) = {$sql_month_date}";
+		
+        $sql .= " WHERE ";
+
+        if( $sql_month_date == date("m") ) {
+            $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
+        } else {
+            $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
+        }
+
         if( $this->currentUserGroup[0]->name == "Employee" ) {
             $sql .= " AND T.assignee = {$this->currentUser->id}";
 		}
@@ -993,6 +1021,8 @@ class Report extends CI_Controller
         } else {
             $sql .= " AND T.t_status IN ('hold', 'in-progress')";
         }
+
+        $sql .= " ORDER BY T.t_created_at DESC ";
 		
         $tasks = $this->db->query($sql)->result();
 		

@@ -196,7 +196,8 @@ class Task extends CI_Controller
             't_description'   => $this->input->post('description'),
             'start_date'      => $start_date,
             'end_date'        => $end_date,
-            'created_by'      => $this->currentUser->id
+            'created_by'      => $this->currentUser->id,
+            't_status'        => "in-progress"
         );
 
         $this->db->insert('tasks', $data);
