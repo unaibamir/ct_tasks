@@ -125,6 +125,7 @@ class Task extends CI_Controller
 
     public function add()
     {
+        
         $this->load->library('form_validation');
 
         $data['heading1'] = 'Task from';
@@ -254,7 +255,7 @@ class Task extends CI_Controller
             }
         }
 
-        //$this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
+        $this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
 
         redirect(base_url('task/alert'));
     }
@@ -564,9 +565,12 @@ class Task extends CI_Controller
 
         $view["inc_email"]  =  "emails/task_assigned";
         $content = $this->load->view('emails/layout', $view, true);
+
+        $this->load->model( "user" );
+        $user_email = $this->user->get_user_email( $assignee );
         
         $this->email->from($this->config->item( "from_email" ), $this->config->item( "from_name" ));
-        $this->email->to( $assignee->email );
+        $this->email->to( $user_email );
 
         $this->email->subject('New Task Assigned');
         $this->email->message($content);
