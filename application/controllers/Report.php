@@ -858,7 +858,7 @@ class Report extends CI_Controller
         $result = $this->db->query($sql)->result();*/
 
         foreach ($tasks as $key => $task) {
-            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = {$year}";
             $report_result = $this->db->query($sql)->result();
             $task->reports = $report_result;
         }
@@ -906,7 +906,7 @@ class Report extends CI_Controller
             $end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
             
             $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
-            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
+            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title . "\n" . $task->t_description );
 
             if( !empty($task->given_f) ) {
                 $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
@@ -924,8 +924,8 @@ class Report extends CI_Controller
             $inner_col = 9;
             foreach ($month_dates as $date_dig => $date_alpha) {
 
-                $current_date   = $date_dig . date("/{$month_date}/Y");
-                $current_date_2 = strtotime(date($date_dig . "-{$month_date}-Y"));
+                $current_date   = $date_dig . date("/{$month_date}/{$year}");
+                $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year}"));
                 $start_date     = strtotime($task->start_date);
                 $end_date       = strtotime($task->end_date);
                 $output         = "-";
@@ -1031,7 +1031,7 @@ class Report extends CI_Controller
         $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
 
         foreach ($tasks as $key => $task) {
-            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = {$year}";
             $report_result = $this->db->query($sql)->result();
             $task->reports = $report_result;
 		}
@@ -1072,7 +1072,7 @@ class Report extends CI_Controller
             
             //$spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
             $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
-            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
+            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title . "\n" . $task->t_description );
             $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->assignee_f . ' ' . $task->assignee_l );
             if( !empty($task->given_f) ) {
                 $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
@@ -1091,8 +1091,8 @@ class Report extends CI_Controller
             $inner_col = 10;
             foreach ($month_dates as $date_dig => $date_alpha) {
 
-                $current_date   = $date_dig . date("/{$month_date}/Y");
-                $current_date_2 = strtotime(date($date_dig . "-{$month_date}-Y"));
+                $current_date   = $date_dig . date("/{$month_date}/{$year}");
+                $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year}"));
                 $start_date     = strtotime($task->start_date);
                 $end_date       = strtotime($task->end_date);
                 $output         = "-";
