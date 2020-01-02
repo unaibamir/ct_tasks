@@ -252,11 +252,12 @@ $job_types = array(
                                     ?>
                                     <td style="width: 55px; ">
                                     <?php
-                                        $current_date   = $date_dig . date("/{$month_date}/Y");
-                                        $current_date_2 = strtotime(date($date_dig . "-{$month_date}-Y"));
+                                        $current_date   = $date_dig . date("/{$month_date}/{$year_date}");
+                                        $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year_date}"));
                                         $start_date     = strtotime($task->start_date);
                                         $end_date       = strtotime($task->end_date);
                                         $output         = "-";
+
                                         if( !empty($task->reports) ) {
                                             foreach ($task->reports as $report_key => $report) {
                                                 $report_date    = date($date_format, strtotime($report->created_at));
@@ -265,6 +266,7 @@ $job_types = array(
                                                     break;
                                                 }
                                             }
+
                                         }
                                         ?>
                                         <?php echo '<span class="table-status">' . $output . '</span>'; ?>

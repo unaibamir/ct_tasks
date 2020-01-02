@@ -163,6 +163,7 @@ class Report extends CI_Controller
         $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
 
         $data["month_date"] = $month;
+        $data["year_date"] = $year;
         $sql_month_date = $month;
 
 
@@ -332,7 +333,7 @@ class Report extends CI_Controller
 
         if( !empty($tasks) ) {
             foreach ($tasks as $key => $task) {
-                $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
+                $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = {$year}";
                 $report_result = $this->db->query($sql)->result();
                 $task->reports = $report_result;
             }
@@ -345,10 +346,8 @@ class Report extends CI_Controller
                 $task->reports = $report_result;
             }
         }*/
-        /*dd($tasks, false);
-        dd("AAAA", false);
-        dd($tasks_prev);*/
 
+        
         $data['tasks'] = $tasks;
         //$data['tasks_prev'] = $tasks_prev;
         //$data["total_tasks"] = $total_tasks;
@@ -405,7 +404,7 @@ class Report extends CI_Controller
             $month  = date("m");
             $year   = date("Y");
         }
-
+        $month_num = $month;
         $dates = array();
 
         date("L", mktime(0, 0, 0, 7, 7, $year)) ? $days = 366 : $days = 365;
@@ -418,9 +417,6 @@ class Report extends CI_Controller
 
             $dates[$month][$day] = $wkDay;
         }
-
-        
-        $month_num = $month;
 
         $dates = $dates[ $month_num ];
         return $dates;
@@ -617,6 +613,10 @@ class Report extends CI_Controller
         
         $this->db->where('tid', $task_id);
         $this->db->update('tasks', $task_data);
+
+        if( $status == "completed" ) {
+            $this->send_task_completed_email( $task_id, $report_id );
+        }
 
         redirect(base_url('task/alert/?status=alert_success'));
         //redirect(base_url('report/history/'.$task_id));
@@ -1259,9 +1259,9 @@ class Report extends CI_Controller
         $data = array();
 
         $data["inc_email"]  =  "emails/test";
-        dd($this->config->item( "from_email" ));
+        
         $content = $this->load->view('emails/layout', $data, true);
-        echo $content; exit;
+        
         $this->email->from('your@example.com', 'Your Name');
         $this->email->to('someone@example.com');
         $this->email->cc('another@another-example.com');
@@ -1271,6 +1271,10 @@ class Report extends CI_Controller
         $this->email->message($content);
 
         $this->email->send();
+
+    }
+
+    public function send_task_completed_email( $data = "" ) {
 
     }
 }
