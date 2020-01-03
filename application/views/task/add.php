@@ -28,8 +28,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <!-- <p class="form-control">Task Code Will be auto generated</p> -->
                             </div>
                             <div class="form-group">
-                                <label>Add Task Title</label>
-                                <input type="text" name="title" class="form-control" placeholder="Add Title" value="" required>
+                                <label>Add Task Title <small>(max 100 characters)</small></label>
+                                <input type="text" name="title" class="form-control" placeholder="Add Title" value="" required maxlength="100">
                             </div>
                             <div class="form-group">
                                 <label>Task Description</label>
