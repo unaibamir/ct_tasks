@@ -117,7 +117,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 										?>
 										<tr id="report-<?php echo $report->rid; ?>">
 											<td><?php echo $report->task->t_code; ?></td>
-											<td><?php echo substr($report->task->t_description, "0", "50"); ?> ...</td>
+											<td><?php echo substr($report->task->t_description, "0", "500"); ?></td>
 											<td><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></td>
 											<td><?php echo $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"]; ?></td>
 											<td><?php echo $start_date; ?></td>

@@ -231,7 +231,7 @@ $job_types = array(
                                 <tr class="d-flex" id="task-<?php echo $task->tid; ?>">
                                     <td style="font-weight: 600; font-size: 9px; width: 70px !important;">GEW-<?php echo $currentUser->username?>-<?php echo $counter; ?></td>
                                     <td style="width: 40px!important;  font-size: 9px;"><?php echo $task->t_code; ?></td>
-                                    <td style="width: 160px !important; font-size: 9px;font-family: inherit; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo $task->t_title; ?> <br> <a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td>
+                                    <td style="width: 160px !important; font-size: 9px;font-family: inherit; /*white-space: nowrap; overflow: hidden; text-overflow: ellipsis;*/"><?php echo $task->t_title; ?> <br> <a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td>
                                     <!-- <td style="width: 90px !important; font-size: 9px;font-family: inherit;  "><a href="javascript:void(0);" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>">View Desctiption</a></td> -->
                                     <td style="width: 64px !important; font-size: 9px;font-family: inherit;">
                                         <?php 

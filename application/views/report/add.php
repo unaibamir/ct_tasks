@@ -234,6 +234,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                 <div class="col-md-3 mt-4">
                                     <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>" />
                                     <input type="submit" class="btn btn-info" value="Save" <?= $disabled ?> />
+                                    <input type="hidden" name="return_url" value="<?php echo $return_url; ?>" >
                                 </div>
                                 <?php echo form_close(); ?>
                                 <!-- Form End here-->

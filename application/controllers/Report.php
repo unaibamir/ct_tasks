@@ -211,7 +211,7 @@ class Report extends CI_Controller
         }
         
         // order by 
-        $sql .= " ORDER BY T.t_created_at DESC ";
+        $sql .= " ORDER BY T.start_date ASC ";
         
         $tasks = $this->db->query($sql)->result();
 
@@ -489,6 +489,7 @@ class Report extends CI_Controller
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'report/add'; // views/task/add.php page
+        $data['return_url'] = $_SERVER["HTTP_REFERER"];
         
         $this->load->view('manager_layout', $data);
     }
@@ -618,7 +619,11 @@ class Report extends CI_Controller
             $this->send_task_completed_email( $task_id, $report_id );
         }
 
-        redirect(base_url('task/alert/?status=alert_success'));
+        if( isset($this->input->post("return_url")) ) ) {
+            redirect( $this->input->post("return_url") );
+        } else {
+            redirect( base_url('task/alert/?status=alert_success') ); // fallback
+        }
         //redirect(base_url('report/history/'.$task_id));
     }
 
