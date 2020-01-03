@@ -619,8 +619,8 @@ class Report extends CI_Controller
             $this->send_task_completed_email( $task_id, $report_id );
         }
 
-        if( isset($this->input->post("return_url")) ) ) {
-            redirect( $this->input->post("return_url") );
+        if( isset($_POST["return_url"]) && !empty($_POST["return_url"]) ) {
+            redirect( $_POST["return_url"] );
         } else {
             redirect( base_url('task/alert/?status=alert_success') ); // fallback
         }
