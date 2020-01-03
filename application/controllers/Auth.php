@@ -220,4 +220,26 @@ class Auth extends CI_Controller
             $user_id = $this->aauth->create_user($email, $password, $username);
         }
     }
+
+    public function create_new_users()
+    {
+        $users_array = array(
+            array(
+                "email"     =>  "abdulazizhusain67@yahoo.com",
+                "username"  =>  "102"
+            ),
+            array(
+                "email"     =>  "greenworld1953@yahoo.com",
+                "username"  =>  "101"
+            ),
+        );
+
+        foreach ($users_array as $key => $user_array) {
+            $email      = $user_array["email"];
+            $username   = !empty($user_array["username"])? $user_array["username"] : rand(500, 600);
+            $password   = "demo" . $username;
+
+            $user_id = $this->aauth->create_user($email, $password, $username);
+        }
+    }
 }
