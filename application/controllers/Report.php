@@ -852,7 +852,7 @@ class Report extends CI_Controller
             $sql .= " AND T.t_status IN ('hold', 'in-progress')";
         }
 
-        $sql .= " ORDER BY T.t_created_at DESC ";
+        $sql .= " ORDER BY T.start_date ASC ";
 		
         //$sql .= " LIMIT 0, 100";
         $tasks = $this->db->query($sql)->result();        
@@ -908,11 +908,15 @@ class Report extends CI_Controller
         $counter = 1;
         foreach ($tasks as $key => $task) {
             
-            $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
-            $end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
-            
+            $start_date     = date($this->config->item('date_format'), strtotime($task->start_date));
+            $end_date       = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+
+            $task_title     = "Title: " . $task->t_title;
+            $task_title     .= "\n";
+            $task_title     .= "Description: " . $task->t_description;
+
             $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
-            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title . "\n" . $task->t_description );
+            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task_title );
 
             if( !empty($task->given_f) ) {
                 $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
@@ -1028,7 +1032,7 @@ class Report extends CI_Controller
             $sql .= " AND T.t_status IN ('hold', 'in-progress')";
         }
 
-        $sql .= " ORDER BY T.t_created_at DESC ";
+        $sql .= " ORDER BY T.start_date ASC ";
 		
         $tasks = $this->db->query($sql)->result();
 		
@@ -1073,12 +1077,16 @@ class Report extends CI_Controller
         $counter = 1;
         foreach ($tasks as $key => $task) {
             
-            $start_date = date($this->config->item('date_format'), strtotime($task->start_date));
-            $end_date = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+            $start_date     = date($this->config->item('date_format'), strtotime($task->start_date));
+            $end_date       = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+
+            $task_title     = "Title: " . $task->t_title;
+            $task_title     .= "\n";
+            $task_title     .= "Description: " . $task->t_description;
             
             //$spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , $task->t_code );
             $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
-            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title . "\n" . $task->t_description );
+            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task_title );
             $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->assignee_f . ' ' . $task->assignee_l );
             if( !empty($task->given_f) ) {
                 $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
