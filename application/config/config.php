@@ -25,7 +25,12 @@ date_default_timezone_set('Asia/Dubai');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://ct-tasks.local';
+if( isset($_SERVER["HTTP_HOST"]) && $_SERVER["HTTP_HOST"] == "ct-tasks.local") {
+	$config['base_url'] = 'http://ct-tasks.local';
+} else {
+	$config['base_url'] = 'https://gewportal.com';
+}
+
 
 /*
 |--------------------------------------------------------------------------

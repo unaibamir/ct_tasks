@@ -620,7 +620,8 @@ class Report extends CI_Controller
         }
 
         if( isset($_POST["return_url"]) && !empty($_POST["return_url"]) ) {
-            redirect( $_POST["return_url"] );
+            redirect( add_query_arg( "status", "alert_success", $_POST["return_url"] ) );
+
         } else {
             redirect( base_url('task/alert/?status=alert_success') ); // fallback
         }

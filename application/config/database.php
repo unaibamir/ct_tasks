@@ -73,12 +73,35 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
-$db['default'] = array(
+if( isset($_SERVER["HTTP_HOST"]) && $_SERVER["HTTP_HOST"] == "ct-tasks.local") {
+	$db['default'] = array(
+		'dsn'	=> '',
+		'hostname' => 'localhost',
+		'username' => 'unaib',
+		'password' => 'unaib',
+		'database' => 'personal_ci_tasks',
+		'dbdriver' => 'mysqli',
+		'dbprefix' => '',
+		'pconnect' => FALSE,
+		'db_debug' => (ENVIRONMENT !== 'production'),
+		'cache_on' => FALSE,
+		'cachedir' => '',
+		'char_set' => 'utf8',
+		'dbcollat' => 'utf8_general_ci',
+		'swap_pre' => '',
+		'encrypt' => FALSE,
+		'compress' => FALSE,
+		'stricton' => FALSE,
+		'failover' => array(),
+		'save_queries' => TRUE
+	);
+} else {
+	$db['default'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
-	'username' => 'unaib',
-	'password' => 'unaib',
-	'database' => 'personal_ci_tasks',
+	'username' => 'gewporta_tms_dev',
+	'password' => 'O;_tBl$O@s[F',
+	'database' => 'gewporta_tms_dev',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
@@ -94,3 +117,5 @@ $db['default'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+}
+
