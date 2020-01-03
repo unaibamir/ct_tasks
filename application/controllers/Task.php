@@ -307,6 +307,8 @@ class Task extends CI_Controller
                 break;
         }
 
+        $this->db->order_by('tasks.t_created_at', 'DESC');
+
         $tasks = $this->db->get()->result();
         
         // Counting Task    

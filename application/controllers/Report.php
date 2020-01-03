@@ -186,18 +186,18 @@ class Report extends CI_Controller
 
         $sql .= " WHERE ";
 
-        if( $sql_month_date == date("m") ) {
+        /*if( $sql_month_date == date("m") ) {
             $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
         } else {
-            $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
-        }
+            $sql .= " MONTH(T.t_created_at) = {$sql_month_date} AND YEAR(T.t_created_at) = {$year}";
+        }*/
 
 
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
-            $sql .= " AND T.assignee = {$_GET["employee_id"]}";
+            $sql .= " T.assignee = {$_GET["employee_id"]}";
         }
         elseif ( $this->currentUserGroup[0]->name == "Employee" ) {
-            $sql .= " AND T.assignee = {$this->currentUser->id}";
+            $sql .= " T.assignee = {$this->currentUser->id}";
         }
         
         if (!isset($_GET["status"])) {
@@ -212,7 +212,7 @@ class Report extends CI_Controller
         
         // order by 
         $sql .= " ORDER BY T.start_date ASC ";
-        
+        //  dd($sql);
         $tasks = $this->db->query($sql)->result();
 
         // Counting Task
@@ -347,7 +347,7 @@ class Report extends CI_Controller
             }
         }*/
 
-        
+        //dd($tasks, false);
         $data['tasks'] = $tasks;
         //$data['tasks_prev'] = $tasks_prev;
         //$data["total_tasks"] = $total_tasks;
@@ -834,13 +834,13 @@ class Report extends CI_Controller
 
         $sql .= " WHERE ";
 
-        if( $sql_month_date == date("m") ) {
+        /*if( $sql_month_date == date("m") ) {
             $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
         } else {
             $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
-        }
+        }*/
 
-		$sql .= " AND T.assignee = {$user_id}";
+		$sql .= " T.assignee = {$user_id}";
 
 		if (!isset($_GET["status"])) {
 			$sql .= " AND T.t_status IN ('hold', 'in-progress')";
@@ -1012,14 +1012,14 @@ class Report extends CI_Controller
 		
         $sql .= " WHERE ";
 
-        if( $sql_month_date == date("m") ) {
+        /*if( $sql_month_date == date("m") ) {
             $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
         } else {
             $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
-        }
+        }*/
 
         if( $this->currentUserGroup[0]->name == "Employee" ) {
-            $sql .= " AND T.assignee = {$this->currentUser->id}";
+            $sql .= " T.assignee = {$this->currentUser->id}";
 		}
 
         if (!isset($_GET["status"])) {
