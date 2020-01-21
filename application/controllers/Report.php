@@ -142,8 +142,7 @@ class Report extends CI_Controller
         return $dates[date('m')];
     }
 
-    public function monthly()
-    {
+    public function monthly() {
 
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
@@ -873,18 +872,25 @@ class Report extends CI_Controller
 
         $spreadsheet->getActiveSheet()->setCellValue('A3', 'Task Code');
         $spreadsheet->getActiveSheet()->setCellValue('B3', 'Task Title');
-        $spreadsheet->getActiveSheet()->setCellValue('C3', 'Given By');
-        $spreadsheet->getActiveSheet()->setCellValue('D3', 'Follow Up');
-        $spreadsheet->getActiveSheet()->setCellValue('E3', 'Job Type');
-        $spreadsheet->getActiveSheet()->setCellValue('F3', 'Start Date');
-        $spreadsheet->getActiveSheet()->setCellValue('G3', 'End Date');
-        $spreadsheet->getActiveSheet()->setCellValue('H3', 'Status');
+        $spreadsheet->getActiveSheet()->setCellValue('C3', 'Task Description');
+        $spreadsheet->getActiveSheet()->setCellValue('D3', 'Given By');
+        $spreadsheet->getActiveSheet()->setCellValue('E3', 'Follow Up');
+        $spreadsheet->getActiveSheet()->setCellValue('F3', 'Job Type');
+        $spreadsheet->getActiveSheet()->setCellValue('G3', 'Start Date');
+        $spreadsheet->getActiveSheet()->setCellValue('H3', 'End Date');
+        $spreadsheet->getActiveSheet()->setCellValue('I3', 'Status');
 
-        $header_col = 9;
+        $header_col = 10;
         $row = 3;
-        foreach ($month_dates as $dig => $alpha) {
-            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col, $row, $alpha .'-'. $dig );
-            $header_col++;
+
+        if( isset($_GET["status"]) && !empty($_GET["status"]) && ( $_GET["status"] == "completed" || $_GET["status"] == "cancelled" ) ) {
+            $spreadsheet->getActiveSheet()->setCellValue('J3', 'Task Files');
+            $spreadsheet->getActiveSheet()->setCellValue('K3', 'Report Files');
+        } else {
+            foreach ($month_dates as $dig => $alpha) {
+                $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col, $row, $alpha .'-'. $dig );
+                $header_col++;
+            }
         }
 
         $spreadsheet->getActiveSheet()->mergeCells('A1:B1');
@@ -902,58 +908,107 @@ class Report extends CI_Controller
         $spreadsheet->getActiveSheet()->getStyle("J1")->getFont()->setBold(true);
         $spreadsheet->getActiveSheet()->setCellValue('L1', date( "M, Y" ) );
 
-        $spreadsheet->getActiveSheet()->getStyle("A3:AM3")->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("A3:AZ3")->getFont()->setBold(true);
 
         $content_col = 4;
         $counter = 1;
         foreach ($tasks as $key => $task) {
-            
+
             $start_date     = date($this->config->item('date_format'), strtotime($task->start_date));
             $end_date       = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+            
+            // obttain task files
+            $this->db->select('*');
+            $this->db->from('files');
+            $this->db->where('files.post_id', $task->tid);
+            $task_files_date = $this->db->get()->result_array();
 
-            $task_title     = "Title: " . $task->t_title;
-            $task_title     .= "\n";
-            $task_title     .= "Description: " . $task->t_description;
-
-            $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
-            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task_title );
-
-            if( !empty($task->given_f) ) {
-                $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->given_f . ' ' . $task->given_l );
+            if( !empty($task_files_date) ) {
+                $task_files = array();
+                foreach ($task_files_date as $task_file_data) {
+                    array_push($task_files, $task_file_data["url"]);
+                }
+                $task_files = implode(", ", $task_files);
             } else {
-                $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->created_by_f . ' ' . $task->created_by_l );
+                $task_files = "";
             }
 
-            $spreadsheet->getActiveSheet()->setCellValue('D' . $content_col , $task->follow_f . ' ' . $task->follow_l );
-            $spreadsheet->getActiveSheet()->setCellValue('E' . $content_col , $job_types[$task->parent_id] );
-            $spreadsheet->getActiveSheet()->setCellValue('F' . $content_col , $start_date );
-            $spreadsheet->getActiveSheet()->setCellValue('G' . $content_col , $end_date );
-            $spreadsheet->getActiveSheet()->setCellValue('H' . $content_col , getStatusText($task->t_status) );
-            
 
-            $inner_col = 9;
-            foreach ($month_dates as $date_dig => $date_alpha) {
+            // obtain task reports files
 
-                $current_date   = $date_dig . date("/{$month_date}/{$year}");
-                $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year}"));
-                $start_date     = strtotime($task->start_date);
-                $end_date       = strtotime($task->end_date);
-                $output         = "-";
+            $report_files = array();
+            if( !empty($task->reports) ) {
+                foreach ($task->reports as $task_report) {
+                    $report_id = $task_report->rid;
 
-                if( !empty($task->reports) ) {
-                    foreach ($task->reports as $report_key => $report) {
-                        $report_date    = date($date_format, strtotime($report->created_at));
-                        if ($current_date == $report_date) {
-                            $output = $report->status;
-                            break;
+                    $this->db->select('*');
+                    $this->db->from('files');
+                    $this->db->where('files.post_id', $report_id);
+                    $report_files_date = $this->db->get()->result_array();
+                    if( !empty($report_files_date) ) {
+                        foreach ($report_files_date as $report_file) {
+                            array_push($report_files, $report_file->url);
                         }
+                        $report_files = implode(", ", $report_files);
+                    } else {
+                        $report_files = "";
                     }
                 }
-
-                $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $inner_col, $content_col, $output );
-                $inner_col++;
+            } else {
+                $report_files = "";
             }
+
+            dd($report_files, false);
+
+            // initial column values
+
+            $spreadsheet->getActiveSheet()->setCellValue('A' . $content_col , "GEW-" .$task->t_code . "-" . $counter );
+            $spreadsheet->getActiveSheet()->setCellValue('B' . $content_col , $task->t_title );
+            $spreadsheet->getActiveSheet()->setCellValue('C' . $content_col , $task->t_description );
+
+            if( !empty($task->given_f) ) {
+                $spreadsheet->getActiveSheet()->setCellValue('D' . $content_col , $task->given_f . ' ' . $task->given_l );
+            } else {
+                $spreadsheet->getActiveSheet()->setCellValue('D' . $content_col , $task->created_by_f . ' ' . $task->created_by_l );
+            }
+
+            $spreadsheet->getActiveSheet()->setCellValue('E' . $content_col , $task->follow_f . ' ' . $task->follow_l );
+            $spreadsheet->getActiveSheet()->setCellValue('F' . $content_col , $job_types[$task->parent_id] );
+            $spreadsheet->getActiveSheet()->setCellValue('G' . $content_col , $start_date );
+            $spreadsheet->getActiveSheet()->setCellValue('H' . $content_col , $end_date );
+            $spreadsheet->getActiveSheet()->setCellValue('I' . $content_col , getStatusText($task->t_status) );
             
+
+            if( isset($_GET["status"]) && !empty($_GET["status"]) && ( $_GET["status"] == "completed" || $_GET["status"] == "cancelled" ) ) {
+
+                $spreadsheet->getActiveSheet()->setCellValue('J' . $content_col , $task_files );
+                $spreadsheet->getActiveSheet()->setCellValue('K' . $content_col , $report_files );
+
+            } else {
+                $inner_col = 10;
+                foreach ($month_dates as $date_dig => $date_alpha) {
+
+                    $current_date   = $date_dig . date("/{$month_date}/{$year}");
+                    $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year}"));
+                    $start_date     = strtotime($task->start_date);
+                    $end_date       = strtotime($task->end_date);
+                    $output         = "-";
+
+                    if( !empty($task->reports) ) {
+                        foreach ($task->reports as $report_key => $report) {
+                            $report_date    = date($date_format, strtotime($report->created_at));
+                            if ($current_date == $report_date) {
+                                $output = $report->status;
+                                break;
+                            }
+                        }
+                    }
+
+                    $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $inner_col, $content_col, $output );
+                    $inner_col++;
+                }
+            }
+
             $content_col++;
             $counter++;
         }

@@ -242,4 +242,20 @@ class Auth extends CI_Controller
             $user_id = $this->aauth->create_user($email, $password, $username);
         }
     }
+
+
+    public function reset_password() {
+
+        // first value is user id
+        // third value is the password without any encoding.
+        // leave the second and fourth parameter as it is, false.
+        // run this in browser without logging into the website.
+        // it will reset the password for the user.
+
+        $new_password = "Gew@2020";
+
+        $user_updated = $this->aauth->update_user( 3, false, $new_password, false );
+        $user_updated = $this->aauth->update_user( 4, false, $new_password, false );
+
+    }
 }
