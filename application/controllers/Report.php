@@ -944,7 +944,7 @@ class Report extends CI_Controller
                     $this->db->select('*');
                     $this->db->from('files');
                     $this->db->where('files.post_id', $report_id);
-                    $report_files_date = $this->db->get()->result_array();
+                    $report_files_date = $this->db->get()->result();
                     if( !empty($report_files_date) ) {
                         foreach ($report_files_date as $report_file) {
                             array_push($report_files, $report_file->url);
@@ -957,8 +957,6 @@ class Report extends CI_Controller
             } else {
                 $report_files = "";
             }
-
-            dd($report_files, false);
 
             // initial column values
 
