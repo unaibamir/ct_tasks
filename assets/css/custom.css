@@ -37,3 +37,6 @@ a.btn.lower-btn {
     top: 5px !important;
     position: relative;
 }
+.nav-tabs {
+    margin-bottom: 20px;
+}

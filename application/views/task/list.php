@@ -110,36 +110,37 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                                 <div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog model-md">
                                                         <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title h4" style="margin:0;">
-                                                                Resume Task: <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
-                                                            </h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">×</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="container-fluid" style="font-size: 14px;">
-                                                                <div class="row">
-                                                                    <div class="col-md-12">
-                                                                        <form action="<?php echo base_url("/task/resume_submit"); ?>" method="post">
-                                                                            <div class="form-group row">
-                                                                                <label for="" class="col-sm-3 col-form-label" style="color: #000;">End Date <br><small>(optional)</small></label>
-                                                                                <div class="col-md-9 text-left">
-                                                                                    <input type="text" name="end_date" class="datepicker_min form-control" autocomplete="off" value="<?php echo $end_date; ?>">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title h4" style="margin:0;">
+                                                                    Resume Task: <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
+                                                                </h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="container-fluid" style="font-size: 14px;">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <form action="<?php echo base_url("/task/resume_submit"); ?>" method="post">
+                                                                                <div class="form-group row">
+                                                                                    <label for="" class="col-sm-3 col-form-label" style="color: #000;">End Date <br><small>(optional)</small></label>
+                                                                                    <div class="col-md-9 text-left">
+                                                                                        <input type="text" name="end_date" class="datepicker_min form-control" autocomplete="off" value="<?php echo $end_date; ?>">
 
-                                                                                    <p><small>if the task already has an end date, it will be displayed here.</small></p>
+                                                                                        <p><small>if the task already has an end date, it will be displayed here.</small></p>
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
 
-                                                                            <div class="form-group row">
-                                                                                <div class="col-md-12 text-right">
-                                                                                    <input type="submit" value="Resume Task" class="btn btn-success btn-sm">
+                                                                                <div class="form-group row">
+                                                                                    <div class="col-md-12 text-right">
+                                                                                        <input type="submit" value="Resume Task" class="btn btn-success btn-sm">
+                                                                                    </div>
                                                                                 </div>
-                                                                            </div>
-                                                                            <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
+                                                                                <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
 
-                                                                        </form>
+                                                                            </form>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -30,8 +30,10 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
     <div class="row">
 
         <div class="col-lg-12">
-            <div class="card card-chart text-center">
-
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="title">Task Listing</h5>
+                </div>
                 <div class="card-body center">
                     <?php
                     if (isset($_GET["status"]) && $_GET["status"] == "alert_success") {
@@ -65,15 +67,15 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                     </nav>
                     <?php if (!empty($tasks)) : ?>
                         <div class="table-responsive">
-                            <table class="table text-left">
-                                <thead>
+                            <table class="table table-bordered table-hover table-sm" id="table-list" style="width: 100%;">
+                                <thead class="thead-dark table-bordered">
                                     <tr>
                                         <th class="text-center">Task Code</th>
-                                        <th colspan="2">Task Title</th>
-                                        <th colspan="2">Job Type</th>
-                                        <th colspan="1">Given</th>
-                                        <th colspan="1">Follow Up </th>
-                                        <th colspan="2">Status</th>
+                                        <th>Task Title</th>
+                                        <th>Job Type</th>
+                                        <th>Given</th>
+                                        <th>Follow Up </th>
+                                        <th>Status</th>
                                         <th class="text-right">Actions</th>
                                     </tr>
                                 </thead>
@@ -82,6 +84,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                     <?php
                                     $date_format = $this->config->item('date_format');
                                     foreach ($tasks as $task) {
+
                                         $t_given = !empty($task->given_by) ? $task->given_by : $task->created_by;
                                         $given_by_key = array_search($t_given, array_column($users, "id"));
                                         $follow_up_key = array_search($task->reporter, array_column($users, "id"));
@@ -94,167 +97,169 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 
                                         //task
                                         echo '<tr>';
-                                        echo '<td  ><span >GEW</span>_' . $users[$assigned_user_key]["username"] . "_<b>" . $task->t_code . '</b>  </td>';
-                                        echo '<td colspan="2">' . $task_title . '</td>';
-                                        echo '<td colspan="2">' . $job_types[$task->parent_id] . '</td>';
-                                        echo '<td colspan="1">' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
-                                        echo '<td colspan="1">' . $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"] . '</td>';
-                                        echo '<td colspan="2">' . getStatusText($task->t_status) . '</td>';
-                                        echo '<td class="td-actions text-right">';
+                                            echo '<td  ><span>GEW</span>_' . $users[$assigned_user_key]["username"] . "_<strong>" . $task->t_code . '</strong>  </td>';
+                                            echo '<td>' . $task_title . '</td>';
+                                            echo '<td>' . $job_types[$task->parent_id] . '</td>';
+                                            echo '<td>' . $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"] . '</td>';
+                                            echo '<td>' . $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"] . '</td>';
+                                            echo '<td>' . getStatusText($task->t_status) . '</td>';
+                                            echo '<td class="td-actions text-right">';
 
-                                        if ($task->t_status == "completed" || $task->t_status == "cancelled" || $task->t_status == "hold") {
-											if($task->t_status == "hold") {
-												//echo '<span style="font-size: 12px;font-style: italic;margin: 5px; color: #f96332;" >Resume</span>';
-                                                ?>
-                                                <a href="javascript:void(0);" class="" data-toggle="modal" data-target=".task-resume-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size: 12px;font-style: italic;">Resume Task</a>
-                                                <?php
-											}
-                                            //echo '<span style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already </span>';
-                                        } elseif ($task->reported) {
-                                            echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already Reported</a>';
-                                        } else {
-                                            echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
-                                        }
-                                        echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
+                                            if ($task->t_status == "completed" || $task->t_status == "cancelled" || $task->t_status == "hold") {
+    											if($task->t_status == "hold") {
+    												//echo '<span style="font-size: 12px;font-style: italic;margin: 5px; color: #f96332;" >Resume</span>';
+                                                    ?>
+                                                    <a href="javascript:void(0);" class="" data-toggle="modal" data-target=".task-resume-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size: 12px;font-style: italic;">Resume Task</a>
+                                                    <?php
+    											}
+                                                //echo '<span style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already </span>';
+                                            } elseif ($task->reported) {
+                                                echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="javascript:void(0);">Already Reported</a>';
+                                            } else {
+                                                echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/add/' . $task->tid) . '">Task Form</a>';
+                                            }
+                                            echo '<a style="font-size: 12px;font-style: italic;margin: 5px;" href="' . base_url('report/history/' . $task->tid) . '">Task History</a>';
 
-                                        echo '<button data-id="' . $task->tid . '" type="button" title="view Details" class="btn btn-success btn-simple btn-icon btn-sm"  data-toggle="modal" data-target=".task-popup-' . $task->tid . '">
-											<i class="now-ui-icons education_glasses"></i>
-											</button>';
-                                        ?>
-                                        <div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title h4" style="margin:0;">Task Code - <?php echo $task->t_code; ?> Details</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="container-fluid">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <!-- <div class="form-group row">
-                                                                        <label for="" class="col-sm-3 col-form-label">Task Code</label>
-                                                                        <div class="col-md-9 text-left"><?php echo $task->t_code; ?></div>
-                                                                    </div> -->
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Task Title</label>
-                                                                    <div class="col-md-9 text-left"><?php echo $task->t_title; ?></div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Task Description</label>
-                                                                    <div class="col-md-9 text-left"><?php echo $task->t_description; ?></div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Task Status</label>
-                                                                    <div class="col-md-9 text-left"><?php echo getStatusText($task->t_status); ?></div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Type</label>
-                                                                    <div class="col-md-9 text-left"><?php echo $job_types[$task->parent_id]; ?></div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Given By</label>
-                                                                    <div class="col-md-9 text-left"><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Follow Up</label>
-                                                                    <div class="col-md-9 text-left"><?php echo $users[$follow_up_key]["first_name"] . " " . $users[$follow_up_key]["last_name"]; ?></div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Start Date</label>
-                                                                    <div class="col-md-9 text-left">
-                                                                        <?php echo date($date_format, strtotime($task->start_date)); ?>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">End Date</label>
-                                                                    <div class="col-md-9 text-left">
-                                                                        <?php
-                                                                        if( !empty( $task->end_date ) ) {
-                                                                            echo date($date_format, strtotime($task->end_date));
-                                                                        } else {
-                                                                            echo $this->config->item("no_end_date");
-                                                                        }
-                                                                        ?>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group row">
-                                                                    <label for="" class="col-sm-3 col-form-label">Files</label>
-                                                                    <div class="col-md-9 text-left">
-                                                                        <?php
-                                                                        if (!empty($task->files)) {
-                                                                            echo '<ul style="padding-left:16px;">';
-                                                                            foreach ($task->files as $file) {
-                                                                                ?>
-                                                                            <li>
-                                                                                <a href="<?php echo $file["url"]; ?>" target="_blank">
-                                                                                    <?php echo $file["f_title"]; ?>
-                                                                                        </a>
-                                                                                    </li>
-                                                                            <?php
-                                                                            }
-                                                                            echo '</ul>';
-                                                                        } else {
-                                                                            echo 'No Files Available';
-                                                                        }
-                                                                                ?>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal fade task-resume-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog model-md">
+                                            echo '<button data-id="' . $task->tid . '" type="button" title="view Details" class="btn btn-success btn-simple btn-icon btn-sm"  data-toggle="modal" data-target=".task-popup-' . $task->tid . '">
+    											<i class="now-ui-icons education_glasses"></i>
+    											</button>';
+                                            ?>
+                                            <div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title h4" style="margin:0;">
-                                                        Resume Task: <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
-                                                    </h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">×</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <div class="container-fluid" style="font-size: 14px;">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <form action="<?php echo base_url("/task/resume_submit"); ?>" method="post">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title h4" style="margin:0;">Task Code - <?php echo $task->t_code; ?> Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">×</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="container-fluid">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <!-- <div class="form-group row">
+                                                                            <label for="" class="col-sm-3 col-form-label">Task Code</label>
+                                                                            <div class="col-md-9 text-left"><?php echo $task->t_code; ?></div>
+                                                                        </div> -->
                                                                     <div class="form-group row">
-                                                                        <label for="" class="col-sm-3 col-form-label" style="color: #000;">End Date <br><small>(optional)</small></label>
+                                                                        <label for="" class="col-sm-3 col-form-label">Task Title</label>
+                                                                        <div class="col-md-9 text-left"><?php echo $task->t_title; ?></div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Task Description</label>
+                                                                        <div class="col-md-9 text-left"><?php echo $task->t_description; ?></div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Task Status</label>
+                                                                        <div class="col-md-9 text-left"><?php echo getStatusText($task->t_status); ?></div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Type</label>
+                                                                        <div class="col-md-9 text-left"><?php echo $job_types[$task->parent_id]; ?></div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Given By</label>
+                                                                        <div class="col-md-9 text-left"><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Follow Up</label>
+                                                                        <div class="col-md-9 text-left"><?php echo $users[$follow_up_key]["first_name"] . " " . $users[$follow_up_key]["last_name"]; ?></div>
+                                                                    </div>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Start Date</label>
                                                                         <div class="col-md-9 text-left">
-                                                                            <input type="text" name="end_date" class="datepicker_min form-control" autocomplete="off" value="<?php echo $end_date; ?>">
-
-                                                                            <p><small>if the task already has an end date, it will be displayed here.</small></p>
+                                                                            <?php echo date($date_format, strtotime($task->start_date)); ?>
                                                                         </div>
                                                                     </div>
-
                                                                     <div class="form-group row">
-                                                                        <div class="col-md-12 text-right">
-                                                                            <input type="submit" value="Resume Task" class="btn btn-success btn-sm">
+                                                                        <label for="" class="col-sm-3 col-form-label">End Date</label>
+                                                                        <div class="col-md-9 text-left">
+                                                                            <?php
+                                                                            if( !empty( $task->end_date ) ) {
+                                                                                echo date($date_format, strtotime($task->end_date));
+                                                                            } else {
+                                                                                echo $this->config->item("no_end_date");
+                                                                            }
+                                                                            ?>
                                                                         </div>
                                                                     </div>
-                                                                    <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
-
-                                                                </form>
+                                                                    <div class="form-group row">
+                                                                        <label for="" class="col-sm-3 col-form-label">Files</label>
+                                                                        <div class="col-md-9 text-left">
+                                                                            <?php
+                                                                            if (!empty($task->files)) {
+                                                                                echo '<ul style="padding-left:16px;">';
+                                                                                foreach ($task->files as $file) {
+                                                                                    ?>
+                                                                                <li>
+                                                                                    <a href="<?php echo $file["url"]; ?>" target="_blank">
+                                                                                        <?php echo $file["f_title"]; ?>
+                                                                                            </a>
+                                                                                        </li>
+                                                                                <?php
+                                                                                }
+                                                                                echo '</ul>';
+                                                                            } else {
+                                                                                echo 'No Files Available';
+                                                                            }
+                                                                                    ?>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    <?php
-                                        echo '</td>';
+
+                                            <div class="modal fade task-resume-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog model-md">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title h4" style="margin:0;">
+                                                                Resume Task: <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
+                                                            </h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="container-fluid" style="font-size: 14px;">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <form action="<?php echo base_url("/task/resume_submit"); ?>" method="post">
+                                                                            <div class="form-group row">
+                                                                                <label for="" class="col-sm-3 col-form-label" style="color: #000;">End Date <br><small>(optional)</small></label>
+                                                                                <div class="col-md-9 text-left">
+                                                                                    <input type="text" name="end_date" class="datepicker_min form-control" autocomplete="off" value="<?php echo $end_date; ?>">
+
+                                                                                    <p><small>if the task already has an end date, it will be displayed here.</small></p>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="form-group row">
+                                                                                <div class="col-md-12 text-right">
+                                                                                    <input type="submit" value="Resume Task" class="btn btn-success btn-sm">
+                                                                                </div>
+                                                                            </div>
+                                                                            <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
+
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <?php
+                                            echo '</td>';
+
                                         echo '</tr>';
                                     }
-                                        ?>
-
+                                    ?>
                                 </tbody>
                             </table>
                         </div>
