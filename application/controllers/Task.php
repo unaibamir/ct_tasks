@@ -96,7 +96,7 @@ class Task extends CI_Controller
             $this->db->where_in('tasks.t_status', array( $_GET["status"] ) );
         }
         else if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all" ) {
-            //$this->db->where('tasks.t_status', "");
+            $this->db->where('tasks.t_status', "");
         }
         else {
             $this->db->where_in('tasks.t_status', array( 'hold', 'in-progress' ) );
@@ -248,7 +248,7 @@ class Task extends CI_Controller
         $file_ids   = array();
         if( !empty($_FILES["files"]) ) {
 
-            $upload_path                = "uploads/tasks";
+            $upload_path                = "uploads/tasks/task-{$task_id}";
 
             if (!is_dir($upload_path)) {
                 mkdir($upload_path, 0777, true);
@@ -297,7 +297,12 @@ class Task extends CI_Controller
 
         $this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
 
-        redirect(base_url('task/alert'));
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            redirect(base_url('task/alert'));
+        } else {
+            redirect(base_url('task'));
+        }
+        
     }
 
     public function assign()

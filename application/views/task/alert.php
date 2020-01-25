@@ -37,7 +37,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 				</div>
 				<div class="card-body center">
 					<?php
-					if (isset($_GET["status"]) && $_GET["status"] == "alert_success") {
+					if (isset($_GET["message"]) && $_GET["message"] == "alert_success") {
 					?>
 						<div class="col-md-4 offset-4">
 							<div class="alert alert-success">
@@ -75,7 +75,13 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 								<div class="form-group">
 									<select name="type" id="job-type" class="form-control" style="margin-top: 10px;">
 										<?php foreach ($job_types as $key => $type_name) {
-											$selected = isset($_GET["type"]) && !empty($_GET["type"]) && $_GET["type"] == $key ? "selected" : "";
+											if( isset($_GET["type"]) && !empty($_GET["type"]) && $_GET["type"] == $key ) {
+                                                $selected = "selected";
+                                            } else if( isset($_GET["type"]) && empty(isset($_GET["type"])) || !isset($_GET["type"]) && $key == 1 ) {
+                                                $selected = "selected";
+                                            } else {
+                                                $selected = "";
+                                            }
 										?>
 											<option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $type_name; ?></option>
 										<?php

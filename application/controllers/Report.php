@@ -530,7 +530,7 @@ class Report extends CI_Controller
 
         if( !empty($_FILES["report_files"]) ) {
 
-            $upload_path                = "uploads/tasks";
+            $upload_path                = "uploads/tasks/task-{$task_id}/reports";
 
             if (!is_dir($upload_path)) {
                 mkdir($upload_path, 0777, true);
@@ -619,10 +619,10 @@ class Report extends CI_Controller
         }
 
         if( isset($_POST["return_url"]) && !empty($_POST["return_url"]) ) {
-            redirect( add_query_arg( "status", "alert_success", $_POST["return_url"] ) );
+            redirect( add_query_arg( "message", "alert_success", $_POST["return_url"] ) );
 
         } else {
-            redirect( base_url('task/alert/?status=alert_success') ); // fallback
+            redirect( base_url('task/alert/?message=alert_success') ); // fallback
         }
         //redirect(base_url('report/history/'.$task_id));
     }
