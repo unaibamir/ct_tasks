@@ -105,6 +105,8 @@ class Task extends CI_Controller
 
 
         $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
+
+        $this->db->order_by('tasks.t_created_at', 'DESC');
         
         $tasks = $this->db->get()->result();
 
@@ -323,7 +325,7 @@ class Task extends CI_Controller
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->where('tasks.assignee', $this->currentUser->id);
 
-        switch ($view) {
+        /* switch ($view) {
             case "daily":
                 $this->db->where('tasks.parent_id', 1);
                 break;
@@ -343,7 +345,42 @@ class Task extends CI_Controller
             default:
                 $this->db->where('tasks.parent_id', 1);
                 break;
-        }
+		} */
+
+		//type filter start here 
+		if (isset($_GET["type"]) && !empty($_GET["type"])) {
+			if ($_GET["type"] == 99) {
+				//$this->db->where('tasks.parent_id', $_GET["type"]);
+			} else {
+				$this->db->where('tasks.parent_id', $_GET["type"]);
+			}
+		} else {
+			$this->db->where('tasks.parent_id', 1);
+		}
+
+		// date filters start
+		if (isset($_GET["month"]) && !empty($_GET["month"])) {
+			list($year, $month)   =   explode("-", $_GET["month"]);
+			$this->db->where('MONTH(tasks.t_created_at)', $month);
+			$this->db->where('YEAR(tasks.t_created_at)', $year);
+		}
+
+		// status filter starts
+		if (!isset($_GET["status"])) {
+			$this->db->where_in('tasks.t_status', array('hold', 'in-progress'));
+		} else if (isset($_GET["status"]) && empty($_GET["status"])) {
+			$this->db->where_in('tasks.t_status', array('hold',  'in-progress'));
+		} else if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
+			$this->db->where_in('tasks.t_status', array($_GET["status"]));
+		} else if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
+			//$this->db->where('tasks.t_status', "");
+		} else {
+			$this->db->where_in('tasks.t_status', array('hold', 'in-progress'));
+		}
+
+
+
+		$data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
 
         $this->db->order_by('tasks.t_created_at', 'DESC');
 
