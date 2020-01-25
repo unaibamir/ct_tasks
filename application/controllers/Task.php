@@ -24,8 +24,7 @@ class Task extends CI_Controller
 
         //$sql = "SELECT T.*, D.c_name FROM `tasks` AS T LEFT JOIN departments AS D on D.cid = T.department_id ORDER BY T.t_created_at ASC";
 
-
-        $view = !empty($this->input->get('view')) ? $this->input->get('view') : "daily";
+        //$view = !empty($this->input->get('view')) ? $this->input->get('view') : "daily";
         $employee_id = !empty($this->input->get('employee_id')) ? $this->input->get('employee_id') : false;
 
         $employee_id = false;
@@ -41,8 +40,16 @@ class Task extends CI_Controller
         $this->db->select('*');
         $this->db->from('tasks');
         $this->db->join('departments', 'departments.cid = tasks.department_id');
+
+        if ($employee_id) {
+            $this->db->where('tasks.assignee', $employee_id);
+        }
         
-        switch ($view) {
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            $this->db->where('tasks.assignee', $this->currentUser->id);
+        }
+        
+        /*switch ($view) {
             case "daily":
                 $this->db->where('tasks.parent_id', 1);
                 break;
@@ -58,15 +65,46 @@ class Task extends CI_Controller
             default:
                 $this->db->where('tasks.parent_id', 1);
                 break;
+        }*/
+
+        //type filter start here 
+        if( isset($_GET["type"]) && !empty($_GET["type"]) ) {
+            if( $_GET["type"] == 99 ) {
+                //$this->db->where('tasks.parent_id', $_GET["type"]);
+            } else {
+                $this->db->where('tasks.parent_id', $_GET["type"]);
+            }
+        } else {
+            $this->db->where('tasks.parent_id', 1);
         }
 
-        if ($employee_id) {
-            $this->db->where('tasks.assignee', $employee_id);
+        // date filters start
+        if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
+            list( $year, $month )   =   explode("-", $_GET["month"]);
+            $this->db->where('MONTH(tasks.t_created_at)', $month);
+            $this->db->where('YEAR(tasks.t_created_at)', $year);
         }
-        
-        if ($this->currentUserGroup[0]->name == "Employee") {
-            $this->db->where('tasks.assignee', $this->currentUser->id);
+
+        // status filter starts
+        if (!isset($_GET["status"])) {
+            $this->db->where_in('tasks.t_status', array( 'hold', 'in-progress' ) );
+        } 
+        else if (isset($_GET["status"]) && empty($_GET["status"])) {
+            $this->db->where_in('tasks.t_status', array( 'hold',  'in-progress' ) );
         }
+        else if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all" ) {
+            $this->db->where_in('tasks.t_status', array( $_GET["status"] ) );
+        }
+        else if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all" ) {
+            //$this->db->where('tasks.t_status', "");
+        }
+        else {
+            $this->db->where_in('tasks.t_status', array( 'hold', 'in-progress' ) );
+        }
+
+
+
+        $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
         
         $tasks = $this->db->get()->result();
 
@@ -79,7 +117,7 @@ class Task extends CI_Controller
         if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
-        $daily = $this->db->get()->result_array();
+        $daily = $this->db->get()->row();
 
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
@@ -87,7 +125,7 @@ class Task extends CI_Controller
         if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
-        $weekly = $this->db->get()->result_array();
+        $weekly = $this->db->get()->row();
 
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
@@ -95,7 +133,7 @@ class Task extends CI_Controller
         if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
-        $monthly = $this->db->get()->result_array();
+        $monthly = $this->db->get()->row();
 
         $this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
@@ -103,7 +141,7 @@ class Task extends CI_Controller
         if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
-        $one_time = $this->db->get()->result_array();
+        $one_time = $this->db->get()->row();
         
         $tasks_count = array(
             "daily"     =>  $daily,
@@ -111,7 +149,7 @@ class Task extends CI_Controller
             "monthly"   =>  $monthly,
             "one_time"  =>  $one_time
         );
-        
+
         $data["tasks_count"] = $tasks_count;
 
         $data['heading1'] = 'Task Listing';

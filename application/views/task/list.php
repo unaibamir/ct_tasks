@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!-- Main panel is starting from here -->
+
 <style type="text/css">
     table.dataTable thead .sorting:after,
     table.dataTable thead .sorting:before,
@@ -27,6 +28,7 @@
 </div>
 <?php
 $job_types = array(
+    99 => "All",
     1 => "Daily",
     2 => "Weekly",
     3 => "Monthly",
@@ -43,14 +45,56 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                     <h5 class="title">Task Listing</h5>
                 </div>
                 <div class="card-body">
-                    <nav>
-                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "daily"); ?>" id="nav-task-daily" href="<?php echo task_list_link("daily"); ?>"><kbd>Daily <span class="badge badge-light"><?php echo !empty($tasks_count["daily"])? $tasks_count["daily"][0]["total"] : 0; ?></span></kbd></a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "weekly"); ?>" id="nav-task-weekly" href="<?php echo task_list_link("weekly"); ?>"><kbd>Weekly <span class="badge badge-light"><?php echo !empty($tasks_count["weekly"])? $tasks_count["weekly"][0]["total"] : 0; ?></span></kbd></a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "monthly"); ?>" id="nav-task-monthly" href="<?php echo task_list_link("monthly"); ?>"><kbd>Monthly <span class="badge badge-light"><?php echo !empty($tasks_count["monthly"])? $tasks_count["monthly"][0]["total"] : 0; ?></span></kbd></a>
-                            <a class="nav-item nav-link <?php echo job_type_state($job_type, "one-time"); ?>" id="nav-task-one-time" href="<?php echo task_list_link("one-time"); ?>"><kbd>One Time <span class="badge badge-light"><?php echo !empty($tasks_count["one_time"])? $tasks_count["one_time"][0]["total"] : 0; ?></span></kbd></a>
+    
+                    <form action="<?php echo base_url("task");?>" method="GET">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" name="month" value="<?php echo @$month_arg;?>" autocomplete="off" class="form-control text-left monthpicker" placeholder="Select Month" style="margin-top: 10px;">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select name="status" class="form-control" style="margin-top: 10px;">
+                                        <option value="">Please Select Status</option>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "all" ? "selected" : "" ?> value="all">All</option>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "in-progress" ? "selected" : "" ?> value="in-progress">In Progress</option>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "hold" ? "selected" : "" ?> value="hold">Hold</option>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "cancelled" ? "selected" : "" ?> value="cancelled">Cancelled</option>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "completed" ? "selected" : "" ?> value="completed">Finished</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <select name="type" id="job-type" class="form-control" style="margin-top: 10px;">
+                                        <?php foreach ($job_types as $key => $type_name) {
+                                            $selected = isset($_GET["type"]) && !empty($_GET["type"]) && $_GET["type"] == $key ? "selected" : "";
+                                            ?>
+                                            <option value="<?php echo $key; ?>" <?php echo $selected; ?>><?php echo $type_name; ?></option>
+                                            <?php
+                                        } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="submit" class="btn btn-info " value="Submit" style="background: #244973;">
+                                    <?php if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) { ?>
+                                        <a class="btn btn-info" href="<?php echo add_query_arg( "employee_id", $_GET["employee_id"], base_url("task") ); ?>">RESET</a>
+                                    <?php } else { ?>
+                                        <a class="btn btn-info" href="<?php echo base_url("task"); ?>">RESET</a>
+                                    <?php } ?>
+                                </div>
+                            </div>
                         </div>
-                    </nav>
+                        <?php 
+                        if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+                            ?><input type="hidden" name="employee_id" value="<?php echo $_GET["employee_id"]; ?>"><?php
+                        }
+                        ?>
+                    </form>
+
                     <?php if (!empty($tasks)) : ?>
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-sm" id="table-list" style="width: 100%;">
@@ -80,6 +124,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         
                                         $start_date         =   date($this->config->item('date_format'), strtotime($task->start_date));
                                         $end_date           =   !empty($task->end_date ) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
+                                        $created_date       =   date($this->config->item('date_format'), strtotime($task->t_created_at));
 
                                         $task_title         =   strlen($task->t_title) > 25 ? substr($task->t_title, 0, 25) . "..." : $task->t_title;
 
@@ -160,7 +205,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                         <div class="col-md-4 offset-4">
                             <div class="alert alert-primary">
                                 <span>
-                                    <b> Sorry!</b> There are no tasks under this job type
+                                    <b> Sorry!</b> There are no tasks under this criteria.
                                 </span>
                             </div>
                         </div>
