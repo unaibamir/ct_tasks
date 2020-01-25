@@ -185,11 +185,11 @@ class Report extends CI_Controller
 
         $sql .= " WHERE ";
 
-        /*if( $sql_month_date == date("m") ) {
-            $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
+        if( $sql_month_date == date("m") ) {
+            $sql .= " ( MONTH(T.last_updated) != {$sql_month_date} OR MONTH(T.last_updated) = {$sql_month_date} ) AND";
         } else {
-            $sql .= " MONTH(T.t_created_at) = {$sql_month_date} AND YEAR(T.t_created_at) = {$year}";
-        }*/
+            $sql .= " MONTH(T.last_updated) = {$sql_month_date} AND YEAR(T.last_updated) = {$year} AND";
+        }
 
 
         if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
@@ -210,7 +210,7 @@ class Report extends CI_Controller
         }
         
         // order by 
-        $sql .= " ORDER BY T.start_date ASC ";
+        $sql .= " ORDER BY T.last_updated ASC ";
         //  dd($sql);
         $tasks = $this->db->query($sql)->result();
 
@@ -608,7 +608,8 @@ class Report extends CI_Controller
         $task_data = array(
             "t_status"  =>  $status,
             "t_reason"  =>  $reason,
-            "end_date"  =>  $status == "completed" ? date( "Y-m-d H:i:s", time() ) : ""
+            "end_date"  =>  $status == "completed" ? date( "Y-m-d H:i:s", time() ) : "",
+            "last_updated"  =>  date( "Y-m-d H:i:s", time() )
         );
         
         $this->db->where('tid', $task_id);
