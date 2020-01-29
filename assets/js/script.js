@@ -1,7 +1,8 @@
 $( function() {
 
     var table_list = $('#table-list').DataTable({
-        "pageLength": 100
+        "pageLength": 100,
+        "aaSorting": []
     });
 
     var dateformat = "dd/mm/yy";
