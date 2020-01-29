@@ -163,6 +163,12 @@ class Task extends CI_Controller
         $this->load->view('manager_layout', $data);
     }
 
+
+    public function delete( $task_id ) {
+        $this->db->where('tid', $task_id)->delete("tasks");
+        redirect( base_url('/task') );
+    }
+
     public function add()
     {
         
