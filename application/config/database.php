@@ -79,7 +79,7 @@ if( isset($_SERVER["HTTP_HOST"]) && $_SERVER["HTTP_HOST"] == "ct-tasks.local") {
 		'hostname' => 'localhost',
 		'username' => 'unaib',
 		'password' => 'unaib',
-		'database' => 'gewporta_tms_dev',
+		'database' => 'gewporta_tms_dev_2',
 		'dbdriver' => 'mysqli',
 		'dbprefix' => '',
 		'pconnect' => FALSE,

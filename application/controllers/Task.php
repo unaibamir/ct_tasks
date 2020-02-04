@@ -81,8 +81,13 @@ class Task extends CI_Controller
         // date filters start
         if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
             list( $year, $month )   =   explode("-", $_GET["month"]);
-            $this->db->where('MONTH(tasks.t_created_at)', $month);
-            $this->db->where('YEAR(tasks.t_created_at)', $year);
+
+            $date = new DateTime( $year . '-' . $month );
+            $date->modify('last day of this month');
+            $full_date = $date->format('Y-m-d 23:59:59');
+
+            //$this->db->where('MONTH(tasks.t_created_at)', $month);
+            $this->db->where('tasks.t_created_at <= ', $full_date);
         }
 
         // status filter starts
@@ -96,7 +101,7 @@ class Task extends CI_Controller
             $this->db->where_in('tasks.t_status', array( $_GET["status"] ) );
         }
         else if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all" ) {
-            $this->db->where('tasks.t_status', "");
+            $this->db->where('tasks.t_status != ', "");
         }
         else {
             $this->db->where_in('tasks.t_status', array( 'hold', 'in-progress' ) );
@@ -106,7 +111,12 @@ class Task extends CI_Controller
 
         $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
 
-        $this->db->order_by('tasks.t_created_at', 'DESC');
+        $this->db->order_by('tasks.last_updated', 'DESC');
+
+        if(  isset($_GET["testing"])) {
+            $sql = $this->db->get_compiled_select();
+            dd($sql);
+        }
         
         $tasks = $this->db->get()->result();
 

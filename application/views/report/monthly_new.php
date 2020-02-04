@@ -96,25 +96,25 @@ $job_types = array(
                         </div>
                         <div class="font-icon-list col col col-xs-6 text-danger">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count["daily"])? $tasks_count["daily"][0]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo $tasks_count["daily"]; ?></h5>
                                 <p>Daily</p>
                             </div>
                         </div>
                         <div class="font-icon-list col col col-xs-6 text-danger ">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count["weekly"])? $tasks_count["weekly"][0]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo $tasks_count["weekly"]; ?></h5>
                                 <p>Weekly</p>
                             </div>
                         </div>
                         <div class="font-icon-list col col col-xs-6 text-danger">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count["monthly"])? $tasks_count["monthly"][0]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo $tasks_count["monthly"]; ?></h5>
                                 <p>Monthly</p>
                             </div>
                         </div>
                         <div class="font-icon-list col col col-xs-6 text-danger">
                             <div class="font-icon-detail">
-                                <h5 class="title"><?php echo !empty($tasks_count["one_time"])? $tasks_count["one_time"][0]["total"] : 0; ?></h5>
+                                <h5 class="title"><?php echo $tasks_count["one_time"]; ?></h5>
                                 <p>One Time</p>
                             </div>
                         </div>
@@ -189,6 +189,10 @@ $job_types = array(
                     <?php
                     if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
                         ?><input type="hidden" name="employee_id" value="<?php echo $_GET["employee_id"]; ?>"><?php
+                    }
+
+                    if( isset($_GET["testing"]) ) {
+                        ?><input type="hidden" name="testing" value="testing"><?php
                     }
                     ?>
                     </form>

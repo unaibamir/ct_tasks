@@ -165,6 +165,10 @@ class Report extends CI_Controller
         $data["year_date"] = $year;
         $sql_month_date = $month;
 
+        $date = new DateTime( $year . '-' . $month );
+        $date->modify('last day of this month');
+        $full_date = $date->format('Y-m-d 23:59:59');
+
 
 
         $sql = "SELECT T.*,  
@@ -185,38 +189,46 @@ class Report extends CI_Controller
 
         $sql .= " WHERE ";
 
-        if( $sql_month_date == date("m") ) {
-            $sql .= " ( MONTH(T.last_updated) != {$sql_month_date} OR MONTH(T.last_updated) = {$sql_month_date} ) AND";
-        } else {
-            $sql .= " MONTH(T.last_updated) = {$sql_month_date} AND YEAR(T.last_updated) = {$year} AND";
-        }
 
-
-        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
-            $sql .= " T.assignee = {$_GET["employee_id"]}";
+        if ( isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
+            $sql .= " T.assignee = {$_GET["employee_id"]} AND ";
         }
         elseif ( $this->currentUserGroup[0]->name == "Employee" ) {
-            $sql .= " T.assignee = {$this->currentUser->id}";
+            $sql .= " T.assignee = {$this->currentUser->id} AND ";
+        }
+
+
+        if( $sql_month_date == date("m") ) {
+            //$sql .= " ( MONTH(T.last_updated) != {$sql_month_date} OR MONTH(T.last_updated) = {$sql_month_date} ) AND";
+            $sql .= " T.last_updated <= '{$full_date}' AND";
+        } else {
+            //$sql .= " MONTH(T.t_created_at) <= {$sql_month_date} AND YEAR(T.t_created_at) <= {$year} AND";
+            $sql .= " T.t_created_at <= '{$full_date}' AND";
         }
         
         if (!isset($_GET["status"])) {
-            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+            $sql .= " T.t_status IN ('hold', 'in-progress')";
         } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
-            $sql .= ' AND T.t_status = "' . $_GET["status"] . '"';
+            $sql .= ' T.t_status = "' . $_GET["status"] . '"';
         } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
-            $sql .= " AND T.t_status != '' ";
+            $sql .= " T.t_status != '' ";
         } else {
-            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+            $sql .= " T.t_status IN ('hold', 'in-progress')";
         }
         
         // order by 
-        $sql .= " ORDER BY T.last_updated ASC ";
+		$sql .= " ORDER BY T.last_updated ASC ";
+		
+		if(  isset($_GET["testing"])) {
+			dd($sql, false);
+		}
+		
         //  dd($sql);
         $tasks = $this->db->query($sql)->result();
 
         // Counting Task
         
-        $this->db->from("tasks");
+        /*$this->db->from("tasks");
         $this->db->select(array("count(tasks.parent_id) as total"));
         $this->db->where(["tasks.parent_id" => 1 ]);
         $this->db->where(["MONTH(tasks.t_created_at)" => $sql_month_date ]);
@@ -290,7 +302,27 @@ class Report extends CI_Controller
         }
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->group_by("tasks.parent_id");
-        $one_time = $this->db->get()->result_array();
+        $one_time = $this->db->get()->result_array();*/
+
+        $daily = $weekly = $monthly = $one_time = 0;
+        foreach ($tasks as $task) {
+            if( $task->parent_id == 1 ) {
+                $daily++;
+            }
+
+            if( $task->parent_id == 2 ) {
+                $weekly++;
+            }
+
+            if( $task->parent_id == 3 ) {
+                $monthly++;
+            }
+
+            if( $task->parent_id == 4 ) {
+                $one_time++;
+            }
+
+        }
         
         $tasks_count = array(
             "daily"     =>  $daily,
@@ -298,6 +330,7 @@ class Report extends CI_Controller
             "monthly"   =>  $monthly,
             "one_time"  =>  $one_time
         );
+
 
         $data["tasks_count"] = $tasks_count;
 
@@ -937,7 +970,8 @@ class Report extends CI_Controller
 
             // obtain task reports files
 
-            $report_files = array();
+            $report_files_array = array();
+            $report_files = "";
             if( !empty($task->reports) ) {
                 foreach ($task->reports as $task_report) {
                     $report_id = $task_report->rid;
@@ -945,18 +979,15 @@ class Report extends CI_Controller
                     $this->db->select('*');
                     $this->db->from('files');
                     $this->db->where('files.post_id', $report_id);
-                    $report_files_date = $this->db->get()->result();
-                    if( !empty($report_files_date) ) {
-                        foreach ($report_files_date as $report_file) {
-                            array_push($report_files, $report_file->url);
+                    $report_files_data = $this->db->get()->result_array();
+
+                    if( !empty($report_files_data) ) {
+                        foreach ($report_files_data as $report_file) {
+                            array_push($report_files_array, $report_file["url"]);
                         }
-                        $report_files = implode(", ", $report_files);
-                    } else {
-                        $report_files = "";
+                        $report_files = implode(", ", $report_files_array);
                     }
                 }
-            } else {
-                $report_files = "";
             }
 
             // initial column values
