@@ -32,7 +32,15 @@
                                     foreach ($users as $user) {
                                         $delete_url = base_url("/admin/user/delete/".$user->id);
                                         //$change_password_url = base_url("/admin/user/change_pass/".$user->id);
-                                        $department_key  =   array_search($user->dept_id, array_column($departments, "cid"));
+                                        $department_key     =   array_search($user->dept_id, array_column($departments, "cid"));
+
+                                        $user_tasks_url     =   add_query_arg(array(
+                                            'month'     =>  '',
+                                            'status'    =>  'all',
+                                            'type'      =>  99,
+                                            'employee_id'   =>  $user->id
+                                        ), base_url( '/task' ) );
+
                                         ?>
                                         <tr>
                                             <td><?php echo $user->id; ?></td>
@@ -47,8 +55,8 @@
                                             ?></td>
                                             <td><?php echo $user->user_pass; ?></td>
                                             <td>
+                                                <a href="<?php echo $user_tasks_url; ?>" class="btn btn-info btn-sm" style="padding:5px;font-size:10px;">Tasks</a>
                                                 <a href="#" class="btn btn-info btn-sm disabled" style="padding:5px;font-size:10px;">Edit</a>
-                                                <a href="#" class="btn btn-info btn-sm disabled" style="padding:5px;font-size:10px;">Tasks</a>
                                                 <a href="<?php echo $delete_url; ?>" class="btn btn-danger btn-sm disabled" style="padding:5px;font-size:10px;">Delete</a>
 
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" style="padding:5px;font-size:10px;"data-toggle="modal" data-target=".user-change-pass-popup-<?php echo $user->id; ?>" >Change Password</a>
