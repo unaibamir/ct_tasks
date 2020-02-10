@@ -1096,7 +1096,7 @@ class Report extends CI_Controller
         $header_col = 10;
         $row = 3;
 
-        if( isset($_GET["status"]) && !empty($_GET["status"]) && ( $_GET["status"] == "completed" || $_GET["status"] == "cancelled" ) ) {
+        if( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == 2 ) {
             $spreadsheet->getActiveSheet()->setCellValue('J3', 'Task Files');
             $spreadsheet->getActiveSheet()->setCellValue('K3', 'Report Files');
         } else {
