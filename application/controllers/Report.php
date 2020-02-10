@@ -142,7 +142,7 @@ class Report extends CI_Controller
         return $dates[date('m')];
     }
 
-    public function monthly() {
+    public function monthly_old() {
 
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
@@ -342,6 +342,216 @@ class Report extends CI_Controller
         $data["reset_url"]  = isset($_GET["employee_id"]) ? add_query_arg( "employee_id", $_GET["employee_id"], $current_url ) : $current_url ;
         $status_array = array(
             ''      =>  'Please Select Status',
+            '0'      =>  'All',
+            '1'     =>  'In Progress & On Hold',
+            '2'     =>  'Cancelled & Finished',
+        );
+        $data['status_dropdown'] = $status_array;
+
+        $data['heading1'] = 'Monthly Status';
+        $data['nav1'] = ($this->currentUserGroup[0]->name == 'Manager') ? 'Manager' : 'GEW Employee';
+
+        $data['inc_page'] = 'report/monthly_new';
+
+
+        $this->load->view('manager_layout', $data);
+    }
+
+    public function monthly() {
+
+        $data['currentUser'] = $this->currentUser;
+        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        
+        $current_month  = date("F");
+        $month_dates    = $this->getCurrentMonthDates();
+
+        $data["month_dates"] = $month_dates;
+
+        if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
+            list( $year, $month )   =   explode("-", $_GET["month"]);
+        } else {
+            $month  = date("m");
+            $year   = date("Y");
+        }
+
+        $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
+
+        $data["month_date"] = $month;
+        $data["year_date"] = $year;
+        $sql_month_date = $month;
+
+        $date = new DateTime( $year . '-' . $month );
+        $full_date_1 = $date->modify('first day of this month')->format('Y-m-d 00:00:00');
+        $full_date_2 = $date->modify('last day of this month')->format('Y-m-d 23:59:59');
+        
+
+        $users      = $this->aauth->list_users("Employee");
+        $data["users"] = $users;
+
+        // get task reports 
+        $reports    = $this->db->select('*')->from('reports');
+        $reports    = $reports->join('tasks', 'tasks.tid = reports.task_id');
+
+        if( $sql_month_date != date("m") ) {
+            $reports    = $reports->where( "reports.created_at BETWEEN '{$full_date_1}' AND '{$full_date_2}'" );
+        }
+        
+        if ( isset($_GET["employee_id"]) && !empty($_GET["employee_id"])) {
+            $reports    = $reports->where( 'reports.user_id', $_GET["employee_id"] );
+        }
+        elseif ( $this->currentUserGroup[0]->name == "Employee" ) {
+            $reports    = $reports->where( 'reports.user_id', $this->currentUser->id );
+        }
+        
+
+        if( isset($_GET["status"]) && !empty($_GET["status"]) ) {
+            if( $_GET["status"] == 1 ) {
+                $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'on-hold') );
+            } else if( $_GET["status"] == 2 ) {
+                $reports    = $reports->where_in( 'tasks.t_status', array('cancelled', 'completed') );
+            } else if( $_GET["status"] == 'all' ) {
+                $reports    = $reports->where_in( 'tasks.t_status', array('cancelled', 'completed', 'in-progress', 'on-hold') );
+            } else {
+                $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'on-hold') );
+            }
+        } else {
+            $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'on-hold') );
+        }
+
+        $reports    = $reports->order_by('t_created_at', 'ASC');
+
+        $reports    = $reports->get()->result();
+        //dd($this->db->last_query(), false);
+        $tasks = array();
+
+        foreach ($reports as $key => $report) {
+            if( !isset( $tasks[$report->task_id] ) ) {
+
+                $task                   =   new stdClass;
+                $task->tid              = $report->task_id;
+                $task->t_title          = $report->t_title;
+                $task->t_code           = $report->t_code;
+                $task->department_id    = $report->department_id;
+                $task->parent_id        = $report->parent_id;
+                $task->assignee         = $report->assignee;
+                $task->given_by         = $report->given_by;
+                $task->reporter         = $report->reporter;
+                $task->t_status         = $report->t_status;
+                $task->t_reason         = $report->t_reason;
+                $task->t_description    = $report->t_description;
+                $task->t_created_at     = $report->t_created_at;
+                $task->t_updated_at     = $report->t_updated_at;
+                $task->start_date       = $report->start_date;
+                $task->end_date         = $report->end_date;
+                $task->created_by       = $report->created_by;
+                $task->last_updated     = $report->last_updated;
+                $task->reports          = array();
+
+                $task->given_f = '';
+                $task->given_l = '';
+                $task->created_by_f = '';
+                $task->created_by_l = '';
+                $task->follow = '';
+
+                foreach ($users as $user) {
+
+                    if($task->given_by == $user->id ) {
+                        $task->given_f = $user->first_name;
+                        $task->given_l = $user->last_name;
+                    }
+
+                    if( $task->created_by == $user->id ) {
+                        $task->created_by_f = $user->first_name;
+                        $task->created_by_l = $user->last_name;
+                    }
+
+                    if( $task->reporter == $user->id ) {
+                        $task->follow = $user->first_name;
+                    }
+                }
+
+                $tasks[$report->task_id] = $task;
+                
+            }
+        }
+
+        foreach ($tasks as $task_id => $task) {
+            foreach ($reports as $report) {
+                if( $report->task_id == $task_id ) {
+                    array_push( $task->reports, $report );
+                }
+            }
+        }
+
+        // Counting Task
+        $daily = $weekly = $monthly = $one_time = 0;
+        foreach ($tasks as $task) {
+            if( $task->parent_id == 1 ) {
+                $daily++;
+            }
+
+            if( $task->parent_id == 2 ) {
+                $weekly++;
+            }
+
+            if( $task->parent_id == 3 ) {
+                $monthly++;
+            }
+
+            if( $task->parent_id == 4 ) {
+                $one_time++;
+            }
+
+        }
+        
+        $tasks_count = array(
+            "daily"     =>  $daily,
+            "weekly"    =>  $weekly,
+            "monthly"   =>  $monthly,
+            "one_time"  =>  $one_time
+        );
+
+
+        $data["tasks_count"] = $tasks_count;
+
+        $data['tasks'] = $tasks;
+        
+        if (isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
+            $employee = $this->aauth->get_user($_GET["employee_id"]);
+        }
+
+        if( $this->currentUserGroup[0]->name == "Employee" ) {
+            $employee = $this->currentUser;
+        }
+
+        $data["employee"] = isset($employee) && !empty($employee) ? $employee : false;
+
+        $arr1 = $arr2 = $arr3 = array();
+        if( !empty($data["employee"]) ) {
+            $arr1 = array(
+                "employee"  =>  $data["employee"]->id
+            );
+        }
+        if( isset($_GET["month"]) && !empty($_GET["month"]) ) {
+            $arr2 = array(
+                "month"  =>  $_GET["month"]
+            );
+        }
+        if( isset($_GET["status"]) && !empty($_GET["status"]) ) {
+            $arr3 = array(
+                "status" => $_GET["status"]
+            );
+        }
+        $url_arr = array_merge($arr1, $arr2, $arr3);
+        $export_url = base_url( "report/export/monthly/?" . http_build_query($url_arr) );
+        
+        $data["export_url"] = $export_url;
+        $current_url = base_url("report/monthly");
+        $data["reset_url"]  = isset($_GET["employee_id"]) ? add_query_arg( "employee_id", $_GET["employee_id"], $current_url ) : $current_url ;
+
+        $status_array = array(
+            ''      =>  'Please Select Status',
+            'all'      =>  'All',
             '1'     =>  'In Progress & On Hold',
             '2'     =>  'Cancelled & Finished'
         );
@@ -756,6 +966,11 @@ class Report extends CI_Controller
         }
 
 		$sql_month_date = $month;
+		$month_date = !empty($month) ? $month : date('m');
+
+		$date = new DateTime($year . '-' . $month);
+		$full_date_1 = $date->modify('first day of this month')->format('Y-m-d 00:00:00');
+		$full_date_2 = $date->modify('last day of this month')->format('Y-m-d 23:59:59');
 
 		$date = new DateTime($year . '-' . $month);
 		$date->modify('last day of this month');
@@ -768,79 +983,103 @@ class Report extends CI_Controller
             4 => "One Time"
         );
 
-        $sql = "SELECT T.*,
-        giver.first_name as giver_f,
-        giver.last_name as giver_l,
-        reporter.first_name as follow_f,
-        reporter.last_name as follow_l,
-        D.c_name FROM `tasks` AS T
-        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
-        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-        LEFT JOIN departments AS D on D.cid = T.department_id";
+		$users      = $this->aauth->list_users("Employee");
 
-        $sql = "SELECT T.*,  
-        assignee.first_name as given,
-        giver.first_name as given_f,
-        giver.last_name as given_l,
-        created_by.first_name as created_by_f,
-        reporter.first_name as follow_f,
-        reporter.last_name as follow_l,
-        created_by.last_name as created_by_l,
-        assignee.first_name as assignee_f,
-        assignee.last_name as assignee_l,
-        reporter.first_name as follow, 
-        D.c_name FROM `tasks` AS T
-        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
-        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
-        LEFT JOIN departments AS D on D.cid = T.department_id";
+		// get task reports 
+		$reports    = $this->db->select('*')->from('reports');
+		$reports    = $reports->join('tasks', 'tasks.tid = reports.task_id');
 
-        $sql .= " WHERE ";
-
-		/*if( $sql_month_date == date("m") ) {
-            $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
-        } else {
-            $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
-		}*/
-
-		if ($sql_month_date == date("m")) {
-			//$sql .= " ( MONTH(T.last_updated) != {$sql_month_date} OR MONTH(T.last_updated) = {$sql_month_date} ) AND";
-			$sql .= " T.last_updated <= '{$full_date}' AND";
-		} else {
-			//$sql .= " MONTH(T.t_created_at) <= {$sql_month_date} AND YEAR(T.t_created_at) <= {$year} AND";
-			$sql .= " T.t_created_at <= '{$full_date}' AND";
+		if ($sql_month_date != date("m")) {
+			$reports    = $reports->where("reports.created_at BETWEEN '{$full_date_1}' AND '{$full_date_2}'");
 		}
 
-		$sql .= " T.assignee = {$user_id}";
+		if (isset($_GET["employee"]) && !empty($_GET["employee"])) {
+			$reports    = $reports->where('reports.user_id', $_GET["employee"]);
+		} elseif ($this->currentUserGroup[0]->name == "Employee") {
+			$reports    = $reports->where('reports.user_id', $this->currentUser->id);
+		}
 
-		if (!isset($_GET["status"])) {
-			$sql .= " AND T.t_status IN ('hold', 'in-progress')";
-		} elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
-			$sql .= ' AND T.t_status = "' . $_GET["status"] . '"';
-		} elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
-            $sql .= " AND T.t_status != '' ";
-        } else {
-            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
-        }
+		if (isset($_GET["status"]) && !empty($_GET["status"])) {
+			if ($_GET["status"] == 1) {
+				$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+			} else if ($_GET["status"] == 2) {
+				$reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed'));
+			} else if ($_GET["status"] == 'all') {
+				$reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed', 'in-progress', 'on-hold'));
+			} else {
+				$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+			}
+		} else {
+			$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+		}
 
-        $sql .= " ORDER BY T.last_updated ASC ";
+		$reports    = $reports->order_by('t_created_at', 'ASC');
+
+		$reports    = $reports->get()->result();
+		//dd( $this->db->last_query() );
+		$tasks = array();
+
+		foreach ($reports as $key => $report) {
+			if (!isset($tasks[$report->task_id])) {
+
+				$task                   =   new stdClass;
+				$task->tid              = $report->task_id;
+				$task->t_title          = $report->t_title;
+				$task->t_code           = $report->t_code;
+				$task->department_id    = $report->department_id;
+				$task->parent_id        = $report->parent_id;
+				$task->assignee         = $report->assignee;
+				$task->given_by         = $report->given_by;
+				$task->reporter         = $report->reporter;
+				$task->t_status         = $report->t_status;
+				$task->t_reason         = $report->t_reason;
+				$task->t_description    = $report->t_description;
+				$task->t_created_at     = $report->t_created_at;
+				$task->t_updated_at     = $report->t_updated_at;
+				$task->start_date       = $report->start_date;
+				$task->end_date         = $report->end_date;
+				$task->created_by       = $report->created_by;
+				$task->last_updated     = $report->last_updated;
+
+				$task->given_f = '';
+				$task->given_l = '';
+				$task->created_by_f = '';
+				$task->created_by_l = '';
+				$task->follow_f = '';
+				$task->follow_l = '';
+
+				foreach ($users as $user) {
+
+					if ($task->given_by == $user->id) {
+						$task->given_f = $user->first_name;
+						$task->given_l = $user->last_name;
+					}
+
+					if ($task->created_by == $user->id) {
+						$task->created_by_f = $user->first_name;
+						$task->created_by_l = $user->last_name;
+					}
+
+					if ($task->reporter == $user->id) {
+						$task->follow_f = $user->first_name;
+						$task->follow_l = $user->last_name;
+					}
+				}
+
+				$task->reports          = array();
+
+				$tasks[$report->task_id] = $task;
+			}
+		}
+
+		foreach ($tasks as $task_id => $task) {
+			foreach ($reports as $report) {
+				if ($report->task_id == $task_id) {
+					array_push($task->reports, $report);
+				}
+			}
+		}
 		
-        //$sql .= " LIMIT 0, 100";
-        $tasks = $this->db->query($sql)->result();        
-
-        $month_date = !empty($month) ? $month : date('m');
-
-        $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
-        /*$sql = "SELECT * FROM `reports` WHERE is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = YEAR(CURRENT_DATE())";
-        $result = $this->db->query($sql)->result();*/
-
-        foreach ($tasks as $key => $task) {
-            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = {$year}";
-            $report_result = $this->db->query($sql)->result();
-            $task->reports = $report_result;
-        }
 
         $spreadsheet = new Spreadsheet();
 
@@ -890,45 +1129,49 @@ class Report extends CI_Controller
 
             $start_date     = date($this->config->item('date_format'), strtotime($task->start_date));
             $end_date       = !empty($task->end_date) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
-            
-            // obttain task files
-            $this->db->select('*');
-            $this->db->from('files');
-            $this->db->where('files.post_id', $task->tid);
-            $task_files_date = $this->db->get()->result_array();
 
-            if( !empty($task_files_date) ) {
-                $task_files = array();
-                foreach ($task_files_date as $task_file_data) {
-                    array_push($task_files, $task_file_data["url"]);
-                }
-                $task_files = implode(", ", $task_files);
-            } else {
-                $task_files = "";
-            }
+			// get task and report files only if status is cancelled and finished
+			if (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == 2) {
+
+				// obttain task files
+				$this->db->select('*');
+				$this->db->from('files');
+				$this->db->where('files.post_id', $task->tid);
+				$task_files_date = $this->db->get()->result_array();
+				
+
+				if( !empty($task_files_date) ) {
+					$task_files = array();
+					foreach ($task_files_date as $task_file_data) {
+						array_push($task_files, $task_file_data["url"]);
+					}
+					$task_files = implode(", ", $task_files);
+				} else {
+					$task_files = "";
+				}
 
 
-            // obtain task reports files
+				// obtain task reports files
+				$report_files_array = array();
+				$report_files = "";
+				if( !empty($task->reports) ) {
+					foreach ($task->reports as $task_report) {
+						$report_id = $task_report->rid;
 
-            $report_files_array = array();
-            $report_files = "";
-            if( !empty($task->reports) ) {
-                foreach ($task->reports as $task_report) {
-                    $report_id = $task_report->rid;
+						$this->db->select('*');
+						$this->db->from('files');
+						$this->db->where('files.post_id', $report_id);
+						$report_files_data = $this->db->get()->result_array();
 
-                    $this->db->select('*');
-                    $this->db->from('files');
-                    $this->db->where('files.post_id', $report_id);
-                    $report_files_data = $this->db->get()->result_array();
-
-                    if( !empty($report_files_data) ) {
-                        foreach ($report_files_data as $report_file) {
-                            array_push($report_files_array, $report_file["url"]);
-                        }
-                        $report_files = implode(", ", $report_files_array);
-                    }
-                }
-            }
+						if( !empty($report_files_data) ) {
+							foreach ($report_files_data as $report_file) {
+								array_push($report_files_array, $report_file["url"]);
+							}
+							$report_files = implode(", ", $report_files_array);
+						}
+					}
+				}
+			}
 
             // initial column values
 
@@ -949,7 +1192,7 @@ class Report extends CI_Controller
             $spreadsheet->getActiveSheet()->setCellValue('I' . $content_col , getStatusText($task->t_status) );
             
 
-            if( isset($_GET["status"]) && !empty($_GET["status"]) && ( $_GET["status"] == "completed" || $_GET["status"] == "cancelled" ) ) {
+            if( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == 2 ) {
 
                 $spreadsheet->getActiveSheet()->setCellValue('J' . $content_col , $task_files );
                 $spreadsheet->getActiveSheet()->setCellValue('K' . $content_col , $report_files );
@@ -1010,6 +1253,8 @@ class Report extends CI_Controller
 		}
 		$sql_month_date = $month;
 
+        $month_date = !empty($month) ? $month : date('m');
+
         $job_types = array(
             1 => "Daily",
             2 => "Weekly",
@@ -1017,59 +1262,98 @@ class Report extends CI_Controller
             4 => "One Time"
         );
 
-        $sql = "SELECT T.*,  
-        assignee.first_name as given,
-        giver.first_name as given_f,
-        giver.last_name as given_l,
-        created_by.first_name as created_by_f,
-        reporter.first_name as follow_f,
-        reporter.last_name as follow_l,
-        created_by.last_name as created_by_l,
-        assignee.first_name as assignee_f,
-        assignee.last_name as assignee_l,
-        reporter.first_name as follow, 
-        D.c_name FROM `tasks` AS T
-        LEFT JOIN aauth_users AS assignee ON assignee.id = T.assignee 
-        LEFT JOIN aauth_users AS reporter ON reporter.id = T.reporter 
-        LEFT JOIN aauth_users AS giver ON giver.id = T.given_by 
-        LEFT JOIN aauth_users AS created_by ON created_by.id = T.created_by 
-        LEFT JOIN departments AS D on D.cid = T.department_id";
-		
-        $sql .= " WHERE ";
+        $users      = $this->aauth->list_users("Employee");
 
-        /*if( $sql_month_date == date("m") ) {
-            $sql .= " ( MONTH(T.t_created_at) != {$sql_month_date} OR MONTH(T.t_created_at) = {$sql_month_date} )";
-        } else {
-            $sql .= " MONTH(T.t_created_at) = {$sql_month_date}";
-        }*/
+        // get task reports 
+        $reports    = $this->db->select('*')->from('reports');
+        $reports    = $reports->join('tasks', 'tasks.tid = reports.task_id');
 
-        if( $this->currentUserGroup[0]->name == "Employee" ) {
-            $sql .= " T.assignee = {$this->currentUser->id}";
-		}
-
-        if (!isset($_GET["status"])) {
-            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
-        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] != "all") {
-            $sql .= ' AND T.t_status = "' . $_GET["status"] . '"';
-        } elseif (isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "all") {
-            $sql .= " AND T.t_status != '' ";
-        } else {
-            $sql .= " AND T.t_status IN ('hold', 'in-progress')";
+        if ($sql_month_date != date("m")) {
+            $reports    = $reports->where("reports.created_at BETWEEN '{$full_date_1}' AND '{$full_date_2}'");
         }
 
-        $sql .= " ORDER BY T.start_date ASC ";
-		
-        $tasks = $this->db->query($sql)->result();
-		
-        $month_date = !empty($month) ? $month : date('m');
+        $reports    = $reports->where('reports.user_id', $this->currentUser->id);
 
-        $sql_month_date = !empty($month) ? $month : "MONTH(CURRENT_DATE())";
+        if (isset($_GET["status"]) && !empty($_GET["status"])) {
+            if ($_GET["status"] == 1) {
+                $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+            } else if ($_GET["status"] == 2) {
+                $reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed'));
+            } else if ($_GET["status"] == 'all') {
+                $reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed', 'in-progress', 'on-hold'));
+            } else {
+                $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+            }
+        } else {
+            $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+        }
 
-        foreach ($tasks as $key => $task) {
-            $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0 AND MONTH(created_at) = {$sql_month_date} AND YEAR(created_at) = {$year}";
-            $report_result = $this->db->query($sql)->result();
-            $task->reports = $report_result;
-		}
+        $reports    = $reports->order_by('t_created_at', 'ASC');
+
+        $reports    = $reports->get()->result();
+        //dd( $this->db->last_query() );
+        $tasks = array();
+
+        foreach ($reports as $key => $report) {
+            if (!isset($tasks[$report->task_id])) {
+
+                $task                   =   new stdClass;
+                $task->tid              = $report->task_id;
+                $task->t_title          = $report->t_title;
+                $task->t_code           = $report->t_code;
+                $task->department_id    = $report->department_id;
+                $task->parent_id        = $report->parent_id;
+                $task->assignee         = $report->assignee;
+                $task->given_by         = $report->given_by;
+                $task->reporter         = $report->reporter;
+                $task->t_status         = $report->t_status;
+                $task->t_reason         = $report->t_reason;
+                $task->t_description    = $report->t_description;
+                $task->t_created_at     = $report->t_created_at;
+                $task->t_updated_at     = $report->t_updated_at;
+                $task->start_date       = $report->start_date;
+                $task->end_date         = $report->end_date;
+                $task->created_by       = $report->created_by;
+                $task->last_updated     = $report->last_updated;
+
+                $task->given_f = '';
+                $task->given_l = '';
+                $task->created_by_f = '';
+                $task->created_by_l = '';
+                $task->follow_f = '';
+                $task->follow_l = '';
+
+                foreach ($users as $user) {
+
+                    if ($task->given_by == $user->id) {
+                        $task->given_f = $user->first_name;
+                        $task->given_l = $user->last_name;
+                    }
+
+                    if ($task->created_by == $user->id) {
+                        $task->created_by_f = $user->first_name;
+                        $task->created_by_l = $user->last_name;
+                    }
+
+                    if ($task->reporter == $user->id) {
+                        $task->follow_f = $user->first_name;
+                        $task->follow_l = $user->last_name;
+                    }
+                }
+
+                $task->reports          = array();
+
+                $tasks[$report->task_id] = $task;
+            }
+        }
+
+        foreach ($tasks as $task_id => $task) {
+            foreach ($reports as $report) {
+                if ($report->task_id == $task_id) {
+                    array_push($task->reports, $report);
+                }
+            }
+        }
 		
 
         $spreadsheet = new Spreadsheet();
