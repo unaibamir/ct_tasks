@@ -15,6 +15,10 @@ class Admin extends CI_Controller
         parent::__construct();
 
         $this->load->helper(array('form'));
+
+        $this->currentUser = $this->aauth->get_user();
+        $this->currentUserGroup = $this->aauth->get_user_groups();
+
     }
 
     public function index() {
@@ -60,5 +64,48 @@ class Admin extends CI_Controller
 
         $this->db->where('id', $user_id);
         $this->db->update( $table_name , $data);
+    }
+
+    public function view_users() {
+        $users                  = $this->db->get("aauth_users")->result();
+        $departments            = $this->getDepartments();
+
+        $data['users']          = $users;
+        $data['departments']    = $departments;
+        $data['heading1']       = 'Tasks';
+        $data['nav1']           = $this->currentUserGroup[0]->name;
+        $data['currentUser']     = $this->currentUser;
+        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        $data['inc_page']       = 'admin/users/list';
+        
+        $this->load->view('manager_layout', $data);
+    }
+
+    public function change_pass( $user_id ) {
+        dd($user_id);
+    }
+
+
+    public function view_tasks() {
+        $data = array();
+
+        $this->load->model('tasks');
+        $tasks      = $this->tasks->get_all();
+        $data['tasks']          = $tasks;
+
+        $data['heading1']       = 'Tasks';
+        $data['nav1']           = $this->currentUserGroup[0]->name;
+        $data['users']          = $this->db->get("aauth_users")->result_array();
+        $data['currentUser']     = $this->currentUser;
+        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        $data['inc_page']       = 'admin/tasks/list';
+
+        $this->load->view('manager_layout', $data);
+    }
+
+    public function delete_task( $task_id ) {
+        $this->db->delete('tasks', array('tid' => $task_id ));
+
+        redirect( base_url('/admin/tasks') );
     }
 }

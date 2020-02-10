@@ -41,4 +41,31 @@ class User extends CI_Controller
             ));
         }
     }
+
+
+    public function change_password() {
+        $data = array();
+
+        $data['heading1']       = 'Change Password';
+        $data['nav1']           = $this->currentUserGroup[0]->name;
+        $data['currentUser']     = $this->currentUser;
+        $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        $data['inc_page']       = 'user/change_password';
+
+        $this->load->view('manager_layout', $data);
+    }
+
+    public function password_change() {
+        
+        $user_updated = $this->aauth->update_user( $_POST["user_id"], false, $_POST["password"], false );
+        
+        $user_data = array(
+            "user_pass"  =>  $_POST["password"],
+        );
+        
+        $this->db->where('id', $_POST["user_id"]);
+        $this->db->update( $this->config->item('aauth')["users"] , $user_data);
+
+        redirect('/dashboard');
+    }
 }

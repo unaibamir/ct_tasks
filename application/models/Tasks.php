@@ -13,6 +13,16 @@ class Tasks extends CI_Model {
 		return $task;
 	}
 
+	public function get_all() {
+		$this->db->select('*');
+		$this->db->from('tasks');
+		$this->db->join('departments', 'departments.cid = tasks.department_id');
+		$this->db->order_by('tid', 'ASC');
+		$tasks = $this->db->get()->result();
+
+		return $tasks;
+	}
+
 	public function resume_task( $data = array() ) {
 		
 	}

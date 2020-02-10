@@ -258,4 +258,8 @@ class Auth extends CI_Controller
         $user_updated = $this->aauth->update_user( 4, false, $new_password, false );
 
     }
+
+    public function change_password() {
+        
+    }
 }

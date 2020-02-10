@@ -281,7 +281,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <i class="now-ui-icons location_world"></i>
                                     <p><span class="d-lg-none d-md-block">Some Actions</span></p>
                                 </a>
+                                
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" href="<?php echo base_url('user/change_password')?>">Change Password</a>
                                     <a class="dropdown-item" href="<?php echo base_url('auth/logout')?>">Logout</a>
                                 </div>
                             </li>
