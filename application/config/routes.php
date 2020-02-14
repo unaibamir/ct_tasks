@@ -53,12 +53,12 @@ $route['default_controller'] = 'auth';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['admin/user/add'] = 'admin/add_user';
-$route['admin/user/save']['post'] = 'admin/save_user';
-$route['admin/user/list'] = 'admin/view_users';
-$route['admin/user/change_pass/(:num)'] = 'admin/change_pass/$1';
+$route['admin/internal/user/add'] = 'admin/add_user';
+$route['admin/internal/user/save']['post'] = 'admin/save_user';
+$route['admin/internal/user/list'] = 'admin/view_users';
+$route['admin/internal/user/change_pass/(:num)'] = 'admin/change_pass/$1';
 
-$route['admin/tasks'] = 'admin/view_tasks';
-$route['admin/tasks/delete/(:num)'] = 'admin/delete_task/$1';
+$route['admin/internal/tasks'] = 'admin/view_tasks';
+$route['admin/internal/tasks/delete/(:num)'] = 'admin/delete_task/$1';
 
 //$route['user/change_password'] = 'admin/view_tasks';
