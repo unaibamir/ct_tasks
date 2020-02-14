@@ -406,16 +406,16 @@ class Report extends CI_Controller
 
         if( isset($_GET["status"]) && !empty($_GET["status"]) ) {
             if( $_GET["status"] == 1 ) {
-                $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'on-hold') );
+                $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'hold') );
             } else if( $_GET["status"] == 2 ) {
                 $reports    = $reports->where_in( 'tasks.t_status', array('cancelled', 'completed') );
             } else if( $_GET["status"] == 'all' ) {
-                $reports    = $reports->where_in( 'tasks.t_status', array('cancelled', 'completed', 'in-progress', 'on-hold') );
+                $reports    = $reports->where_in( 'tasks.t_status', array('cancelled', 'completed', 'in-progress', 'hold') );
             } else {
-                $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'on-hold') );
+                $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'hold') );
             }
         } else {
-            $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'on-hold') );
+            $reports    = $reports->where_in( 'tasks.t_status', array('in-progress', 'hold') );
         }
 
         $reports    = $reports->order_by('t_created_at', 'ASC');
@@ -1001,16 +1001,16 @@ class Report extends CI_Controller
 
 		if (isset($_GET["status"]) && !empty($_GET["status"])) {
 			if ($_GET["status"] == 1) {
-				$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+				$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'hold'));
 			} else if ($_GET["status"] == 2) {
 				$reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed'));
 			} else if ($_GET["status"] == 'all') {
-				$reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed', 'in-progress', 'on-hold'));
+				$reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed', 'in-progress', 'hold'));
 			} else {
-				$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+				$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'hold'));
 			}
 		} else {
-			$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+			$reports    = $reports->where_in('tasks.t_status', array('in-progress', 'hold'));
 		}
 
 		$reports    = $reports->order_by('t_created_at', 'ASC');
@@ -1276,16 +1276,16 @@ class Report extends CI_Controller
 
         if (isset($_GET["status"]) && !empty($_GET["status"])) {
             if ($_GET["status"] == 1) {
-                $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+                $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'hold'));
             } else if ($_GET["status"] == 2) {
                 $reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed'));
             } else if ($_GET["status"] == 'all') {
-                $reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed', 'in-progress', 'on-hold'));
+                $reports    = $reports->where_in('tasks.t_status', array('cancelled', 'completed', 'in-progress', 'hold'));
             } else {
-                $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+                $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'hold'));
             }
         } else {
-            $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'on-hold'));
+            $reports    = $reports->where_in('tasks.t_status', array('in-progress', 'hold'));
         }
 
         $reports    = $reports->order_by('t_created_at', 'ASC');
