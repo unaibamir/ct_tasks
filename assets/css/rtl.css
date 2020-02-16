@@ -1,0 +1,72 @@
+body {
+	direction: rtl;
+}
+
+.sidebar, .bootstrap-navbar {
+	left: auto;
+	right: 0;
+	transform: translate3d(260px, 0, 0);
+}
+
+.nav-open .main-panel {
+	transform: translate3d(-260px, 0, 0);
+}
+.navbar .navbar-wrapper {
+    float: right;
+}
+.panel-header {
+	background: linear-gradient(to right, #be1212 -40%, #950606 30%, #020955 60%);
+}
+.dropdown-menu.dropdown-menu-right {
+    right: auto !important;
+    left: 0 !important;
+}
+.dropdown-menu.dropdown-menu-right:before {
+    right: auto;
+    left: 10px;
+}
+
+
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th
+.table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+	text-align: right;
+}
+.modal-body , .modal-body .text-left{
+	text-align: right !important;
+}
+.modal-header .close {
+    float: left;
+    left: 0;
+    right: auto;
+    margin: -1rem auto -1rem -1rem;
+}
+.card .card-body {
+	/* text-align: right; */
+}
+.checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
+	margin-left: 0px;
+    margin-right: -20px;
+}
+.checkbox-inline, .radio-inline {
+	padding-left: 0;
+	padding-right: 20px;
+}
+
+body.rtl .input-group-append .input-group-text {
+    border-top-left-radius: 1.25rem !important;
+    border-bottom-left-radius: 1.25rem !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+body.rtl .input-group>.form-control:not(:last-child) {
+	border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 1.25rem !important ;
+    border-bottom-right-radius: 1.25rem !important ;
+}
+body.rtl .input-group.no-border .form-control + .input-group-append .input-group-text {
+	padding: 11px 0px 11px 19px;
+}
+.sidebar .nav, .off-canvas-sidebar .nav {
+    padding-right: 0;
+}

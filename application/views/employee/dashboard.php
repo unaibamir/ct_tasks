@@ -33,9 +33,9 @@
     <div class="card card-chart text-center">
      <img class="card-img-top" src="https://pngimage.net/wp-content/uploads/2018/05/akademik-png-8.png" alt="Card image cap" style="width: 23%;">
      <div class="card-body ">
-      <h3 class="card-title">Monthly Job Summary</h3>
-      <p class="card-text">View your Monthly Job Summary.</p>
-      <a href="#" class="btn btn-primary">Submit Now</a>
+      <h3 class="card-title"><?php echo lang("monthly_job_summary_text"); ?></h3>
+      <p class="card-text"><?php echo lang('monthly_job_summary_paragraph_text'); ?></p>
+      <a href="#" class="btn btn-primary"><?php echo lang('submit_now_text'); ?></a>
     </div>
   </div>
 </div>

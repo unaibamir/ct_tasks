@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?php echo $_SESSION["site_lang"] == "arabic" ? "ar" : "en";  ?>">
 
 <head>
   <meta charset="utf-8" />
@@ -26,6 +26,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link href="<?php echo base_url('assets/demo/demo.css'); ?>" rel="stylesheet" />
     <link href="<?php echo base_url('assets/css/custom.css?ver='.time()); ?>" rel="stylesheet" />
 
+    <?php
+    if( isset($_SESSION["site_lang"]) && !empty($_SESSION["site_lang"]) && $_SESSION["site_lang"] == "arabic" ) {
+        ?>
+        <link href="<?php echo base_url('assets/css/rtl.css?ver='.time()); ?>" rel="stylesheet" />
+        <?php
+    }
+    ?>
+
     <script src="<?php echo base_url('assets/js/core/jquery.min.js');?>"></script>
 
     <script type="text/javascript">
@@ -37,7 +45,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 </head>
 
-<body>
+<body class="<?php echo $_SESSION["site_lang"] == "arabic" ? "rtl" : "ltr";  ?>">
     <div class="wrapper ">
         <!-- Side-Bar is starting from here -->
         <div class="sidebar" data-color="blue">
@@ -60,7 +68,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('task/add'); ?>">
                                 <i class="now-ui-icons gestures_tap-01 "></i>
-                                <p>Add New Task</p>
+                                <p><?php echo lang( 'add_new_task_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -68,7 +76,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('task/alert'); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
-                                <p>All Assign Task</p>
+                                <p><?php echo lang( 'all_task_list_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -76,7 +84,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('report/daily'); ?>">
                                 <i class="now-ui-icons files_paper"></i>
-                                <p>Daily JoB Report - View </p>
+                                <p><?php echo lang( 'daily_job_report_view_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -84,7 +92,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('report/monthly'); ?>">
                                 <i class="now-ui-icons business_badge"></i>
-                                <p>Monthy Job Summary - View</p>
+                                <p><?php echo lang( 'monthly_job_summary_view_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -116,7 +124,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('task'); ?>">
                                 <i class="now-ui-icons gestures_tap-01 "></i>
-                                <p>Task Listing</p>
+                                <p><?php echo lang( 'task_listing_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -125,7 +133,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li>
                             <a href="<?php echo base_url('employee/'); ?>">
                                 <i class="now-ui-icons users_single-02"></i>
-                                <p>View Employees Report</p>
+                                <p><?php echo lang( 'view_employee_report_text' ); ?></p>
                             </a>
                         </li>
                         <!--<li>
@@ -166,7 +174,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <li style="background: #0c2442;border-right: 4px solid #eaebf0;">
                             <a href="<?php echo base_url('search'); ?>">
                                 <i class="now-ui-icons ui-1_zoom-bold"></i>
-                                <p>Advance Search</p>
+                                <p><?php echo lang( 'advanced_search_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -197,34 +205,34 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <div class="row">
                           <div class="row" >
                             <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                                <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">Add New Task</a>
+                                <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'add_new_task_text' ); ?></a>
                           
                               <?php endif; ?>
 
 
                               <!-- Manager Side / Task listing  -->
                                <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                                    <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">Task Listing </a>
+                                    <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'task_listing_text' ); ?></a>
                                 <?php endif; ?>
 
                             <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                                <a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link">View Novemeber Tasks</a>
+                                <a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link"><?php echo lang( 'nov_tasks_text' ); ?></a>
                             <?php endif; ?>
                                  
                             <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
                    
-                                    <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">View Employees Report</a>
+                                    <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'view_employee_report_text' ); ?></a>
 
                             <?php endif; ?>
 
 
                             <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-                                <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">Employee list</a>
+                                <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'employee_list_text' ); ?></a>
                                 <?php endif; ?>
 
                                 <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
                         
-                                <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">All Assign Task</a>
+                                <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang("all_assigned_task_text"); ?></a>
                             
                                 <?php endif; ?>
                                 <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
@@ -257,7 +265,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <form action="">
                             <div class="input-group no-border">
 
-                                <input type="text" value="" class="form-control" placeholder="Search...">
+                                <input type="text" value="" class="form-control" placeholder="<?php echo lang("nav_search_text"); ?>">
                                 <div class="input-group-append">
                                     <div class="input-group-text">
                                         <i class="now-ui-icons ui-1_zoom-bold"></i>
@@ -269,16 +277,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
                         <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
-                                    <i class="now-ui-icons media-2_sound-wave"></i>
-                                    <p><span class="d-lg-none d-md-block">Stats</span></p>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="langselector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="now-ui-icons location_world"></i> <?php echo lang('change_lang_text'); ?>
                                 </a>
+                                
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="langselector">
+                                    <a class="dropdown-item" href="<?php echo base_url('LanguageSwitcher/switchLang/english')?>">English</a>
+                                    <a class="dropdown-item" href="<?php echo base_url('LanguageSwitcher/switchLang/arabic')?>">العربية</a>
+                                </div>
                             </li>
                            
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="now-ui-icons location_world"></i>
+                                    <i class="now-ui-icons users_single-02"></i>
                                     <p><span class="d-lg-none d-md-block">Some Actions</span></p>
                                 </a>
                                 
@@ -286,12 +298,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                     <a class="dropdown-item" href="<?php echo base_url('user/change_password')?>">Change Password</a>
                                     <a class="dropdown-item" href="<?php echo base_url('auth/logout')?>">Logout</a>
                                 </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#pablo">
-                                    <i class="now-ui-icons users_single-02"></i>
-                                    <p><span class="d-lg-none d-md-block">Account</span></p>
-                                </a>
                             </li>
 
                         </ul>

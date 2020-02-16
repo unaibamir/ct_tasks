@@ -40,7 +40,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">Task Listing</h5>
+                    <h5 class="title"><?php echo lang( 'task_listing_heading' ); ?></h5>
                 </div>
                 <div class="card-body">
                     <nav>
