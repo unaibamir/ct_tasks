@@ -21,8 +21,11 @@ class Employee extends CI_Controller {
 		$this->db->join('departments', 'departments.cid = aauth_users.dept_id', 'left');
 		$this->db->where('aauth_user_to_group.group_id', 3);
 
-		$employees = $this->db->get()->result();
+		if( $this->currentUser->cur_loc == "Fujairah" ) {
+			$this->db->where('aauth_users.cur_loc', "Fujairah");
+		}
 
+		$employees = $this->db->get()->result();
 
 		foreach ($employees as $key => $employee) {
 			$employee_id 	= 	$employee->id;
@@ -49,6 +52,15 @@ class Employee extends CI_Controller {
 	public function all()
 	{
 		$employees = $this->aauth->list_users("Employee");
+
+		if( $this->currentUser->cur_loc == "Fujairah" ) {
+			foreach ($employees as $key => $user) {
+				if( $user->cur_loc != "Fujairah" ) {
+					unset( $employees[$key] );
+				}
+			}
+		}
+
 
 		foreach ($employees as $key => $employee) {
 			$employee_id 	= 	$employee->id;

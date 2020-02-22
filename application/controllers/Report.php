@@ -402,6 +402,11 @@ class Report extends CI_Controller
         elseif ( $this->currentUserGroup[0]->name == "Employee" ) {
             $reports    = $reports->where( 'reports.user_id', $this->currentUser->id );
         }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Fujairah" ) {
+            $reports->join('aauth_users', 'reports.user_id = aauth_users.id');
+            $reports->where('aauth_users.cur_loc', "Fujairah");
+        }
         
 
         if( isset($_GET["status"]) && !empty($_GET["status"]) ) {

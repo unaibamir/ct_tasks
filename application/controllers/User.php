@@ -10,7 +10,7 @@ class User extends CI_Controller
             redirect(base_url(''));
         $this->currentUser = $this->aauth->get_user();
         $this->currentUserGroup = $this->aauth->get_user_groups();
-
+        
     }
 
     public function getdepartmentusers($depatment_id) {
@@ -18,6 +18,9 @@ class User extends CI_Controller
         $this->db->select('*');
         $this->db->from($this->config->item('aauth')["users"]);
         $this->db->where('dept_id', $depatment_id);
+        if( $this->currentUser->cur_loc == "Fujairah" ) {
+            $this->db->where('aauth_users.cur_loc', "Fujairah");
+        }
         $users = $this->db->get()->result_array();
 
         if( !empty( $users ) ) {

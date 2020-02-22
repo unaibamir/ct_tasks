@@ -14,7 +14,7 @@ class Task extends CI_Controller
 
         $this->currentUser = $this->aauth->get_user();
         $this->currentUserGroup = $this->aauth->get_user_groups();
-
+        
         $this->load->helper(array('form', 'url', 'file','directory', 'date'));
         $this->load->library(array( 'user_agent', 'email' ));
     }
@@ -47,6 +47,11 @@ class Task extends CI_Controller
         
         if ($this->currentUserGroup[0]->name == "Employee") {
             $this->db->where('tasks.assignee', $this->currentUser->id);
+        }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Fujairah" ) {
+            $this->db->join('aauth_users', 'tasks.assignee = aauth_users.id');
+            $this->db->where('aauth_users.cur_loc', "Fujairah");
         }
         
         /*switch ($view) {
@@ -123,37 +128,25 @@ class Task extends CI_Controller
         $data['tasks'] = $tasks;
 
         // Counting Task
-        $this->db->from("tasks");
-        $this->db->select(array("count(tasks.parent_id) as total"));
-        $this->db->where(["tasks.parent_id" => 1 ]);
-        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks.department_id');
-        $this->db->group_by("tasks.parent_id");
-        $daily = $this->db->get()->row();
+        $daily = $weekly = $monthly = $one_time = 0;
+        foreach ($tasks as $task) {
+            if( $task->parent_id == 1 ) {
+                $daily++;
+            }
 
-        $this->db->from("tasks");
-        $this->db->select(array("count(tasks.parent_id) as total"));
-        $this->db->where(["tasks.parent_id" => 2 ]);
-        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks.department_id');
-        $this->db->group_by("tasks.parent_id");
-        $weekly = $this->db->get()->row();
+            if( $task->parent_id == 2 ) {
+                $weekly++;
+            }
 
-        $this->db->from("tasks");
-        $this->db->select(array("count(tasks.parent_id) as total"));
-        $this->db->where(["tasks.parent_id" => 3 ]);
-        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks.department_id');
-        $this->db->group_by("tasks.parent_id");
-        $monthly = $this->db->get()->row();
+            if( $task->parent_id == 3 ) {
+                $monthly++;
+            }
 
-        $this->db->from("tasks");
-        $this->db->select(array("count(tasks.parent_id) as total"));
-        $this->db->where(["tasks.parent_id" => 4 ]);
-        if( $employee_id ) $this->db->where([ "tasks.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks.department_id');
-        $this->db->group_by("tasks.parent_id");
-        $one_time = $this->db->get()->row();
+            if( $task->parent_id == 4 ) {
+                $one_time++;
+            }
+
+        }
         
         $tasks_count = array(
             "daily"     =>  $daily,
@@ -161,6 +154,7 @@ class Task extends CI_Controller
             "monthly"   =>  $monthly,
             "one_time"  =>  $one_time
         );
+        //dd($tasks_count);
 
         $data["tasks_count"] = $tasks_count;
 
@@ -506,10 +500,21 @@ class Task extends CI_Controller
     public function getUsers($group)
     {
         $sql = "SELECT users.id, users.first_name, users.last_name FROM `aauth_groups` AS grp LEFT JOIN aauth_user_to_group AS grpusr ON grp.id = grpusr.group_id LEFT JOIN aauth_users AS users ON users.id = grpusr.user_id WHERE `name` = ?";
-        $res = $this->db->query($sql, array($group))->result();
+        //$res = $this->db->query($sql, array($group))->result();
         //echo $this->db->last_query();
 
-        return $res;
+        $this->db->select('aauth_users.id, aauth_users.first_name, aauth_users.last_name');
+        $this->db->from('aauth_users');
+        $this->db->join('aauth_user_to_group', 'aauth_users.id = aauth_user_to_group.user_id');
+        $this->db->join('departments', 'departments.cid = aauth_users.dept_id', 'left');
+        $this->db->where('aauth_user_to_group.group_id', 3);
+        if( $this->currentUser->cur_loc == "Fujairah" ) {
+            $this->db->where('aauth_users.cur_loc', "Fujairah");
+        }
+
+        $employees = $this->db->get()->result();
+        
+        return $employees;
     }
 
     public function generateRandomString($length = 10)
@@ -725,43 +730,36 @@ class Task extends CI_Controller
         if ($this->currentUserGroup[0]->name == "Employee") {
             $this->db->where('tasks_nov.assignee', $this->currentUser->id);
         }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Fujairah" ) {
+            $this->db->join('aauth_users', 'tasks_nov.assignee = aauth_users.id');
+            $this->db->where('aauth_users.cur_loc', "Fujairah");
+        }
         
         $tasks = $this->db->get()->result();
 
         $data['tasks'] = $tasks;
 
         // Counting Task
-        $this->db->from("tasks_nov");
-        $this->db->select(array("count(tasks_nov.parent_id) as total"));
-        $this->db->where(["tasks_nov.parent_id" => 1 ]);
-        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
-        $this->db->group_by("tasks_nov.parent_id");
-        $daily = $this->db->get()->result_array();
+        $daily = $weekly = $monthly = $one_time = 0;
+        foreach ($tasks as $task) {
+            if( $task->parent_id == 1 ) {
+                $daily++;
+            }
 
-        $this->db->from("tasks_nov");
-        $this->db->select(array("count(tasks_nov.parent_id) as total"));
-        $this->db->where(["tasks_nov.parent_id" => 2 ]);
-        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
-        $this->db->group_by("tasks_nov.parent_id");
-        $weekly = $this->db->get()->result_array();
+            if( $task->parent_id == 2 ) {
+                $weekly++;
+            }
 
-        $this->db->from("tasks_nov");
-        $this->db->select(array("count(tasks_nov.parent_id) as total"));
-        $this->db->where(["tasks_nov.parent_id" => 3 ]);
-        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
-        $this->db->group_by("tasks_nov.parent_id");
-        $monthly = $this->db->get()->result_array();
+            if( $task->parent_id == 3 ) {
+                $monthly++;
+            }
 
-        $this->db->from("tasks_nov");
-        $this->db->select(array("count(tasks_nov.parent_id) as total"));
-        $this->db->where(["tasks_nov.parent_id" => 4 ]);
-        if( $employee_id ) $this->db->where([ "tasks_nov.assignee" => $employee_id ]);
-        $this->db->join('departments', 'departments.cid = tasks_nov.department_id');
-        $this->db->group_by("tasks_nov.parent_id");
-        $one_time = $this->db->get()->result_array();
+            if( $task->parent_id == 4 ) {
+                $one_time++;
+            }
+
+        }
         
         $tasks_count = array(
             "daily"     =>  $daily,
