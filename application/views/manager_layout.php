@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 ?>
 <!DOCTYPE html>
-<html lang="<?php echo $_SESSION["site_lang"] == "arabic" ? "ar" : "en";  ?>">
+<html lang="<?php echo isset($_SESSION["site_lang"]) && $_SESSION["site_lang"] == "arabic" ? "ar" : "en";  ?>">
 
 <head>
   <meta charset="utf-8" />
@@ -45,7 +45,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 </head>
 
-<body class="<?php echo $_SESSION["site_lang"] == "arabic" ? "rtl" : "ltr";  ?>">
+<body class="<?php echo isset($_SESSION["site_lang"]) && $_SESSION["site_lang"] == "arabic" ? "rtl" : "ltr";  ?>">
     <div class="wrapper ">
         <!-- Side-Bar is starting from here -->
         <div class="sidebar" data-color="blue">
