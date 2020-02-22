@@ -108,4 +108,55 @@ class Admin extends CI_Controller
 
         redirect( base_url('/admin/tasks') );
     }
+
+
+    public function task_report_add() {
+
+        if (!$this->aauth->is_loggedin()) {
+            redirect(base_url(''));
+        }
+
+        $data = array();
+        $this->db->select('tid, t_title, t_code, t_status' );
+        $this->db->from('tasks');
+
+        $this->db->order_by('t_code', 'ASC');
+        $tasks = $this->db->get()->result();
+        
+        $data['tasks']              = $tasks;
+
+        $data['heading1']           = 'Add Task Report';
+        $data['nav1']               = $this->currentUserGroup[0]->name;
+        $data['users']              = $this->db->get("aauth_users")->result_array();
+        $data['currentUser']        = $this->currentUser;
+        $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
+        $data['inc_page']           = 'admin/reports/manual-report';
+
+        $this->load->view('manager_layout', $data);
+
+    }
+
+    public function task_report_save() {        
+
+        extract($_POST);
+
+        $user_id        = $this->db->select("assignee")->from('tasks')->where('tid', $task_id )->get()->row('assignee');
+
+        $date           = new DateTime( $date );
+        $report_date    = $date->format('Y-m-d 13:25:14');
+
+        $data = array(
+            'task_id'   =>  $task_id,
+            'user_id'   =>  $user_id,
+            'berfore'   =>  $before,
+            'after'     =>  $after,
+            'status'    =>  $status,
+            'reason'    =>  $reason,
+            'created_at'=>  $report_date
+        );
+
+        $this->db->insert('reports', $data);
+
+        redirect( $_SERVER['HTTP_REFERER'] );
+    }
 }

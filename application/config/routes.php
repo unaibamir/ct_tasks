@@ -61,4 +61,7 @@ $route['admin/internal/user/change_pass/(:num)'] = 'admin/change_pass/$1';
 $route['admin/internal/tasks'] = 'admin/view_tasks';
 $route['admin/internal/tasks/delete/(:num)'] = 'admin/delete_task/$1';
 
+$route['admin/internal/task/report/add'] = 'admin/task_report_add';
+$route['admin/internal/task/report/save']['post'] = 'admin/task_report_save';
+
 //$route['user/change_password'] = 'admin/view_tasks';

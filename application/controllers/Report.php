@@ -664,7 +664,7 @@ class Report extends CI_Controller
         $data['currentUser'] = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = 'report/add'; // views/task/add.php page
-        $data['return_url'] = $_SERVER["HTTP_REFERER"];
+        $data['return_url'] = isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : base_url('/dashboard') ;
         
         $this->load->view('manager_layout', $data);
     }

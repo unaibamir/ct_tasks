@@ -157,6 +157,11 @@ $( function() {
         endDate: new Date()
     });
 
+    $('.datepickerBT').bootstrapBT({
+        autoclose: true,
+        endDate: new Date()
+    });
+
 });
 
 // Call bootstrap datepicker function
