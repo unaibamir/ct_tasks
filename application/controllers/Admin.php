@@ -159,4 +159,21 @@ class Admin extends CI_Controller
 
         redirect( $_SERVER['HTTP_REFERER'] );
     }
+
+    public function create_fujairah_manager() {
+
+        $user_id = $this->aauth->create_user("fujairah@gewportal.com", "Gew@2020", 333);
+        
+        $user_data = array(
+            'first_name'    =>  'Fujairah',
+            'last_name'     =>  'Manager',
+            'cur_loc'       =>  'Fujairah',
+            'user_pass'     =>  "Gew@2020"
+        );
+
+        $this->db->where('id', $user_id);
+        $this->db->update( $this->config->item('aauth')["users"] , $user_data);
+
+        dd($user_data);
+    }
 }
