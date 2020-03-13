@@ -62,6 +62,13 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "hold" ? "selected" : "" ?> value="hold">Hold</option>
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "cancelled" ? "selected" : "" ?> value="cancelled">Cancelled</option>
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "completed" ? "selected" : "" ?> value="completed">Finished</option>
+                                        <?php
+                                        if( $this->currentUserGroup[0]->name == "Manager" ) {
+                                            ?>
+                                            <option <?php echo isset($_GET["status"]) && $_GET["status"] == "pending" ? "selected" : "" ?> value="pending">Pending</option>
+                                            <?php
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>
@@ -126,8 +133,8 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         $t_given            =   !empty($task->given_by) ? $task->given_by : $task->created_by;
                                         $given_by_key       =   array_search($t_given, array_column($users, "id"));
                                         
-                                        $assigned_user_key  =   array_search($task->assignee, array_column($users, "id"));
-                                        $follow_user_key    =   array_search($task->reporter, array_column($users, "id"));
+                                        //$assigned_user_key  =   array_search($task->assignee, array_column($users, "id"));
+                                        //$follow_user_key    =   array_search($task->reporter, array_column($users, "id"));
                                         
                                         $start_date         =   date($this->config->item('date_format'), strtotime($task->start_date));
                                         $end_date           =   !empty($task->end_date ) ? date($this->config->item('date_format'), strtotime($task->end_date)) : "";
@@ -139,13 +146,41 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
 
                                         ?>
                                         <tr>
-                                            <td><strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong></td>
+                                            <td>
+                                                <?php 
+                                                if( !empty( $task->assignee ) ) {
+                                                    $assigned_user_key  =   array_search($task->assignee, array_column($users, "id"));
+                                                    ?>
+                                                    <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
+                                                    <?php
+                                                } else {
+                                                    ?>
+                                                    <strong>GEW_<?php echo $task->t_code; ?></strong>
+                                                    <?php
+                                                }
+                                                ?>
+                                                
+                                            </td>
                                             <td><?php echo $task_title; ?></td>
-                                            <td><?php echo $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"]; ?></td>
+                                            <td>
+                                                <?php
+                                                if( !empty( $task->assignee ) ) {
+                                                    $assigned_user_key  =   array_search($task->assignee, array_column($users, "id"));
+                                                    echo $users[$assigned_user_key]["first_name"] . " " . $users[$assigned_user_key]["last_name"];
+                                                }
+                                                ?>
+                                            </td>
                                             <td><?php echo $users[$given_by_key]["first_name"] . " " . $users[$given_by_key]["last_name"]; ?></td>
                                             <td><?php echo $task->c_name; ?></td>
                                             <td><?php echo $job_types[$task->parent_id]; ?></td>
-                                            <td><?php echo $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"]; ?></td>
+                                            <td>
+                                                <?php
+                                                if( !empty( $task->reporter ) ) {
+                                                    $follow_user_key    =   array_search($task->reporter, array_column($users, "id"));
+                                                    echo $users[$follow_user_key]["first_name"] . " " . $users[$follow_user_key]["last_name"];
+                                                }
+                                                ?>
+                                            </td>
                                             <td><?php echo $start_date; ?></td>
                                             <td><?php echo $end_date; ?></td>
                                             <td><?php echo getStatusText($task->t_status); ?></td>
@@ -156,49 +191,68 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                                 if( $task->t_status == "hold" ) {
                                                     ?>
                                                     <a href="javascript:void(0);" class="btn btn-success btn-sm lower-btn" data-toggle="modal" data-target=".task-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size:10px;">Resume Task</a>
-                                                    <?php
-                                                }
-                                                ?>
-                                                <div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog model-md">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title h4" style="margin:0;">
-                                                                    Resume Task: <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
-                                                                </h5>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">×</span>
-                                                                </button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <div class="container-fluid" style="font-size: 14px;">
-                                                                    <div class="row">
-                                                                        <div class="col-md-12">
-                                                                            <form action="<?php echo base_url("/task/resume_submit"); ?>" method="post">
-                                                                                <div class="form-group row">
-                                                                                    <label for="" class="col-sm-3 col-form-label" style="color: #000;">End Date <br><small>(optional)</small></label>
-                                                                                    <div class="col-md-9 text-left">
-                                                                                        <input type="text" name="end_date" class="datepicker_min form-control" autocomplete="off" value="<?php echo $end_date; ?>">
+                                                    <div class="modal fade task-popup-<?php echo $task->tid; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog model-md">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title h4" style="margin:0;">
+                                                                        Resume Task: <strong>GEW_<?php echo $users[$assigned_user_key]["username"] ."_". $task->t_code; ?></strong>
+                                                                    </h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="container-fluid" style="font-size: 14px;">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12">
+                                                                                <form action="<?php echo base_url("/task/resume_submit"); ?>" method="post">
+                                                                                    <div class="form-group row">
+                                                                                        <label for="" class="col-sm-3 col-form-label" style="color: #000;">End Date <br><small>(optional)</small></label>
+                                                                                        <div class="col-md-9 text-left">
+                                                                                            <input type="text" name="end_date" class="datepicker_min form-control" autocomplete="off" value="<?php echo $end_date; ?>">
 
-                                                                                        <p><small>if the task already has an end date, it will be displayed here.</small></p>
+                                                                                            <p><small>if the task already has an end date, it will be displayed here.</small></p>
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
 
-                                                                                <div class="form-group row">
-                                                                                    <div class="col-md-12 text-right">
-                                                                                        <input type="submit" value="Resume Task" class="btn btn-success btn-sm">
+                                                                                    <div class="form-group row">
+                                                                                        <div class="col-md-12 text-right">
+                                                                                            <input type="submit" value="Resume Task" class="btn btn-success btn-sm">
+                                                                                        </div>
                                                                                     </div>
-                                                                                </div>
-                                                                                <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
+                                                                                    <input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
 
-                                                                            </form>
+                                                                                </form>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                    <?php
+                                                }
+
+                                                if( $task->t_status == 'pending' ) {
+                                                    ?>
+                                                    <a href="javascript:void(0);" class="btn btn-success btn-sm lower-btn" data-toggle="modal" data-target=".task-assign-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size:10px;">Assign Task</a>
+
+                                                    <?php
+                                                    // directly include partial view
+                                                    $partial_data = array(
+                                                        'task'          =>  $task,
+                                                        'task_title'    =>  $task_title,
+                                                        'start_date'    =>  $start_date,
+                                                        'end_date'      =>  $end_date
+                                                    );
+                                                    echo $this->load->view('task/assign_pending_task_partial', $partial_data, true);
+                                                    ?>
+
+                    
+                                                    <?php
+                                                }
+                                                ?>
                                             </td>
                                         </tr>
                                         <?php

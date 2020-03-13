@@ -65,6 +65,10 @@ function getStatusText( $status = "in-progress" ) {
 			$text = "Finished";
 			break;
 
+		case 'pending':
+			$text = "Pending";
+			break;
+
 		default:
 			$text = "In Progress";
 			break;

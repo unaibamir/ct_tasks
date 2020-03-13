@@ -204,10 +204,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                     <div class="row">
                           <div class="row" >
-                            <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                                <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'add_new_task_text' ); ?></a>
-                          
-                              <?php endif; ?>
+                                <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                                    <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'add_new_task_text' ); ?></a>
+                                <?php endif; ?>
+
+                                <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                                    <a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                        <?php echo lang( 'add_future_task_text' ); ?>
+                                    </a>
+                                <?php endif; ?>
 
 
                               <!-- Manager Side / Task listing  -->

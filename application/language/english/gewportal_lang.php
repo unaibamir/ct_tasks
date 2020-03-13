@@ -4,6 +4,7 @@ $lang['task_listing_heading'] = "Task Listing";
 
 // top and side navs
 $lang['add_new_task_text'] = "Add New Task";
+$lang['add_future_task_text'] = "Add Future Task";
 $lang['change_lang_text'] = "Language";
 $lang['nav_search_text'] = "Search...";
 $lang['task_listing_text'] = "Task Listing";

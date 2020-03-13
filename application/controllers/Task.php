@@ -39,7 +39,7 @@ class Task extends CI_Controller
         
         $this->db->select('*');
         $this->db->from('tasks');
-        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->join('departments', 'departments.cid = tasks.department_id', 'left');
 
         if ($employee_id) {
             $this->db->where('tasks.assignee', $employee_id);
@@ -157,6 +157,11 @@ class Task extends CI_Controller
         //dd($tasks_count);
 
         $data["tasks_count"] = $tasks_count;
+
+        //select all department
+        $data['departments'] = $this->getDepartments();
+        //select all employees
+        $data['employees'] = $this->getUsers('Employee');
 
         $data['heading1'] = 'Task Listing';
         $data['nav1'] = $this->currentUserGroup[0]->name;
@@ -315,9 +320,233 @@ class Task extends CI_Controller
         
     }
 
+    public function add_future_task() {
+        $data = array();
+
+        $sql                        = "SELECT tid FROM `tasks` ORDER BY `tasks`.`tid`  DESC LIMIT 0, 1";
+        $last_task_id               = $this->db->query($sql)->result_array();
+        
+        $last_task_id               = str_pad($last_task_id[0]["tid"], 4, '0', STR_PAD_LEFT);
+        $data["last_task_id"]       = $last_task_id + 1;
+
+        //select all department
+        $data['departments']        = $this->getDepartments();
+
+        //select all employees
+        $data['employees']          = $this->getUsers('Employee');
+        $data['heading1']           = 'Add Future Task';
+        $data['nav1']               = $this->currentUserGroup[0]->name;
+        $data['task_code']          = $this->generateRandomString(4);
+        $data['currentUser']        = $this->currentUser;
+        $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
+
+        $data['inc_page']           = 'task/add_future_task';
+
+        $this->load->view('manager_layout', $data);
+    }
+
+    public function save_future_task() {
+
+        if( !empty( $this->input->post('start_date') ) ) {
+            $start_date_arr = explode("/", $this->input->post('start_date'));
+            $start_date = $start_date_arr[0] . '-' . $start_date_arr[1] . '-' . $start_date_arr[2];
+            $start_date = date("Y-m-d H:i:s", strtotime($start_date) );
+        } else {
+            $start_date = date("Y-m-d H:i:s", time() );
+        }
+
+
+        if( !empty( $this->input->post('end_date') ) ) {
+            $end_date_arr = explode("/", $this->input->post('end_date'));
+            $end_date = $end_date_arr[0] . '-' . $end_date_arr[1] . '-' . $end_date_arr[2];
+            $end_date = date("Y-m-d 23:59:59", strtotime($end_date) );
+        } else {
+            //$end_date = date("Y-m-d H:i:s", mktime(0,0,0,12,31,date('Y') ));
+            $end_date = "";
+        }
+
+         //server validation
+        $data = array(
+            't_title'         => $this->input->post('title'),
+            't_code'          => $this->input->post('code'),
+            'department_id'   => $this->input->post('department'),
+            'parent_id'       => $this->input->post('parentId'),
+            'assignee'        => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
+            'reporter'        => $this->input->post('reporter'),
+            'given_by'        => $this->input->post('given_by'),
+            'attachment_id'   => 0,
+            't_description'   => $this->input->post('description'),
+            'start_date'      => $start_date,
+            'end_date'        => $end_date,
+            'created_by'      => $this->currentUser->id,
+            't_status'        => "pending"
+        );
+        
+        $this->db->insert('tasks', $data);
+        $task_id = $this->db->insert_id();
+
+        //get task id and upload files
+        $file_ids   = array();
+        if( !empty($_FILES["files"]) ) {
+
+            $upload_path                = "uploads/tasks/task-{$task_id}";
+
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+
+            $config['upload_path']      = $upload_path;
+            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
+
+            $this->load->library('upload', $config);
+
+            $file_count = 0;
+
+            foreach ($_FILES["files"] as $key => $file) {
+
+                if( empty($file) || !isset($_FILES['files']['name'][$file_count])) {
+                    continue;
+                }
+                
+                $_FILES['attachments[]']['name']        = $_FILES['files']['name'][$file_count];
+                $_FILES['attachments[]']['type']        = $_FILES['files']['type'][$file_count];
+                $_FILES['attachments[]']['tmp_name']    = $_FILES['files']['tmp_name'][$file_count];
+                $_FILES['attachments[]']['error']       = $_FILES['files']['error'][$file_count];
+                $_FILES['attachments[]']['size']        = $_FILES['files']['size'][$file_count];
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('attachments[]')) {
+
+                    $file_data              = $this->upload->data();
+                    $new_file['f_title']    = $file_data["client_name"];
+                    $new_file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                    $new_file['type']       = $file_data["file_type"];
+                    $new_file['status']     = 0;
+                    $new_file['is_deleted'] = 0;
+                    $new_file['post_id']    = $task_id;
+                    $new_file['post_type']  = "task";
+
+                    $this->db->insert("files", $new_file);
+                    $file_id = $this->db->insert_id();
+                    $file_ids[] = $file_id;
+                }
+                
+                $file_count++;
+            }
+        }
+
+
+        redirect( add_query_arg( 'message', 'task_saved', base_url('task')) );
+    }
+
     public function assign()
     {
-        exit('commming soon!');
+        
+        extract($_POST);
+        $task = $this->db->select('*')->from('tasks')->where('tid', $task_id)->get()->row();
+        //dd($task);
+
+        if( !empty( $this->input->post('start_date') ) ) {
+            $start_date_arr = explode("/", $this->input->post('start_date'));
+            $start_date = $start_date_arr[0] . '-' . $start_date_arr[1] . '-' . $start_date_arr[2];
+            $start_date = date("Y-m-d H:i:s", strtotime($start_date) );
+        } else {
+            $start_date = date("Y-m-d H:i:s", time() );
+        }
+
+
+        if( !empty( $this->input->post('end_date') ) ) {
+            $end_date_arr = explode("/", $this->input->post('end_date'));
+            $end_date = $end_date_arr[0] . '-' . $end_date_arr[1] . '-' . $end_date_arr[2];
+            $end_date = date("Y-m-d 23:59:59", strtotime($end_date) );
+        } else {
+            //$end_date = date("Y-m-d H:i:s", mktime(0,0,0,12,31,date('Y') ));
+            $end_date = "";
+        }
+
+        //server validation
+        $data = array(
+            't_title'         => $this->input->post('title'),
+            't_code'          => $this->input->post('code'),
+            'department_id'   => $this->input->post('department'),
+            'parent_id'       => $this->input->post('parentId'),
+            'assignee'        => $this->currentUserGroup[0]->name == "Employee" ? $this->currentUserGroup[0]->user_id : $this->input->post('assignee'),
+            'reporter'        => $this->input->post('reporter'),
+            'given_by'        => $this->input->post('given_by'),
+            'attachment_id'   => 0,
+            't_description'   => nl2br( $this->input->post('description') ),
+            'start_date'      => $start_date,
+            'end_date'        => $end_date,
+            'created_by'      => $this->currentUser->id,
+            't_status'        => "in-progress"
+        );
+
+        //dd($data);
+
+        $this->db->where('tid', $task_id);
+        $this->db->update('tasks', $data);
+
+        //get task id and upload files
+        $file_ids   = array();
+        if( !empty($_FILES["files"]) ) {
+
+            $upload_path                = "uploads/tasks/task-{$task_id}";
+
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+
+            $config['upload_path']      = $upload_path;
+            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|avi|mpeg|mp3|mp4|3gp|';
+
+            $this->load->library('upload', $config);
+
+            $file_count = 0;
+
+            foreach ($_FILES["files"] as $key => $file) {
+
+                if( empty($file) || !isset($_FILES['files']['name'][$file_count])) {
+                    continue;
+                }
+                
+                $_FILES['attachments[]']['name']        = $_FILES['files']['name'][$file_count];
+                $_FILES['attachments[]']['type']        = $_FILES['files']['type'][$file_count];
+                $_FILES['attachments[]']['tmp_name']    = $_FILES['files']['tmp_name'][$file_count];
+                $_FILES['attachments[]']['error']       = $_FILES['files']['error'][$file_count];
+                $_FILES['attachments[]']['size']        = $_FILES['files']['size'][$file_count];
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('attachments[]')) {
+
+                    $file_data              = $this->upload->data();
+                    $new_file['f_title']    = $file_data["client_name"];
+                    $new_file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                    $new_file['type']       = $file_data["file_type"];
+                    $new_file['status']     = 0;
+                    $new_file['is_deleted'] = 0;
+                    $new_file['post_id']    = $task_id;
+                    $new_file['post_type']  = "task";
+
+                    $this->db->insert("files", $new_file);
+                    $file_id = $this->db->insert_id();
+                    $file_ids[] = $file_id;
+                }
+                
+                $file_count++;
+            }
+        }
+
+        $this->sent_assigned_email( compact('data', 'task_id', 'file_ids') );
+
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            redirect(base_url('task/alert'));
+        } else {
+            redirect(base_url('task'));
+        }
+
+
     }
 
     public function history()
@@ -443,10 +672,16 @@ class Task extends CI_Controller
         
         $data["tasks_count"] = $tasks_count;
         
-        
+        $currnet_date = date( 'Y-m-d', time() );
+
+        //dd( $this->db->query('SELECT CURDATE()')->result_array() );
         foreach ($tasks as $key => $task) {
 
-            $reported = $this->db->query("SELECT * FROM `reports` WHERE task_id ={$task->tid} AND user_id = {$this->currentUser->id} AND DATE(created_at) = CURDATE()")->result_array();
+            //$reported = $this->db->query("SELECT * FROM `reports` WHERE task_id ={$task->tid} AND user_id = {$this->currentUser->id} AND DATE(created_at) = CURDATE()")->result_array();
+
+            $query = "SELECT * FROM `reports` WHERE task_id = {$task->tid} AND user_id = {$this->currentUser->id} AND created_at LIKE '{$currnet_date}%'";
+            $reported = $this->db->query( $query )->result_array();
+
             if (!empty($reported) && isset($reported[0])) {
                 $task->reported = true;
             } else {
@@ -508,7 +743,7 @@ class Task extends CI_Controller
         $this->db->join('aauth_user_to_group', 'aauth_users.id = aauth_user_to_group.user_id');
         $this->db->join('departments', 'departments.cid = aauth_users.dept_id', 'left');
         $this->db->where('aauth_user_to_group.group_id', 3);
-        if( $this->currentUser->cur_loc == "Fujairah" ) {
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Fujairah" ) {
             $this->db->where('aauth_users.cur_loc', "Fujairah");
         }
 

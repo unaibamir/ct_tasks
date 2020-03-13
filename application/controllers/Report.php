@@ -640,8 +640,10 @@ class Report extends CI_Controller
         $files = $this->db->get()->result_array();
         $data['task_files'] = $files;
 
-        $sql = "SELECT * FROM `reports` WHERE task_id = ? AND DATE(created_at) = CURDATE()";
-        $data['alreadReported'] = $this->db->query($sql, array($task_id))->row();
+        $currnet_date   = date( 'Y-m-d', time() );
+        //$sql = "SELECT * FROM `reports` WHERE task_id = ? AND DATE(created_at) = CURDATE()";
+        $sql = "SELECT * FROM `reports` WHERE task_id = {$task_id} AND created_at LIKE '{$currnet_date}%'";
+        $data['alreadReported'] = $this->db->query($sql)->row();
 
         $data["can_submit"] = true;
         $data['heading1'] = 'Task from';
@@ -652,11 +654,18 @@ class Report extends CI_Controller
         //select all employees
         //$data['employees'] = $this->getUsers('Employee');
 
-        $today          = time();
+        $current        = time();
         $start_date     = strtotime($task->start_date);
         $end_date       = !empty( $task->end_date ) ? strtotime($task->end_date) : time() + 86400;
 
-        if ($today > $end_date) {
+        /*$currnet_date   = date( 'Y-m-d', time() );
+        $query          = "SELECT * FROM `reports` WHERE task_id = {$task_id} AND user_id = {$this->currentUser->id} AND created_at LIKE '{$currnet_date}%'";
+        $reported       = $this->db->query( $query )->result_array();
+        if (!empty($reported) && isset($reported[0])) {
+            $data["can_submit"] = false;
+        }*/
+        
+        if ($current > $end_date) {
             $data["can_submit"] = false;
         }
         
@@ -695,7 +704,9 @@ class Report extends CI_Controller
             'after'     => $after,
             'attachment_id' => 0,
             'status'    => $this->input->post('status'),
-            'reason'    => $reason
+			'reason'    => $reason,
+			'created_at' => date("Y-m-d H:i:s", time()),
+			'updated_at' => date("Y-m-d H:i:s", time())
         );
 
         $this->db->insert('reports', $data);

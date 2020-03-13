@@ -47,7 +47,7 @@
     <div class="row">
         <div class="col-md-12">
             
-            <?php echo form_open_multipart('admin/user/save', array('class' => 'form-horizontal')); ?>
+            <?php echo form_open_multipart('admin/internal/user/save', array('class' => 'form-horizontal')); ?>
                 <fieldset>
 
                     <!-- Form Name -->

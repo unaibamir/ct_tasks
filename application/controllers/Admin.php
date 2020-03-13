@@ -22,6 +22,9 @@ class Admin extends CI_Controller
     }
 
     public function index() {
+        //dd(time(), false);
+        //dd(strtotime('today 12pm'), false);
+        echo date('l jS \of F Y h:i:s A');
     }
 
     public function getDepartments() {

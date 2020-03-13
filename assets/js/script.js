@@ -7,7 +7,7 @@ $( function() {
 
     var dateformat = "dd/mm/yy";
     
-    var from = $( "#start_date" ).datepicker({
+    var from = $( "#start_date, .start_date" ).datepicker({
         changeMonth: true,
         dateFormat: dateformat,
         numberOfMonths: 1
@@ -16,7 +16,7 @@ $( function() {
         to.datepicker( "option", "minDate", getDate( this ) );
     });
 
-    var to = $( "#end_date" ).datepicker({
+    var to = $( "#end_date, .end_date" ).datepicker({
         changeMonth: true,
         dateFormat: dateformat,
         numberOfMonths: 1
@@ -52,12 +52,12 @@ $( function() {
     });
 
 
-    $("#department").on("change", function(event){
+    $("#department, .department").on("change", function(event){
         var dept_id = $(this).val();
-
+        console.log($(this).parent().parent().next().find('.assignee'));
         if( dept_id != "" && dept_id != "Select Department" ) {
             var url = base_url + "user/getdepartmentusers/" + dept_id;
-            var assignee = $("#assignee");
+            var assignee = $(this).parent().parent().next().find('.assignee');
             $.ajax({url: url, success: function(result){
                 result  = JSON.parse(result);
 
@@ -104,7 +104,8 @@ $( function() {
     $(document).on('click', '.btn-add', function(e){
         e.preventDefault();
         
-        var controlForm = $('#repeater-fields:first');
+        var controlForm = $('.repeater-fields:first');
+        var controlForm = $(this).parents().find('.repeater-fields:first');
         var currentEntry = $(this).parents('.entry:first');
 
         //currentEntry.find(".report-file-label").empty();
@@ -123,7 +124,7 @@ $( function() {
     });
 
 
-    $("#report-file").change(function(e){
+    $("#report-file, .report-file").change(function(e){
         var uploaded_file = e.target.files[0];
         if( typeof uploaded_file != "undefined" ) {
             var fileName = e.target.files[0].name;

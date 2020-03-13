@@ -65,3 +65,6 @@ $route['admin/internal/task/report/add'] = 'admin/task_report_add';
 $route['admin/internal/task/report/save']['post'] = 'admin/task_report_save';
 
 //$route['user/change_password'] = 'admin/view_tasks';
+
+$route['task/add/future'] = 'task/add_future_task';
+$route['task/add/future/save']['post'] = 'task/save_future_task';
