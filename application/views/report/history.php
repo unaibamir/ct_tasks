@@ -5,6 +5,14 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <div class="panel-header panel-header-sm">
 </div>
 
+<script src="https://cdn.tiny.cloud/1/xi0u55dl0cftjbp4pdbjakkge3tbtdza412p3l2gjyf5eya2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+	selector: '.tinymce',
+	branding: false,
+	menubar: false
+});
+</script>
 <!-- Dashboard for User -->
 <div class="content">
 	<div class="row">
@@ -18,7 +26,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 
 					<div class="row">
 
-						<div class="col-lg-3 rounded  p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
+						<div class="col-lg-4 rounded  p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
 							<div class="row ">
 								<h2 class="text-sm-center text-primary ">Task Details </h2>
 
@@ -88,12 +96,50 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 									?>
 								</div>
 							</div>
-							<!--  <a href="http://gdlp01.c-wss.com/gds/0/0300004730/02/eosrt3-eos1100d-im2-c-en.pdf" download>
-                            <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png"  width="40" height="40"> Download File</a> -->
+							<?php if( $currentUserGroup == "Manager" && $currentUser->cur_loc != 'Fujairah' ): ?>
+								
+								<div class="row" id="notes">
+
+									<div class="">
+										<h6 class=" m-1 mt-3 ">Notes:</h6>
+
+										<div class="row">
+											<div class="col-md-12" id="task-notes">
+												<?php
+												if( !empty($notes) ) {
+													echo '<ul>';
+													foreach ($notes as $note) {
+														?>
+														<li>
+															<?php echo autop($note->note); ?>
+														</li>
+														<?php
+													}
+													echo '</ul>';
+												}
+												?>
+											</div>
+										</div>										
+
+										<div class="row">
+											<div class="col-md-12" id="create-note">
+												<h6 class=" m-1 mt-3 ">Create New Note:</h6>
+												<form action="<?php echo base_url('/task/save_task_note'); ?>" method="post">
+													<textarea name="note" class="tinymce" rows="15" placeholder="Enter your note here"></textarea>
+													<input type="submit" class="btn btn-info" value="Submit" name="save_note">
+													<input type="hidden" name="task_id" value="<?php echo $task->tid; ?>">
+													<input type="hidden" name="user_id" value="<?php echo $currentUser->id ?>">
+													<input type="hidden" name="referrer" value="<?php echo $this->input->server('REDIRECT_URL'); ?>#notes">
+												</form>
+											</div>
+										</div>
+									</div>
+								</div>
+							<?php endif; ?>
 
 						</div>
 
-						<div class="col-lg-9 rounded  p-4 table-striped">
+						<div class="col-lg-8 rounded  p-4 table-striped">
 							<form action="" method="get">
 								<div class="row">
 									<div class="col-md-3">
@@ -184,158 +230,13 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 								}
 							}
 
-							/*foreach ($dates as $key => $date) {
-								?>
-								<div class="row bg-light border-bottom ">
-									<div class="col-md-2 text-info font-weight-bold border-right pt-5 pb-5">
-										<?php echo $date; ?>
-									</div>
-								<?php
-
-								if( !empty($taskHistory) ) {
-
-									foreach ($taskHistory as $row => $report) {
-
-										$report_date = date("d-m-Y", strtotime($report->created_at));
-
-										if( $report_date != $date ) {
-											continue;
-										}
-
-										?>
-											<div class="col-md-4 bg-light p-3 border-right">
-												<p><?php echo $report->berfore; ?></p>
-												<hr>
-												<p><?php echo $report->after; ?></p>
-											</div>
-
-											<div class="col-md-2 bg-light p-3 border-right ">
-												<?php
-												if (!empty($value->files)) {
-													echo '<ul style="padding-left:0px;list-style: none;">';
-													foreach ($report->files as $file) {
-														?>
-														<li>
-															<a href="<?php echo $file["url"]; ?>" target="_blank">
-																<img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width="40" height="40"> <?php echo $file["f_title"]; ?>
-															</a>
-														</li>
-														<?php
-													}
-													echo '</ul>';
-												} else {
-													echo 'No Files Available';
-												}
-												?>
-											</div>
-
-											<div class="col-md-1 text-primary t-3 text-sm-center border-right pt-5"><label><b><?php echo $report->status; ?></b></label></div>
-
-											<div class="col-md-3 text-primary t-3 text-sm-left  pt-5"><label><b><?php echo $report->reason; ?></b></label></div>
-										<?php
-									}
-								}
-								?>
-								</div>
-								<?php
-							}*/
-
-
-							/*if (!empty($taskHistory)) {
-								echo '<div class="overflow-autos">';
-								foreach ($taskHistory as $key => $value) {
-									$newDate = date("d-M-y", strtotime($value->created_at));
-									echo '<div id="report-'.$value->rid.'" class="row bg-light  border-bottom ">';
-									echo '<div class="col-md-2 text-info font-weight-bold border-right pt-5 pb-5">' . $newDate . '</div>';
-									echo '<div class="col-md-4 bg-light p-3 border-right "><p>' . $value->berfore . '</p><hr><p>' . $value->after . '</p></div>';
-									echo '<div class="col-md-2 bg-light p-3 border-right ">';
-									if (!empty($value->files)) {
-										echo '<ul style="padding-left:0px;list-style: none;">';
-										foreach ($value->files as $file) {
-											?>
-											<li>
-												<a href="<?php echo $file["url"]; ?>" target="_blank">
-													<img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png" width="40" height="40"> <?php echo $file["f_title"]; ?>
-												</a>
-											</li>
-								<?php
-											}
-											echo '</ul>';
-										} else {
-											echo 'No Files Available';
-										}
-										echo '</div>';
-										echo '<div class="col-md-1 text-primary t-3 text-sm-center border-right pt-5"><label><b>' . $value->status . '</b></label></div>';
-										echo '<div class="col-md-3 text-primary t-3 text-sm-left  pt-5"><label><b>' . $value->reason . '</b></label></div>';
-										echo '</div>';
-									}
-									echo '</div>';
-								} else {
-									?>
-								<div class="col-md-6 offset-3">
-									<br>
-									<div class="alert alert-primary">
-										<span>
-											<b> Sorry!</b> No task history is available right now.
-										</span>
-									</div>
-								</div>
-							<?php
-							}*/
-
 							?>
 
 
 						</div>
 
 					</div>
-					<!--
-         <div class="row" style=" background-color: white; ">
-           <div class="col-lg-12 m-4">
-             <h6 class="card-subtitle mb-2 ">Title </h6>
-             <p class="card-text"><?php echo $task->t_title; ?></p>
-             <h6 class="card-subtitle mb-2 ">Task  Description</h6>
-             <p class="card-text"><?php echo $task->t_description; ?></p>
-             <a href="http://gdlp01.c-wss.com/gds/0/0300004730/02/eosrt3-eos1100d-im2-c-en.pdf" download>
-              <img src="https://freeiconshop.com/wp-content/uploads/edd/document-download-flat.png"  width="40" height="40"> View attachement</a>
-            </div>
-          </div>
--->
-
-					<!--
-
-                <div class="well">
-                  <h2 class="text-divider"></h2>
-                </div>
--->
-
-					<!-- <div class="well">
-                  <h4 class="text-divider"><span>Update Task Form</span></h4>
-                </div>
-
-
-
-                <div class="row">                                          
-                  <div class="col-md-2"><label>Date</label></div>
-                  <div class="col-md-8"><label>Update</label></div>
-                  <div class="col-md-2"><label>Status</label></div>
-                </div>    -->
-
-					<?php
-					/*if (!empty($taskHistory)){
-                      foreach ($taskHistory as $key => $value)
-                      {
-                        $newDate = date("d-M-y", strtotime($value->created_at));
-                        echo '<div class="row">';
-                        echo '<div class="col-md-2">'.$newDate.'</div>';
-                        echo '<div class="col-md-8">'.$value->berfore.'</br>'.$value->after.'</div>';
-                        echo '<div class="col-md-2"><label>'.$value->status.'</label></div>';
-                        echo '</div>';
-                      }
-                    }*/
-
-					?>
-
+					
 				</div>
 
 			</div>

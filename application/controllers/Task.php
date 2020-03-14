@@ -1013,4 +1013,27 @@ class Task extends CI_Controller
         $data['inc_page'] = 'task/list_nov'; // views/display.php page
         $this->load->view('manager_layout', $data);
     }
+
+
+    public function save_task_note() {
+        if( !isset($_POST["save_note"]) ) {
+
+        }
+
+
+        //server validation
+        $data = array(
+            'note'              => $this->input->post('note'),
+            'user_id'           => $this->input->post('user_id'),
+            'task_id'           => $this->input->post('task_id'),
+            'created_at'        => date("Y-m-d H:i:s", time()),
+            'updated_at'        => date("Y-m-d H:i:s", time())
+        );
+
+        $this->db->insert('notes', $data);
+        $note_id = $this->db->insert_id();
+
+        redirect( add_query_arg( 'msg', 'note_saved', $this->input->post('referrer') ) );
+
+    }
 }

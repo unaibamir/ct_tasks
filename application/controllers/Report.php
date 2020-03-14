@@ -938,6 +938,9 @@ class Report extends CI_Controller
         $data["dates_reports"] = $dates_reports;
         //dd($data["dates_reports"]);
 
+        $notes = $this->db->select("*")->from("notes")->where( 'task_id', $task_id )->get()->result();
+        $data['notes'] = $notes;
+
         $data['heading1'] = 'Task History';
         $data['nav1'] = 'GEW Employee';
 
