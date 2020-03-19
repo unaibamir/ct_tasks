@@ -1036,4 +1036,12 @@ class Task extends CI_Controller
         redirect( add_query_arg( 'msg', 'note_saved', $this->input->post('referrer') ) );
 
     }
+
+    public function delete_note( $note_id ) {
+        $this->db->where('id', $note_id)->delete("notes");
+        echo json_encode(array(
+            "status"    =>  true,
+            "msg"       =>  "note-deleted"
+        ));
+    }
 }

@@ -163,9 +163,37 @@ $( function() {
         endDate: new Date()
     });
 
+    if( $("#task-notes").length > 0 ) {
+
+        $(".delete-note").on('click', function( event ){
+            event.preventDefault();
+
+            var note_id     =   $(this).attr('data-note_id');
+            
+            var url = base_url + "task/delete_note/" + note_id;
+            
+            $.ajax({
+                url: url,
+                success: function(result){
+                    result  = JSON.parse(result);
+                    if( result.status ) {
+                        $( "#note-" + note_id ).css({
+                            "background-color"  :   "red",
+                            "opacity"           :   "0",
+                            "visibility"        :   "hidden"
+                        });
+
+                        setTimeout(function(){
+                            $( "#note-" + note_id ).remove().slow();
+                        }, 500);
+                    }
+                }
+            });
+
+        });
+    }
 });
 
 // Call bootstrap datepicker function
         
-
 

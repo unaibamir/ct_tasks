@@ -204,61 +204,81 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                     <div class="row">
                           <div class="row" >
-                                <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                                    <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'add_new_task_text' ); ?></a>
-                                <?php endif; ?>
 
-                                <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                                    <a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-                                        <?php echo lang( 'add_future_task_text' ); ?>
-                                    </a>
-                                <?php endif; ?>
+<?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+<a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'add_new_task_text' ); ?>
+</a>
+<?php endif; ?>
 
-
-                              <!-- Manager Side / Task listing  -->
-                               <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                                    <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'task_listing_text' ); ?></a>
-                                <?php endif; ?>
-
-                            <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                                <a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link"><?php echo lang( 'nov_tasks_text' ); ?></a>
-                            <?php endif; ?>
-                                 
-                            <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-                   
-                                    <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'view_employee_report_text' ); ?></a>
-
-                            <?php endif; ?>
+<?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+<a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+<?php echo lang( 'add_future_task_text' ); ?>
+</a>
+<?php endif; ?>
 
 
-                            <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-                                <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang( 'employee_list_text' ); ?></a>
-                                <?php endif; ?>
+<!-- Manager Side / Task listing  -->
+<?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+<a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'task_listing_text' ); ?>
+</a>
+<?php endif; ?>
 
-                                <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
-                        
-                                <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true"><?php echo lang("all_assigned_task_text"); ?></a>
-                            
-                                <?php endif; ?>
-                                <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
-                          
-                                <a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">Daily JoB Report - View </a>
-                        
-                                <?php endif; ?>
-                                <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
-                                
-                                <a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-                                    Monthy Job Summary - View
-                                </a>
-                     
-                                <?php endif; ?>
-                                 <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
-                                
-                                <a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
-                                    Send An Email
-                                </a>
-                     
-                            <?php endif; ?>
+<?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+<a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link"><?php echo lang( 'nov_tasks_text' ); ?></a>
+<?php endif; ?>
+
+<?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+
+<a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'view_employee_report_text' ); ?>
+</a>
+
+<?php endif; ?>
+
+
+<?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+<a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'employee_list_text' ); ?>
+</a>
+<?php endif; ?>
+
+<?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+
+<a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang("all_assigned_task_text"); ?>
+</a>
+
+<?php endif; ?>
+<?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
+
+<a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'daily_job_report_view_text' ); ?>
+</a>
+
+<?php endif; ?>
+<?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+
+<a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'monthly_job_summary_view_text' ); ?>
+</a>
+
+<?php endif; ?>
+
+
+<?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+<a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+    <?php echo lang( 'employee_list_text' ); ?>
+</a>
+<?php endif; ?>
+
+<?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+
+<a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
+Send An Email
+</a>
+<?php endif; ?>
                          </div> 
                 </div>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">

@@ -68,3 +68,43 @@ table.dataTable td {
 .card label.error, .card label .error {
     color: #b50000;
 }
+
+#notes, #notes * {
+    transition: all ease 0.3s;
+}
+
+#task-notes > ul {
+    padding-left: 20px;
+}
+#task-notes > ul > li {
+    position: relative;
+    transition: all ease 0.3s;
+}
+#task-notes .note-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transition: all ease 0.3s;
+    opacity: 0;
+    visibility: hidden;
+}
+#task-notes > ul > li:hover .note-actions{
+    opacity: 1;
+    visibility: visible;
+}
+#task-notes .note-actions ul {
+    margin: 0;
+    list-style: none;
+    background-color: #fff;
+    padding: 3px 4px;
+    border-radius: 5px;
+    float: left;
+}
+#task-notes .note-actions ul li {
+    float: left;
+}
+#task-notes .note-actions ul li a {
+    float: left;
+    margin: 0px 5px;
+    padding: 0px 2px;
+}

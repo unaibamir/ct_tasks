@@ -100,26 +100,42 @@ tinymce.init({
 								
 								<div class="row" id="notes">
 
-									<div class="">
+									<div class="col-md-12 p-0">
 										<h6 class=" m-1 mt-3 ">Notes:</h6>
 
-										<div class="row">
-											<div class="col-md-12" id="task-notes">
-												<?php
-												if( !empty($notes) ) {
-													echo '<ul>';
-													foreach ($notes as $note) {
-														?>
-														<li>
-															<?php echo autop($note->note); ?>
-														</li>
+										<?php
+										if( !empty($notes) ) {
+											?>
+											<div class="row">
+												<div class="col-md-12" id="task-notes">
+													<ul>
 														<?php
-													}
-													echo '</ul>';
-												}
-												?>
-											</div>
-										</div>										
+														foreach ($notes as $note) {
+															?>
+															<li id="note-<?php echo $note->id;?>">
+																<div class="note-actions">
+																	<ul>
+																		<li>
+																			<!-- <a href="javascript:void(0);" data-note_id="<?php echo $note->id;?>" data-action="edit" class="edit-note">
+																				<i class="far fa-edit"></i>
+																			</a> -->
+																			<a href="javascript:void(0);" data-note_id="<?php echo $note->id;?>" data-action="delete" class="delete-note">
+																				<i class="fas fa-trash-alt"></i>
+																			</a>
+																		</li>
+																	</ul>
+																</div>
+																<?php echo autop($note->note); ?>
+															</li>
+															<?php
+														}
+														?>
+													</ul>
+												</div>
+											</div>	
+											<?php
+										}
+										?>									
 
 										<div class="row">
 											<div class="col-md-12" id="create-note">
