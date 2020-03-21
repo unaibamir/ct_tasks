@@ -5,7 +5,10 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <div class="panel-header panel-header-sm">
 </div>
 
-<script src="https://cdn.tiny.cloud/1/xi0u55dl0cftjbp4pdbjakkge3tbtdza412p3l2gjyf5eya2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- <script src="https://cdn.tiny.cloud/1/xi0u55dl0cftjbp4pdbjakkge3tbtdza412p3l2gjyf5eya2/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script> -->
+
+<script src="<?php echo base_url();?>/assets/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+
 <script>
 tinymce.init({
 	selector: '.tinymce',

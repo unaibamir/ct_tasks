@@ -101,40 +101,50 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label for="department-<?php echo $task->t_code; ?>" class="col-sm-3 col-form-label" style="color: #000;">
-                                        Select Department
-                                    </label>
-                                    <div class="col-md-9 text-left">
-                                        <select class="form-control department" id="department-<?php echo $task->t_code; ?>" name="department" required>
-                                            <option value="">Select Department</option>
-                                            <?php
-                                            if (!empty($departments)) {
-                                                foreach ($departments as $key => $value) {
-                                                    $selected = !empty($task->department_id) && $task->department_id == $value->cid ? ' selected="selected" ' : '';
-                                                    echo '<option value="' . $value->cid . '" '.$selected.' >' . $value->c_name . '</option>';
+                                
+                                <?php if( $currentUserGroup == "Manger" ): ?>
+                                
+                                    <div class="form-group row">
+                                        <label for="department-<?php echo $task->t_code; ?>" class="col-sm-3 col-form-label" style="color: #000;">
+                                            Select Department
+                                        </label>
+                                        <div class="col-md-9 text-left">
+                                            <select class="form-control department" id="department-<?php echo $task->t_code; ?>" name="department" required>
+                                                <option value="">Select Department</option>
+                                                <?php
+                                                if (!empty($departments)) {
+                                                    foreach ($departments as $key => $value) {
+                                                        $selected = !empty($task->department_id) && $task->department_id == $value->cid ? ' selected="selected" ' : '';
+                                                        echo '<option value="' . $value->cid . '" '.$selected.' >' . $value->c_name . '</option>';
+                                                    }
                                                 }
-                                            }
-                                            ?>
-                                        </select>
+                                                ?>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="assignee-<?php echo $task->t_code; ?>" class="col-sm-3 col-form-label" style="color: #000;">Assign To</label>
-                                    <div class="col-md-9 text-left">
-                                        <select class="form-control assignee" id="assignee-<?php echo $task->t_code; ?>" name="assignee" required>
-                                            <option value="">Select Given</option>
-                                            <?php
-                                            if (!empty($employees)) {
-                                                foreach ($employees as $key => $value) {
-                                                    $selected = !empty($task->assignee) && $task->assignee == $value->id ? ' selected="selected" ' : '';
-                                                    echo '<option value="' . $value->id . '" ' . $selected . '>' . $value->first_name . ' ' . $value->last_name . '</option>';
+                                    <div class="form-group row">
+                                        <label for="assignee-<?php echo $task->t_code; ?>" class="col-sm-3 col-form-label" style="color: #000;">Assign To</label>
+                                        <div class="col-md-9 text-left">
+                                            <select class="form-control assignee" id="assignee-<?php echo $task->t_code; ?>" name="assignee" required>
+                                                <option value="">Select Given</option>
+                                                <?php
+                                                if (!empty($employees)) {
+                                                    foreach ($employees as $key => $value) {
+                                                        $selected = !empty($task->assignee) && $task->assignee == $value->id ? ' selected="selected" ' : '';
+                                                        echo '<option value="' . $value->id . '" ' . $selected . '>' . $value->first_name . ' ' . $value->last_name . '</option>';
+                                                    }
                                                 }
-                                            }
-                                            ?>
-                                        </select>
+                                                ?>
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+
+                                <?php else: ?>
+
+                                    <input type="hidden" name="department" value="<?php echo $currentUser->dept_id; ?>" readonly>
+                                    <input type="hidden" name="assignee" value="<?php echo $currentUser->id; ?>" readonly>
+
+                                <?php endif; ?>
                                 <div class="input-group row">
                                     <label for="" class="col-sm-3 col-form-label" style="color: #000;">
                                         Attach File

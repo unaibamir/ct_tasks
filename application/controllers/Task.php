@@ -457,8 +457,12 @@ class Task extends CI_Controller
             }
         }
 
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            redirect(base_url('task/alert'));
+        } else {
+            redirect(base_url('task'));
+        }
 
-        redirect( add_query_arg( 'message', 'task_saved', base_url('task')) );
     }
 
     public function assign()
@@ -707,6 +711,11 @@ class Task extends CI_Controller
         }
 
         $data['tasks'] = $tasks;
+
+        //select all department
+        $data['departments'] = $this->getDepartments();
+        //select all employees
+        $data['employees'] = $this->getUsers('Employee');
 
         $data['heading1'] = 'EMPLOYEE CODE <h5>GEW - '.$this->currentUser->username.'</h5>';
         $data['nav1'] = $this->currentUserGroup[0]->name;

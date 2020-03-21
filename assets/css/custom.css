@@ -108,3 +108,7 @@ table.dataTable td {
     margin: 0px 5px;
     padding: 0px 2px;
 }
+div[class*="task-assign-popup"] label {
+    font-weight: normal;
+    font-size: 0.8571em;
+}
