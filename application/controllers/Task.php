@@ -112,7 +112,9 @@ class Task extends CI_Controller
             $this->db->where_in('tasks.t_status', array( 'hold', 'in-progress' ) );
         }
 
-
+        if ( $this->currentUserGroup[0]->name == "Employee" && isset($_GET["status"]) && $_GET["status"] == "pending" ) {
+            $this->db->where('tasks.created_by', $this->currentUser->id);
+        }
 
         $data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
 
@@ -334,6 +336,20 @@ class Task extends CI_Controller
 
         //select all employees
         $data['employees']          = $this->getUsers('Employee');
+
+        $employee_id = "";
+        if ($this->currentUserGroup[0]->name == "Employee") {
+            $employee_id = $this->currentUserGroup[0]->user_id;
+        } else {
+            $employee_id = isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ? $_GET["employee_id"] : "";
+        }
+
+        if (!empty($employee_id)) {
+            $data[ 'employee_user' ] = $this->aauth->get_user($employee_id);
+        }
+
+        $data['employee_id'] = $employee_id;
+
         $data['heading1']           = 'Add Future Task';
         $data['nav1']               = $this->currentUserGroup[0]->name;
         $data['task_code']          = $this->generateRandomString(4);
@@ -569,28 +585,6 @@ class Task extends CI_Controller
         $this->db->join('departments', 'departments.cid = tasks.department_id');
         $this->db->where('tasks.assignee', $this->currentUser->id);
 
-        /* switch ($view) {
-            case "daily":
-                $this->db->where('tasks.parent_id', 1);
-                break;
-
-            case "weekly":
-                $this->db->where('tasks.parent_id', 2);
-                break;
-
-            case "monthly":
-                $this->db->where('tasks.parent_id', 3);
-                break;
-
-            case "one-time":
-                $this->db->where('tasks.parent_id', 4);
-                break;
-            
-            default:
-                $this->db->where('tasks.parent_id', 1);
-                break;
-		} */
-
 		//type filter start here 
 		if (isset($_GET["type"]) && !empty($_GET["type"])) {
 			if ($_GET["type"] == 99) {
@@ -622,7 +616,9 @@ class Task extends CI_Controller
 			$this->db->where_in('tasks.t_status', array('hold', 'in-progress'));
 		}
 
-
+        if ( isset($_GET["status"]) && !empty($_GET["status"]) && $_GET["status"] == "pending" ) {
+            $this->db->where('tasks.created_by', $this->currentUser->id);
+        }
 
 		$data["month_arg"] = isset($_GET["month"]) ? $_GET["month"] : "";
 

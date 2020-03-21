@@ -10,7 +10,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">Add New Task</h5>
+                    <h5 class="title"><?php echo $heading1; ?></h5>
                 </div>
                 <?php //dd($employee_user, false); ?>
                 <div class="card-body">
@@ -86,36 +86,44 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 </select>
                             </div>
 
+                            <?php if ($employee_id != "") : ?>
 
-                            <div class="form-group">
-                                <label for="sel1">Select Department</label>
-                                <select class="form-control" id="department" name="department">
-                                    <option value="">Select Department</option>
-                                    <?php
-                                    if (!empty($departments)) {
-                                        foreach ($departments as $key => $value) {
-                                            echo '<option value="' . $value->cid . '" >' . $value->c_name . '</option>';
+                                <input type="hidden" name="department" value="<?php echo $employee_user->dept_id; ?>" readonly>
+                                <input type="hidden" name="assignee" value="<?php echo $employee_id; ?>" readonly>
+
+                                <?php else: ?>
+                                
+                                <div class="form-group">
+                                    <label for="sel1">Select Department</label>
+                                    <select class="form-control" id="department" name="department">
+                                        <option value="">Select Department</option>
+                                        <?php
+                                        if (!empty($departments)) {
+                                            foreach ($departments as $key => $value) {
+                                                echo '<option value="' . $value->cid . '" >' . $value->c_name . '</option>';
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="sel1">Assign To</label>
-                                <select class="form-control" id="assignee" name="assignee">
-                                    <option value="">Select Given</option>
-                                    <?php
-                                    if (!empty($employees)) {
-                                        foreach ($employees as $key => $value) {
-                                            $selected = $employee_id == $value->id ? ' selected="selected" ' : '';
-                                            echo '<option value="' . $value->id . '" ' . $selected . '>' . $value->first_name . ' ' . $value->last_name . '</option>';
+                                        ?>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="sel1">Assign To</label>
+                                    <select class="form-control" id="assignee" name="assignee">
+                                        <option value="">Select Given</option>
+                                        <?php
+                                        if (!empty($employees)) {
+                                            foreach ($employees as $key => $value) {
+                                                $selected = $employee_id == $value->id ? ' selected="selected" ' : '';
+                                                echo '<option value="' . $value->id . '" ' . $selected . '>' . $value->first_name . ' ' . $value->last_name . '</option>';
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
+                                        ?>
+                                    </select>
+                                </div>
+
+                            <?php endif; ?>
+
 
 
                             <div class=" file-upload-wrapper mt-4">

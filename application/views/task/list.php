@@ -62,13 +62,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "hold" ? "selected" : "" ?> value="hold">Hold</option>
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "cancelled" ? "selected" : "" ?> value="cancelled">Cancelled</option>
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "completed" ? "selected" : "" ?> value="completed">Finished</option>
-                                        <?php
-                                        if( $this->currentUserGroup[0]->name == "Manager" ) {
-                                            ?>
-                                            <option <?php echo isset($_GET["status"]) && $_GET["status"] == "pending" ? "selected" : "" ?> value="pending">Pending</option>
-                                            <?php
-                                        }
-                                        ?>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "pending" ? "selected" : "" ?> value="pending">Pending</option>
                                     </select>
                                 </div>
                             </div>
@@ -235,8 +229,17 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                                 }
 
                                                 if( $task->t_status == 'pending' ) {
+
+                                                    if( $currentUserGroup == "Employee" ) {
+                                                        ?>
+                                                        <a href="javascript:void(0);" class="btn btn-success btn-sm lower-btn" data-toggle="modal" data-target=".task-assign-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size:10px;">Edit/Start</a>
+                                                        <?php
+                                                    } else {
+                                                        ?>
+                                                        <a href="javascript:void(0);" class="btn btn-success btn-sm lower-btn" data-toggle="modal" data-target=".task-assign-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size:10px;">Assign Task</a>
+                                                        <?php
+                                                    }
                                                     ?>
-                                                    <a href="javascript:void(0);" class="btn btn-success btn-sm lower-btn" data-toggle="modal" data-target=".task-assign-popup-<?php echo $task->tid; ?>" style="padding:5px;font-size:10px;">Assign Task</a>
 
                                                     <?php
                                                     // directly include partial view
