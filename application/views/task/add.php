@@ -101,7 +101,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                         <?php
                                         if (!empty($departments)) {
                                             foreach ($departments as $key => $value) {
-                                                $selected = $employee_user->dept_id == $value->cid ? ' selected="selected" ' : '';
+                                                $selected = isset($employee_user->dept_id) && $employee_user->dept_id == $value->cid ? ' selected="selected" ' : '';
                                                 echo '<option value="' . $value->cid . '" '.$selected.' >' . $value->c_name . '</option>';
                                             }
                                         }

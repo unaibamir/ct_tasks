@@ -407,6 +407,11 @@ class Report extends CI_Controller
             $reports->join('aauth_users', 'reports.user_id = aauth_users.id');
             $reports->where('aauth_users.cur_loc', "Fujairah");
         }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Jabel Ali" ) {
+            $reports->join('aauth_users', 'reports.user_id = aauth_users.id');
+            $reports->where('aauth_users.cur_loc', "Jabel Ali");
+        }
         
 
         if( isset($_GET["status"]) && !empty($_GET["status"]) ) {

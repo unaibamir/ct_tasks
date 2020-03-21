@@ -21,6 +21,9 @@ class User extends CI_Controller
         if( $this->currentUser->cur_loc == "Fujairah" ) {
             $this->db->where('aauth_users.cur_loc', "Fujairah");
         }
+        if( $this->currentUser->cur_loc == "Jabel Ali" ) {
+            $this->db->where('aauth_users.cur_loc', "Jabel Ali");
+        }
         $users = $this->db->get()->result_array();
 
         if( !empty( $users ) ) {

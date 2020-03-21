@@ -250,10 +250,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                                         'end_date'      =>  $end_date
                                                     );
                                                     echo $this->load->view('task/assign_pending_task_partial', $partial_data, true);
-                                                    ?>
-
-                    
-                                                    <?php
+                                                    
                                                 }
                                                 ?>
                                             </td>
