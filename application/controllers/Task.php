@@ -58,6 +58,11 @@ class Task extends CI_Controller
             $this->db->join('aauth_users', 'tasks.assignee = aauth_users.id');
             $this->db->where('aauth_users.cur_loc', "Jabel Ali");
         }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->dept_id == 4 ) {
+            $this->db->join('aauth_users', 'tasks.assignee = aauth_users.id');
+            $this->db->where('aauth_users.dept_id', 4 );
+        }
         
         /*switch ($view) {
             case "daily":
@@ -762,6 +767,10 @@ class Task extends CI_Controller
             $this->db->where('aauth_users.cur_loc', "Jabel Ali");
         }
 
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->dept_id == 4 ) {
+            $this->db->where('aauth_users.dept_id', 4 );
+        }
+
         $employees = $this->db->get()->result();
         
         return $employees;
@@ -989,6 +998,11 @@ class Task extends CI_Controller
         if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Jabel Ali" ) {
             $this->db->join('aauth_users', 'tasks_nov.assignee = aauth_users.id');
             $this->db->where('aauth_users.cur_loc', "Jabel Ali");
+        }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->dept_id == 4 ) {
+            $this->db->join('aauth_users', 'tasks.assignee = aauth_users.id');
+            $this->db->where('aauth_users.dept_id', 4 );
         }
         
         $tasks = $this->db->get()->result();

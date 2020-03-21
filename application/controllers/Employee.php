@@ -29,6 +29,10 @@ class Employee extends CI_Controller {
 			$this->db->where('aauth_users.cur_loc', "Jabel Ali");
 		}
 
+		if( $this->currentUser->dept_id == 4 ) {
+			$this->db->where('aauth_users.dept_id', 4 );
+		}
+
 		$employees = $this->db->get()->result();
 
 		foreach ($employees as $key => $employee) {
@@ -68,6 +72,14 @@ class Employee extends CI_Controller {
 		if( $this->currentUser->cur_loc == "Jabel Ali" ) {
 			foreach ($employees as $key => $user) {
 				if( $user->cur_loc != "Jabel Ali" ) {
+					unset( $employees[$key] );
+				}
+			}
+		}
+
+		if( $this->currentUser->dept_id == 4 ) {
+			foreach ($employees as $key => $user) {
+				if( $user->dept_id != 4 ) {
 					unset( $employees[$key] );
 				}
 			}

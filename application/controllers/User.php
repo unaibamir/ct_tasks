@@ -18,12 +18,19 @@ class User extends CI_Controller
         $this->db->select('*');
         $this->db->from($this->config->item('aauth')["users"]);
         $this->db->where('dept_id', $depatment_id);
+        
         if( $this->currentUser->cur_loc == "Fujairah" ) {
             $this->db->where('aauth_users.cur_loc', "Fujairah");
         }
+        
         if( $this->currentUser->cur_loc == "Jabel Ali" ) {
             $this->db->where('aauth_users.cur_loc', "Jabel Ali");
         }
+
+        if( $this->currentUser->dept_id == 4 ) {
+            $this->db->where('aauth_users.dept_id', 4);
+        }
+
         $users = $this->db->get()->result_array();
 
         if( !empty( $users ) ) {

@@ -165,12 +165,29 @@ class Admin extends CI_Controller
 
     public function create_fujairah_manager() {
 
-        $user_id = $this->aauth->create_user("jabelali@gewportal.com", "Gew@2020", 334);
+        $user_id = $this->aauth->create_user("jabelali@gewportal.com", "Gew@2020", 330);
         
         $user_data = array(
             'first_name'    =>  'JabelAli',
             'last_name'     =>  'Manager',
             'cur_loc'       =>  'Jabel Ali',
+            'user_pass'     =>  "Gew@2020"
+        );
+
+        $this->db->where('id', $user_id);
+        $this->db->update( $this->config->item('aauth')["users"] , $user_data);
+
+        dd($user_data);
+    }
+
+    public function create_accounts_manager() {
+
+        $user_id = $this->aauth->create_user("accounts@gewportal.com", "Gew@2020", 331);
+        
+        $user_data = array(
+            'first_name'    =>  'Accounts',
+            'last_name'     =>  'Manager',
+            'cur_loc'       =>  'Dubai',
             'user_pass'     =>  "Gew@2020"
         );
 
