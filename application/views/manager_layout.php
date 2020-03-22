@@ -43,6 +43,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
         });
     </script>
 
+    <script src="<?php echo base_url('assets/js/bootstrap-datepicker.min.js');?>"></script>
+    <script>
+        var datepicker = $.fn.datepicker.noConflict();
+        $.fn.bootstrapBT = datepicker;
+
+        
+    </script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
 </head>
 
 <body class="<?php echo isset($_SESSION["site_lang"]) && $_SESSION["site_lang"] == "arabic" ? "rtl" : "ltr";  ?>">
@@ -348,15 +357,6 @@ Send An Email
 </footer>
 </div>
 </div>
-
-    <script src="<?php echo base_url('assets/js/bootstrap-datepicker.min.js');?>"></script>
-    <script>
-        var datepicker = $.fn.datepicker.noConflict();
-        $.fn.bootstrapBT = datepicker;
-
-        
-    </script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <!--   Core JS Files   -->
     <script src="<?php echo base_url('assets/js/core/popper.min.js');?>"></script>

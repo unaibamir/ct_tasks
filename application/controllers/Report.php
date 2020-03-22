@@ -1629,4 +1629,83 @@ class Report extends CI_Controller
     public function send_task_completed_email( $data = "" ) {
 
     }
+
+    public function manual( $task_id = 0 ) {
+        
+        if( $task_id > 0 || isset($_GET["task_id"])  && !empty($_GET["task_id"])) {
+            $this->getSingleTaskEntry( $_GET["task_id"] );
+            return;
+        }
+
+        $this->load->model('tasks');
+
+        $tasks                      = $this->tasks->getUserTasks( $this->currentUser->id );
+
+        if( !empty($tasks) ) {
+            foreach ($tasks as $key => $task) {
+                $sql = "SELECT * FROM `reports` WHERE task_id = '{$task->tid}' AND is_deleted = 0";
+                $report_result = $this->db->query($sql)->result();
+                $task->reports = $report_result;
+            }
+        }
+
+        //select all department
+        $data['departments']        = $this->getDepartments();
+        
+        $data['tasks']              = $tasks;
+        $data['heading1']           = 'Add Manual Task Report';
+        $data['nav1']               = $this->currentUserGroup[0]->name;
+        $data['currentUser']        = $this->currentUser;
+        $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
+        $data['users']              = $this->db->get("aauth_users")->result_array();
+        $data['inc_page']           = 'report/user_tasks_list';
+        
+        $this->load->view('manager_layout', $data);
+    }
+
+    public function getDepartments()
+    {
+        $sql = "SELECT * FROM departments WHERE c_status = ?";
+        $res = $this->db->query($sql, array(1));
+
+        //$this->db->error();
+        $res = $res->result();
+        return $res;
+    }
+
+    public function getUsers($group)
+    {
+        $sql = "SELECT users.id, users.first_name, users.last_name FROM `aauth_groups` AS grp LEFT JOIN aauth_user_to_group AS grpusr ON grp.id = grpusr.group_id LEFT JOIN aauth_users AS users ON users.id = grpusr.user_id WHERE `name` = ?";
+        //$res = $this->db->query($sql, array($group))->result();
+        //echo $this->db->last_query();
+
+        $this->db->select('aauth_users.id, aauth_users.first_name, aauth_users.last_name');
+        $this->db->from('aauth_users');
+        $this->db->join('aauth_user_to_group', 'aauth_users.id = aauth_user_to_group.user_id');
+        $this->db->join('departments', 'departments.cid = aauth_users.dept_id', 'left');
+        $this->db->where('aauth_user_to_group.group_id', 3);
+        
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Fujairah" ) {
+            $this->db->where('aauth_users.cur_loc', "Fujairah");
+        }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->cur_loc == "Jabel Ali" ) {
+            $this->db->where('aauth_users.cur_loc', "Jabel Ali");
+        }
+
+        if( $this->currentUserGroup[0]->name == "Manager" && $this->currentUser->dept_id == 4 ) {
+            $this->db->where('aauth_users.dept_id', 4 );
+        }
+
+        $employees = $this->db->get()->result();
+        
+        return $employees;
+    }
+
+    public function getSingleTaskEntry( $task_id ) {
+
+        $task = $this->db->select("*")->from('tasks')->where('tid', $task_id)->get()->result();
+        dd($task);
+    }
+
 }

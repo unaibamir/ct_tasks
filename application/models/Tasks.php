@@ -27,6 +27,34 @@ class Tasks extends CI_Model {
 		
 	}
 
+	public function getUserTasks( $user_id ) {
+
+		$this->db->select('*');
+        $this->db->from('tasks');
+        $this->db->join('departments', 'departments.cid = tasks.department_id');
+        $this->db->where('tasks.assignee', $user_id );
+
+        //type filter start here 
+        if (isset($_GET["type"]) && !empty($_GET["type"])) {
+            if ($_GET["type"] == 99) {
+                //$this->db->where('tasks.parent_id', $_GET["type"]);
+            } else {
+                $this->db->where('tasks.parent_id', $_GET["type"]);
+            }
+        } else {
+            //$this->db->where('tasks.parent_id', 1);
+        }
+
+        // status filter starts
+        $this->db->where_in('tasks.t_status', array('in-progress'));
+
+        $this->db->order_by('tasks.t_created_at', 'DESC');
+
+        $tasks = $this->db->get()->result();
+
+        return $tasks;
+	}
+
 }
 
 /* End of file tasks.php */
