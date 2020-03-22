@@ -200,11 +200,11 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                         <span class="text-warning m-2" id="inputGroupFileAddon01">Upload File</span>
                                     </div>
 
-                                    <div id="repeater-fields">
+                                    <div class="repeater-fields">
                                         <div class="entry input-group col-xs-3">
                                             <input name="report_files[]" type="file" class="file-input">
                                             <span class="input-group-btn">
-                                                <button type="button" class="btn btn-success btn-add">
+                                                <button type="button" class="btn btn-success btn-add mt-0">
                                                     <i class="now-ui-icons ui-1_simple-add"></i>
                                                 </button>
                                             </span>

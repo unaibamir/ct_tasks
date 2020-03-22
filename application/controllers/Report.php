@@ -1658,7 +1658,7 @@ class Report extends CI_Controller
         $data['currentUser']        = $this->currentUser;
         $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
         $data['users']              = $this->db->get("aauth_users")->result_array();
-        $data['inc_page']           = 'report/user_tasks_list';
+        $data['inc_page']           = 'report/user_tasks_list_manual';
         
         $this->load->view('manager_layout', $data);
     }
@@ -1702,10 +1702,167 @@ class Report extends CI_Controller
         return $employees;
     }
 
-    public function getSingleTaskEntry( $task_id ) {
+    public function getSingleTaskEntry() {
+        
+        extract($_GET);
+        
+        $task = $this->db->select("*")->from('tasks')->where('tid', $task_id)->get()->row();
 
-        $task = $this->db->select("*")->from('tasks')->where('tid', $task_id)->get()->result();
-        dd($task);
+        if( $task->assignee != $this->currentUser->id ) {
+            $redirect = add_query_arg( array( 'status' => 'error', 'msg' => 'not_owner' ), base_url('/report/manual') );
+            redirect( $redirect );
+        }
+
+        
+        $data['task']               = $task;
+        $data['report_date']        = $report_date;
+        $data['heading1']           = 'Add Manual Task Report';
+        $data['nav1']               = $this->currentUserGroup[0]->name;
+        $data['currentUser']        = $this->currentUser;
+        $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
+        $data['users']              = $this->db->get("aauth_users")->result_array();
+        $data['inc_page']           = 'report/user-task-manual-report-form';
+        
+        $this->load->view('manager_layout', $data);
+
+    }
+
+
+    public function manual_report_save_entry() {
+        
+        $reason = !empty($this->input->post('reason')) ? $this->input->post('reason') : "";
+
+        if( !empty($this->input->post('before')) ) {
+            $before = $this->input->post('before');
+        } else {
+            $before = $this->config->item( "no_before" );
+        }
+
+        if( !empty($this->input->post('after')) ) {
+            $after = $this->input->post('after');
+        } else {
+            $after = $this->config->item( "no_after" );
+        }
+
+        $task_id = $this->input->post('task_id');
+
+        //server validation
+        $data = array(
+            'task_id'           => $this->input->post('task_id'),
+            'user_id'           => $this->currentUser->id,
+            'berfore'           => $before,
+            'after'             => $after,
+            'attachment_id'     => 0,
+            'status'            => $this->input->post('status'),
+            'reason'            => $reason,
+            'created_at'        => date("Y-m-d H:i:s", strtotime( $this->input->post('report_date') ) ),
+            'new_added'         => date("Y-m-d H:i:s", time() ),
+            'updated_at'        => date("Y-m-d H:i:s", time())
+        );
+        
+        $this->db->insert('reports', $data);
+
+        $report_id = $this->db->insert_id();
+        $task_id = $this->input->post('task_id');
+        $status_array = array("H", "C", "F");
+
+        if( !empty($_FILES["report_files"]) ) {
+
+            $upload_path                = "uploads/tasks/task-{$task_id}/reports";
+
+            if (!is_dir($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+
+            $config['upload_path']      = $upload_path;
+            $config['allowed_types']    = 'gif|jpg|jpeg|png|iso|dmg|zip|rar|doc|docx|xls|xlsx|ppt|pptx|csv|ods|odt|odp|pdf|rtf|sxc|sxi|txt|exe|avi|mpeg|mp3|mp4|3gp|';
+
+            $this->load->library('upload', $config);
+
+            $file_count = 0;
+            $file_ids   = array();
+
+            foreach ($_FILES["report_files"] as $key => $file) {
+
+                if( empty($file) || !isset($_FILES['report_files']['name'][$file_count])) {
+                    continue;
+                }
+                
+                $_FILES['attachments[]']['name']        = $_FILES['report_files']['name'][$file_count];
+                $_FILES['attachments[]']['type']        = $_FILES['report_files']['type'][$file_count];
+                $_FILES['attachments[]']['tmp_name']    = $_FILES['report_files']['tmp_name'][$file_count];
+                $_FILES['attachments[]']['error']       = $_FILES['report_files']['error'][$file_count];
+                $_FILES['attachments[]']['size']        = $_FILES['report_files']['size'][$file_count];
+
+                $this->upload->initialize($config);
+
+                if ($this->upload->do_upload('attachments[]')) {
+
+                    $file_data              = $this->upload->data();
+                    $new_file['f_title']    = $file_data["client_name"];
+                    $new_file['url']        = base_url("/{$upload_path}/{$file_data["file_name"]}");
+                    $new_file['type']       = $file_data["file_type"];
+                    $new_file['status']     = 0;
+                    $new_file['is_deleted'] = 0;
+                    $new_file['post_id']    = $report_id;
+                    $new_file['post_type']  = "report";
+
+                    $this->db->insert("files", $new_file);
+                    $file_id = $this->db->insert_id();
+                    $file_ids[] = $file_id;
+                }
+                
+                $file_count++;
+            }
+        }
+
+        $status = "";
+        switch ($this->input->post('status')) {
+            case 'Y':
+                $status = "in-progress";
+                break;
+
+            case 'N':
+                $status = "in-progress";
+                break;
+
+            case 'H':
+                $status = "hold";
+                break;
+
+            case 'C':
+                $status = "cancelled";
+                break;
+
+            case 'F':
+                $status = "completed";
+                break;
+            
+            default:
+                $status = "";
+                break;
+        }
+        
+        $task_data = array(
+            "t_status"  =>  $status,
+            "t_reason"  =>  $reason,
+            "end_date"  =>  $status == "completed" ? date( "Y-m-d H:i:s", time() ) : "",
+            "last_updated"  =>  date( "Y-m-d H:i:s", time() )
+        );
+        
+        $this->db->where('tid', $task_id);
+        $this->db->update('tasks', $task_data);
+
+        if( $status == "completed" ) {
+            $this->send_task_completed_email( $task_id, $report_id );
+        }
+
+        if( isset($_POST["return_url"]) && !empty($_POST["return_url"]) ) {
+            redirect( add_query_arg( "message", "alert_success", $_POST["return_url"] ) );
+
+        } else {
+            redirect( base_url('task/alert/?message=alert_success') ); // fallback
+        }
     }
 
 }

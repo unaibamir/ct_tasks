@@ -143,7 +143,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <label>Attach File</label>
                                 <!-- <input type="file" id="input-file-now" name="attachement" class="file-upload" /> -->
                                 <br>
-                                <div id="repeater-fields">
+                                <div class="repeater-fields">
                                     <div class="entry input-group col-xs-3">
                                         <input name="files[]" type="file" class="file-input">
                                         <span class="input-group-btn">

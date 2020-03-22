@@ -81,12 +81,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
                     <?php endif; ?>
 
                     <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                    <li>
+                    <!-- <li>
                         <a href="<?php echo base_url('task/add/future'); ?>" >
                             <i class="now-ui-icons gestures_tap-01 "></i>
                             <p><?php echo lang( 'add_future_task_text' ); ?></p>
                         </a>
-                    </li>
+                    </li> -->
                     <?php endif; ?>
 
                     <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
@@ -131,6 +131,15 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             <a href="<?php echo base_url('task/alert'); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
                                 <p><?php echo lang( 'all_task_list_text' ); ?></p>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                        <li>
+                            <a href="<?php echo base_url('/report/manual/'); ?>">
+                                <i class="now-ui-icons users_single-02 "></i>
+                                <p><?php echo lang( 'add_manual_report_text' ); ?></p>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -180,7 +189,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
                 <div class="container-fluid">
-                <div class="col-lg-2"> 
+                    <div class="col-md-3"> 
                         <div class=" navbar-wrapper">
                             <div class="navbar-toggle">
                                 <button type="button" class="navbar-toggler">
@@ -193,130 +202,124 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                             <!-- nav bar is updating from here -->
                       </div> 
-             </div>
-
-                    <div class="row">
-                          <div class="row" >
-
-<?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-<a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'add_new_task_text' ); ?>
-</a>
-<?php endif; ?>
-
-<?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-<a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-<?php echo lang( 'add_future_task_text' ); ?>
-</a>
-<?php endif; ?>
-
-
-<!-- Manager Side Nav -->
-
-<?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-<a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'task_listing_text' ); ?>
-</a>
-<?php endif; ?>
-
-<?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-<a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link"><?php echo lang( 'nov_tasks_text' ); ?></a>
-<?php endif; ?>
-
-<?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-
-<a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'view_employee_report_text' ); ?>
-</a>
-
-<?php endif; ?>
-
-
-<?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-<a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'employee_list_text' ); ?>
-</a>
-<?php endif; ?>
-
-<?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
-
-<a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang("all_assigned_task_text"); ?>
-</a>
-
-<?php endif; ?>
-<?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
-
-<a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'daily_job_report_view_text' ); ?>
-</a>
-
-<?php endif; ?>
-<?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
-
-<a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'monthly_job_summary_view_text' ); ?>
-</a>
-
-<?php endif; ?>
-
-
-<?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
-<a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-    <?php echo lang( 'employee_list_text' ); ?>
-</a>
-<?php endif; ?>
-
-<?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
-
-<a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
-Send An Email
-</a>
-<?php endif; ?>
-                         </div> 
-                </div>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                        <span class="navbar-toggler-bar navbar-kebab"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                        
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="langselector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="now-ui-icons location_world"></i> <?php echo lang('change_lang_text'); ?>
-                                </a>
-                                
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="langselector">
-                                    <a class="dropdown-item" href="<?php echo base_url('LanguageSwitcher/switchLang/english')?>">English</a>
-                                    <a class="dropdown-item" href="<?php echo base_url('LanguageSwitcher/switchLang/arabic')?>">العربية</a>
-                                </div>
-                            </li>
-                           
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="now-ui-icons users_single-02"></i>
-                                    <p><span class="d-lg-none d-md-block">Some Actions</span></p>
-                                </a>
-                                
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" href="<?php echo base_url('user/change_password')?>">Change Password</a>
-                                    <a class="dropdown-item" href="<?php echo base_url('auth/logout')?>">Logout</a>
-                                </div>
-                            </li>
-
-                        </ul>
                     </div>
-                   
+                    
+                    <div class="col-md-7">
+
+                        <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                        <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                            <?php echo lang( 'add_new_task_text' ); ?>
+                        </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                        <!-- <a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                        <?php echo lang( 'add_future_task_text' ); ?>
+                        </a> -->
+                        <?php endif; ?>
+
+
+                        <!-- Manager Side Nav -->
+
+                        <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang( 'task_listing_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('task/nov'); ?>" class="btn btn-link">
+                                <?php echo lang( 'nov_tasks_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('employee/'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang( 'view_employee_report_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+
+                        <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang( 'employee_list_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('task/alert'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang("all_assigned_task_text"); ?>
+                            </a>
+                        <?php endif; ?>
+
+
+                        <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('report/daily'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang( 'daily_job_report_view_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('report/monthly'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang( 'monthly_job_summary_view_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+
+                        <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                            <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                                <?php echo lang( 'employee_list_text' ); ?>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
+                            <a href="https://email22.secureserver.net" class="btn btn-link" role="button" aria-pressed="true">
+                            Send An Email
+                            </a>
+                        <?php endif; ?>
+
+                    </div>
+
+                    <div class="col-md-2">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-bar navbar-kebab"></span>
+                            <span class="navbar-toggler-bar navbar-kebab"></span>
+                            <span class="navbar-toggler-bar navbar-kebab"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-end" id="navigation">
+                            
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="langselector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="now-ui-icons location_world"></i> <?php echo lang('change_lang_text'); ?>
+                                    </a>
+                                    
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="langselector">
+                                        <a class="dropdown-item" href="<?php echo base_url('LanguageSwitcher/switchLang/english')?>">English</a>
+                                        <a class="dropdown-item" href="<?php echo base_url('LanguageSwitcher/switchLang/arabic')?>">العربية</a>
+                                    </div>
+                                </li>
+                               
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="now-ui-icons users_single-02"></i>
+                                        <p><span class="d-lg-none d-md-block">Some Actions</span></p>
+                                    </a>
+                                    
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" href="<?php echo base_url('user/change_password')?>">Change Password</a>
+                                        <a class="dropdown-item" href="<?php echo base_url('auth/logout')?>">Logout</a>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
      
                 </div>
  
-                
-             </nav> 
+            </nav>
             <!-- End Navbar -->
-
-
             
             <?php echo $this->load->view($inc_page, '', true); ?>
 

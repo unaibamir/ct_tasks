@@ -8,6 +8,7 @@ $lang['add_future_task_text'] = "Add Future Task";
 $lang['change_lang_text'] = "لغة";
 $lang['nav_search_text'] = "ابحث";
 $lang['task_listing_text'] = "Task Listing";
+$lang['add_manual_report_text'] = "Add Manual Task Report";
 $lang['nov_tasks_text'] = "View November Tasks";
 $lang['view_employee_report_text'] = "View Employees Report";
 $lang['employee_list_text'] = "Employees List";
