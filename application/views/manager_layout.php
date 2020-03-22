@@ -60,8 +60,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <a href="<?php echo base_url('dashboard'); ?>">
                             <i class="now-ui-icons design_app"></i>
                             <p><?php echo $nav1; ?></p>
-
-
                         </a>
                     </li>
                     <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
@@ -72,6 +70,53 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
+
+                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                    <li>
+                        <a href="<?php echo base_url('task/add/future'); ?>" >
+                            <i class="now-ui-icons gestures_tap-01 "></i>
+                            <p><?php echo lang( 'add_future_task_text' ); ?></p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                    <li>
+                        <a href="<?php echo base_url('task'); ?>" class="" role="button" aria-pressed="true">
+                            <i class="now-ui-icons gestures_tap-01 "></i>
+                            <p><?php echo lang( 'task_listing_text' ); ?></p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                    <li>
+                        <a href="<?php echo base_url('task/nov'); ?>" class="">
+                            <i class="now-ui-icons gestures_tap-01 "></i>
+                            <p><?php echo lang( 'nov_tasks_text' ); ?></p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                    <li>
+                        <a href="<?php echo base_url('employee/'); ?>" class="" role="button" aria-pressed="true">
+                            <i class="now-ui-icons gestures_tap-01 "></i>
+                            <p><?php echo lang( 'view_employee_report_text' ); ?></p>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+
+                    <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
+                    <li>
+                        <a href="<?php echo base_url('employee/all'); ?>" class="" role="button" aria-pressed="true">
+                            <i class="now-ui-icons gestures_tap-01 "></i>
+                            <p><?php echo lang( 'employee_list_text' ); ?></p>
+                        </a>
+                    </li>
+                    <?php endif; ?>                    
+
                     <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('task/alert'); ?>">
@@ -80,6 +125,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
+
                     <?php if ($this->aauth->is_group_allowed('daily_report', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('report/daily'); ?>">
@@ -88,6 +134,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
+
                     <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
                         <li>
                             <a href="<?php echo base_url('report/monthly'); ?>">
@@ -96,79 +143,16 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('finish_task', $currentUserGroup)) : ?>
-                    <!--     <li>
-                            <a href="<?php echo base_url('task/finish'); ?>">
-                                <i class="now-ui-icons ui-1_bell-53"></i>
-                                <p>Finish Task</p>
-                            </a>
-                        </li> -->
-                    <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('enquiry_form', $currentUserGroup)) : ?>
-                    <!--    <li>
-                            <a href="<?php echo base_url('enquiry'); ?>">
-                                <i class="now-ui-icons business_badge"></i>
-                                <p>Enquiry Form</p>
-                            </a>
-                        </li> -->
-                    <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('profile_user', $currentUserGroup)) : ?>
-                      <!--  <li>
-                            <a href="<?php echo base_url('user/'.$currentUser->username); ?>">
-                                <i class="now-ui-icons users_single-02 "></i>
-                                <p>Your Profile</p>
-                            </a>
-                        </li> -->
-                    <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                        <li>
-                            <a href="<?php echo base_url('task'); ?>">
-                                <i class="now-ui-icons gestures_tap-01 "></i>
-                                <p><?php echo lang( 'task_listing_text' ); ?></p>
-                            </a>
-                        </li>
+
+                    <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
+                    <li>
+                        <a href="<?php echo base_url('employee/all'); ?>">
+                            <i class="now-ui-icons business_badge"></i>
+                            <p><?php echo lang( 'employee_list_text' ); ?></p>
+                        </a>                        
+                    </li>
                     <?php endif; ?>
 
-                    <?php if ($this->aauth->is_group_allowed('view_employees', $currentUserGroup)) : ?>
-                        <li>
-                            <a href="<?php echo base_url('employee/'); ?>">
-                                <i class="now-ui-icons users_single-02"></i>
-                                <p><?php echo lang( 'view_employee_report_text' ); ?></p>
-                            </a>
-                        </li>
-                        <!--<li>
-                            <a href="<?php echo base_url('employee/all'); ?>">
-                                <i class="now-ui-icons users_single-02"></i>
-                                <p>View All Employees</p>
-                            </a>
-                        </li>
-
-                    <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('assign_task', $currentUserGroup)) : ?>
-                        <li>
-                            <a href="<?php echo base_url('task/assign'); ?>">
-                                <i class="now-ui-icons education_glasses"></i>
-                                <p>Task Assign</p>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('history_task', $currentUserGroup)) : ?>
-                        <li>
-                            <a href="<?php echo base_url('task/history'); ?>">
-                                <i class="now-ui-icons business_badge"></i>
-                                <p>Task History</p>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    <?php if ($this->aauth->is_group_allowed('forum', $currentUserGroup)) : ?>
-                        <li>
-                            <a href="<?php echo base_url('forum'); ?>">
-                                <i class="now-ui-icons ui-1_bell-53"></i>
-                                <p>Dicussion Forum</p>
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                    -->
 
                     <?php if ($this->aauth->is_group_allowed('search', $currentUserGroup)) : ?>
                         <li style="background: #0c2442;border-right: 4px solid #eaebf0;">
@@ -218,7 +202,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <?php endif; ?>
 
 
-<!-- Manager Side / Task listing  -->
+<!-- Manager Side Nav -->
+
 <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
 <a href="<?php echo base_url('task'); ?>" class="btn btn-link" role="button" aria-pressed="true">
     <?php echo lang( 'task_listing_text' ); ?>
@@ -287,20 +272,7 @@ Send An Email
                         <span class="navbar-toggler-bar navbar-kebab"></span>
                     </button>
                     <div class="collapse navbar-collapse justify-content-end" id="navigation">
-                        <form action="">
-                            <div class="input-group no-border">
-
-                                <input type="text" value="" class="form-control" placeholder="<?php echo lang("nav_search_text"); ?>">
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <i class="now-ui-icons ui-1_zoom-bold"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-
-
-
+                        
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" id="langselector" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

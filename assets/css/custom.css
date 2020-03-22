@@ -112,3 +112,9 @@ div[class*="task-assign-popup"] label {
     font-weight: normal;
     font-size: 0.8571em;
 }
+.sidebar .nav a i {
+    display: none;
+}
+.sidebar .nav p, .off-canvas-sidebar .nav p {
+    padding-left: 20px;
+}
