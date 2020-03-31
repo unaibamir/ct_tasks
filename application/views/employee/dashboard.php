@@ -1,7 +1,19 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');  ?>
+<style type="text/css">
+    .blink_me {
+  animation: blinker 3s linear infinite;
+  color: yellow;
+}
 
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+</style>
 <div class="panel-header Center" style="text-align: center;">
-  <a class="navbar-brand " href=""><?php echo $heading2; ?></a>
+  <a class="navbar-brand " href=""><?php echo $heading2; ?></a><div class="blink_me"><h5>Download Portal Manual</h5></div>
+  <button onclick="window.location.href = 'https://gewportal.com/uploads/tasks/task-1169/reports/Job_Reporting_Portal_Manual.pdf';"class="btn"><i class="fa fa-download"></i> GEW-Portal User Manual</button>
 </div>
    <div class="content">
      <div class="row">

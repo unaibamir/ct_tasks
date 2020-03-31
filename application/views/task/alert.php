@@ -74,7 +74,7 @@ $job_type = isset($_GET["view"]) ? $_GET["view"] : "daily";
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "hold" ? "selected" : "" ?> value="hold">Hold</option>
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "cancelled" ? "selected" : "" ?> value="cancelled">Cancelled</option>
                                         <option <?php echo isset($_GET["status"]) && $_GET["status"] == "completed" ? "selected" : "" ?> value="completed">Finished</option>
-                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "pending" ? "selected" : "" ?> value="pending">Pending</option>
+                                        <option <?php echo isset($_GET["status"]) && $_GET["status"] == "pending" ? "selected" : "" ?> value="pending">Pending / Waiting</option>
                                     </select>
                                 </div> 
                             </div> 

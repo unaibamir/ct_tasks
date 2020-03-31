@@ -1653,7 +1653,7 @@ class Report extends CI_Controller
         $data['departments']        = $this->getDepartments();
         
         $data['tasks']              = $tasks;
-        $data['heading1']           = 'Add Manual Task Report';
+        $data['heading1']           = 'Add Missing Task Report';
         $data['nav1']               = $this->currentUserGroup[0]->name;
         $data['currentUser']        = $this->currentUser;
         $data['currentUserGroup']   = $this->currentUserGroup[0]->name;

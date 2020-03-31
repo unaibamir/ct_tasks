@@ -24,6 +24,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="<?php echo base_url('assets/demo/demo.css'); ?>" rel="stylesheet" />
+    <link href="<?php echo base_url('assets/css/magnific-popup.css'); ?>" rel="stylesheet" />
     <link href="<?php echo base_url('assets/css/custom.css?ver='.time()); ?>" rel="stylesheet" />
 
     <?php
@@ -47,14 +48,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <script>
         var datepicker = $.fn.datepicker.noConflict();
         $.fn.bootstrapBT = datepicker;
-
-        
     </script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="<?php echo base_url('assets/js/jquery.magnific-popup.min.js');?>"></script>
 
 </head>
 
 <body class="<?php echo isset($_SESSION["site_lang"]) && $_SESSION["site_lang"] == "arabic" ? "rtl" : "ltr";  ?>">
+    
+    <?php
+    if( isset( $user_loggedin ) && $user_loggedin ) {
+        //echo $this->load->view('popup-login', '', true);
+    }
+    ?>
+
     <div class="wrapper ">
         <!-- Side-Bar is starting from here -->
         <div class="sidebar" data-color="blue">
@@ -80,14 +87,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         </li>
                     <?php endif; ?>
 
-                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                    <!-- <li>
-                        <a href="<?php echo base_url('task/add/future'); ?>" >
-                            <i class="now-ui-icons gestures_tap-01 "></i>
-                            <p><?php echo lang( 'add_future_task_text' ); ?></p>
-                        </a>
-                    </li> -->
-                    <?php endif; ?>
+                    
 
                     <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
                     <li>
@@ -137,10 +137,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
                     <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
                         <li>
-                            <a href="<?php echo base_url('/report/manual/'); ?>">
+                         <!--   <a href="<?php echo base_url('/report/manual/'); ?>">
                                 <i class="now-ui-icons users_single-02 "></i>
                                 <p><?php echo lang( 'add_manual_report_text' ); ?></p>
-                            </a>
+                            </a> -->
                         </li>
                     <?php endif; ?>
 
@@ -180,6 +180,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         </li>
                     <?php endif; ?>
+                    <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                <li>
+                        <a href="<?php echo base_url('task/add/future'); ?>" >
+                            <i class="now-ui-icons gestures_tap-01 "></i>
+                            <p><?php echo lang( 'add_future_task_text' ); ?></p>
+                        </a>
+                    </li> 
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
@@ -212,11 +220,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         </a>
                         <?php endif; ?>
 
-                        <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                        <!-- <a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
-                        <?php echo lang( 'add_future_task_text' ); ?>
-                        </a> -->
-                        <?php endif; ?>
+                        
 
 
                         <!-- Manager Side Nav -->
@@ -265,6 +269,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             </a>
                         <?php endif; ?>
 
+                        <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
+                          <a href="<?php echo base_url('task/add/future'); ?>" class="btn btn-link" role="button" aria-pressed="true">
+                        <?php echo lang( 'add_future_task_text' ); ?>
+                        </a> 
+                        <?php endif; ?>
 
                         <?php if ($this->aauth->is_group_allowed('alert_tasks', $currentUserGroup)) : ?>
                             <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">

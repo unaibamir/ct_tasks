@@ -192,6 +192,9 @@ $( function() {
 
         });
     }
+
+
+    
 });
 
 // Call bootstrap datepicker function

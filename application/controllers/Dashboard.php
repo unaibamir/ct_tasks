@@ -46,6 +46,9 @@ class Dashboard extends CI_Controller
 			$data['nav1'] = 'Manager';
 		}
 
+		// user just logged in ??
+		$data['user_loggedin'] = $this->session->flashdata( 'user_loggedin' ) ? true : false;
+
 		$data['currentUser'] = $this->currentUser;
 		$data['currentUserGroup'] = $this->currentUserGroup[0]->name;
         $data['inc_page'] = strtolower($this->currentUserGroup[0]->name).'/dashboard'; // views/display.php page
