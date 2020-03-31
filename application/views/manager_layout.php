@@ -58,6 +58,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     
     <?php
     if( isset( $user_loggedin ) && $user_loggedin ) {
+        // uncomment the below line to enable popup
         //echo $this->load->view('popup-login', '', true);
     }
     ?>
