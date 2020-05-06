@@ -59,7 +59,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
     <?php
     if( isset( $user_loggedin ) && $user_loggedin ) {
         // uncomment the below line to enable popup
-        //echo $this->load->view('popup-login', '', true);
+       // echo $this->load->view('popup-login', '', true);
     }
     ?>
 
@@ -198,7 +198,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <!-- Navbar -->
             <nav class="navbar navbar-expand-lg navbar-transparent  bg-primary  navbar-absolute">
                 <div class="container-fluid">
-                    <div class="col-md-3"> 
+                    <div class="col-md-2"> 
                         <div class=" navbar-wrapper">
                             <div class="navbar-toggle">
                                 <button type="button" class="navbar-toggler">
@@ -213,7 +213,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                       </div> 
                     </div>
                     
-                    <div class="col-md-7">
+                    <div class="col-md-8">
 
                         <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
                         <a href="<?php echo base_url('task/add'); ?>" class="btn btn-link" role="button" aria-pressed="true">
