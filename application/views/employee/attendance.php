@@ -146,16 +146,19 @@ $job_types = array(
                             <thead class="thead-dark">
                                 <tr class="d-flex">
                                     <th scope="col" style=""></th>
-                                    <th style="font-weight: 600; font-size: 9px; width: 70px !important;">Emp. Code</th>
+                                    <th style="font-weight: 600; font-size: 9px; width: 50px !important;">Emp. Code</th>
                                     <th style="width: 100px!important;  font-size: 9px;">Name</th>
                                     <th style="width: 100px!important;  font-size: 9px;">Job Title</th>
                                     <th style="width: 100px!important;  font-size: 9px;">Dept.</th>
-                                    
                                     <?php foreach ($month_dates as $date_dig => $date_alpha) {
                                     ?>
-                                    <th scope="col" style="width: 55px; "><?php echo $date_alpha . "- " . $date_dig ?></th>
+                                        <th scope="col" style="width: 55px; "><?php echo $date_alpha . "- " . $date_dig ?></th>
                                     <?php
                                     } ?>
+                                    <th style="width: 55px;">TD</th>
+                                    <th style="width: 55px;">H</th>
+                                    <th style="width: 55px;">0</th>
+                                    <th style="width: 55px;">1</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -166,11 +169,12 @@ $job_types = array(
                                     ?>
                                     <tr class="d-flex" id="task-<?php echo $user->id; ?>">
                                         <td><?php echo $count; ?></td>
-                                        <td style=" font-size: 9px; width: 70px !important;"><?php echo $user->username ?></td>
+                                        <td style=" font-size: 9px; width: 50px !important;"><?php echo $user->username ?></td>
                                         <td style="width: 100px!important;  font-size: 9px;"><?php echo $user->first_name . ' ' . $user->last_name; ?></td>
                                         <td style="width: 100px!important;  font-size: 9px;"><?php echo $user->job_title; ?></td>
                                         <td style="width: 100px!important;  font-size: 9px;"><?php echo $user->c_name; ?></td>
                                         <?php
+                                        $total_attendance = 0;
                                         foreach ($month_dates as $date_dig => $date_alpha) {
                                             $current_date   = $date_dig . date("/{$month_date}/{$year_date}");
                                             $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year_date}"));
@@ -183,6 +187,7 @@ $job_types = array(
                                                         $report_date    = date($date_format, strtotime($report->created_at));
                                                         if ($current_date == $report_date) {
                                                             $output = "1";
+                                                            $total_attendance++;
                                                             break;
                                                         }
                                                     }
@@ -192,8 +197,13 @@ $job_types = array(
                                             </td>
                                             <?php
                                         }
-
                                         ?>
+                                        <td><span class="table-status"><?php echo $total_days; ?></span></td>
+                                        <td><span class="table-status"><?php echo $holidays;  ?></span></td>
+                                        <td><span class="table-status">
+                                            <?php echo $total_days > $total_attendance ? $total_days - $total_attendance : "0" ;?>
+                                        </span></td>
+                                        <td><span class="table-status"><?php echo $total_attendance; ?></span></td>
                                     </tr>
                                     <?php
                                     $count++;

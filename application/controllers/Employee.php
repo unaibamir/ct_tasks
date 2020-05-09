@@ -168,6 +168,18 @@ class Employee extends CI_Controller {
         $date = new DateTime( $year . '-' . $month );
         $full_date_1 = $date->modify('first day of this month')->format('Y-m-d 00:00:00');
         $full_date_2 = $date->modify('last day of this month')->format('Y-m-d 23:59:59');
+
+        $holidays = '';                
+        for ($i = 0; $i < ((strtotime($full_date_2) - strtotime($full_date_1)) / 86400); $i++) {
+            if(date('l',strtotime($full_date_1) + ($i * 86400)) == 'Friday') {
+                $holidays++;
+            }    
+        }
+
+        $data["total_days"]  = count( $month_dates );
+        $data["holidays"]  = $holidays;
+        $data["total_working_days"]  = $data["total_days"] - $holidays;
+
         
         // get task reports 
         $reports    = $this->db->select('*')->from('reports');
@@ -314,6 +326,17 @@ class Employee extends CI_Controller {
 		$date = new DateTime( $year . '-' . $month );
         $full_date_1 = $date->modify('first day of this month')->format('Y-m-d 00:00:00');
         $full_date_2 = $date->modify('last day of this month')->format('Y-m-d 23:59:59');
+
+        $holidays = '';                
+        for ($i = 0; $i < ((strtotime($full_date_2) - strtotime($full_date_1)) / 86400); $i++) {
+            if(date('l',strtotime($full_date_1) + ($i * 86400)) == 'Friday') {
+                $holidays++;
+            }    
+        }
+
+        $total_days  = count( $month_dates );
+        $holidays  = $holidays;
+        $total_working_days  = $total_days - $holidays;
         
         // get task reports 
         $reports    = $this->db->select('*')->from('reports');
@@ -349,6 +372,12 @@ class Employee extends CI_Controller {
             $header_col++;
         }
 
+        $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col++, $row, 'TD' );
+        $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col++, $row, 'H' );
+        $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col++, $row, '0' );
+        $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $header_col++, $row, '1' );
+
+
         $spreadsheet->getActiveSheet()->mergeCells('A1:B1');
         $spreadsheet->getActiveSheet()->setCellValue('A1', "Employee Attendance:" );
         $spreadsheet->getActiveSheet()->getStyle("A1")->getFont()->setBold(true);
@@ -373,6 +402,7 @@ class Employee extends CI_Controller {
         	$spreadsheet->getActiveSheet()->setCellValue('D' . $content_col , $user->c_name );
 
         	$inner_col = 5;
+            $total_attendance = 0;
             foreach ($month_dates as $date_dig => $date_alpha) {
             	$current_date   = $date_dig . date("/{$month_date}/{$year}");
                 $current_date_2 = strtotime(date($date_dig . "-{$month_date}-{$year}"));
@@ -383,6 +413,7 @@ class Employee extends CI_Controller {
                         $report_date    = date($date_format, strtotime($report->created_at));
                         if ($current_date == $report_date) {
                             $output = "1";
+                            $total_attendance++;
                             break;
                         }
                     }
@@ -392,6 +423,11 @@ class Employee extends CI_Controller {
 
             	$inner_col++;
             }
+
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $inner_col++, $content_col, $total_days );
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $inner_col++, $content_col, $holidays );
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $inner_col++, $content_col, ( $total_days > $total_attendance ) ? $total_days - $total_attendance : "0" );
+            $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow( $inner_col++, $content_col, $total_attendance );
 
 
         	$content_col++;
