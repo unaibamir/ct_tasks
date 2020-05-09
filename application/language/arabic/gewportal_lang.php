@@ -18,6 +18,7 @@ $lang['send_email_text'] = "Send An Email";
 $lang['manager_text'] = "Manager";
 $lang['advanced_search_text'] = "البحث المتقدم";
 $lang['all_assigned_task_text'] = "All Assign Task";
+$lang['employee_attendance_text'] = "Employee Attendance";
 
 // dashboard pages 
 $lang['all_task_list_text'] = "All Task List";

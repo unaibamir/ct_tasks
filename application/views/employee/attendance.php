@@ -84,7 +84,7 @@ $job_types = array(
 
             <div class="card">
                 <div class="card-header">
-                    <h5 class="title">Monthly Job Summary View</h5>
+                    <h5 class="title"><?php echo lang( 'employee_attendance_text' ); ?></h5>
                 </div>
                 <div class="card-body">
                     <div id="calendar"></div>

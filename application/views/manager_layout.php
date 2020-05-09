@@ -182,12 +182,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         </li>
                     <?php endif; ?>
                     <?php if ($this->aauth->is_group_allowed('add_task', $currentUserGroup)) : ?>
-                <li>
+                    <li>
                         <a href="<?php echo base_url('task/add/future'); ?>" >
                             <i class="now-ui-icons gestures_tap-01 "></i>
                             <p><?php echo lang( 'add_future_task_text' ); ?></p>
                         </a>
                     </li> 
+                    <?php endif; ?>
+
+
+                    <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                        <li>
+                            <a href="<?php echo base_url('employee/attendance'); ?>">
+                                <i class="now-ui-icons gestures_tap-01 "></i>
+                                <p><?php echo lang( 'employee_attendance_text' ); ?></p>
+                            </a>
+                        </li>
                     <?php endif; ?>
                 </ul>
             </div>
@@ -280,6 +290,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             <a href="<?php echo base_url('employee/all'); ?>" class="btn btn-link" role="button" aria-pressed="true">
                                 <?php echo lang( 'employee_list_text' ); ?>
                             </a>
+                        <?php endif; ?>
+
+                        <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
+                            <!-- <a href="<?php echo base_url('employee/attendance'); ?>" class="btn btn-link">
+                                <?php echo lang( 'employee_attendance_text' ); ?>
+                            </a> -->
                         <?php endif; ?>
 
                         <?php if ($this->aauth->is_group_allowed('monthly_report', $currentUserGroup)) : ?>
