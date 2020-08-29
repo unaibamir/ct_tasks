@@ -41,11 +41,18 @@ class Admin extends CI_Controller
 
     public function add_user(){
         $departments = $this->getDepartments();
-        $data = array();
-
-        $data["departments"] = $departments;
         
-        $this->load->view('admin/user-add', $data);
+        $data = array();
+        $data["departments"]        = $departments;
+        $data['heading1']           = 'Add New User';
+        $data['nav1']               = $this->currentUserGroup[0]->name;
+        $data['currentUser']        = $this->currentUser;
+        $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
+        $data['inc_page']           = 'admin/users/add';
+        
+        $this->load->view('manager_layout', $data);
+        
+        //$this->load->view('admin/user-add', $data);
     }
 
     public function save_user() {
@@ -54,7 +61,6 @@ class Admin extends CI_Controller
         $table_name = $aauth["users"];
 
         $user_id = $this->aauth->create_user( $_POST["email"], $_POST["password"], $_POST["username"] );
-
         $data = array(
             'first_name'    => $_POST["first_name"],
             'last_name'    => $_POST["last_name"],
@@ -70,6 +76,8 @@ class Admin extends CI_Controller
 
         $this->db->where('id', $user_id);
         $this->db->update( $table_name , $data);
+
+        redirect( base_url('admin/internal/user/list') );
     }
 
     public function view_users() {
@@ -240,6 +248,11 @@ class Admin extends CI_Controller
         $this->db->where('id', $user_id);
         $this->db->update('aauth_users', $user_data);
 
+        redirect(base_url('/admin/internal/user/list'));
+    }
+
+    public function delete_user( $user_id ) {
+        $this->aauth->delete_user( $user_id );
         redirect(base_url('/admin/internal/user/list'));
     }
 }

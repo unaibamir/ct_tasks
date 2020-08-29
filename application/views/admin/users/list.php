@@ -30,7 +30,7 @@
                                 <tbody>
                                     <?php
                                     foreach ($users as $user) {
-                                        $delete_url = base_url("/admin/user/delete/".$user->id);
+                                        $delete_url = base_url("/admin/internal/user/".$user->id."/delete/");
                                         //$change_password_url = base_url("/admin/user/change_pass/".$user->id);
                                         $department_key     =   array_search($user->dept_id, array_column($departments, "cid"));
 
@@ -57,11 +57,11 @@
                                             ?></td>
                                             <td><?php echo $user->user_pass; ?></td>
                                             <td>
-                                                <a href="<?php echo $user_tasks_url; ?>" class="btn btn-info btn-sm" style="padding:5px;font-size:10px;">Tasks</a>
+                                                <a href="<?php echo $user_tasks_url; ?>" class="btn btn-success btn-sm" style="padding:5px;font-size:10px;">Tasks</a>
                                                 <a href="<?php echo $edit_link; ?>" class="btn btn-info btn-sm" style="padding:5px;font-size:10px;">Edit</a>
-                                                <a href="<?php echo $delete_url; ?>" class="btn btn-danger btn-sm disabled" style="padding:5px;font-size:10px;">Delete</a>
+                                                <a href="javascript:void(0);" class="btn btn-warning btn-sm" style="padding:5px;font-size:10px;"data-toggle="modal" data-target=".user-change-pass-popup-<?php echo $user->id; ?>" >Change Password</a>
+                                                <a href="<?php echo $delete_url; ?>" class="btn btn-danger btn-sm" style="padding:5px;font-size:10px;" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
 
-                                                <a href="javascript:void(0);" class="btn btn-danger btn-sm" style="padding:5px;font-size:10px;"data-toggle="modal" data-target=".user-change-pass-popup-<?php echo $user->id; ?>" >Change Password</a>
 
                                                 <div class="modal fade user-change-pass-popup-<?php echo $user->id; ?>" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog model-md">

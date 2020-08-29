@@ -58,7 +58,8 @@ $route['admin/internal/user/save']['post'] = 'admin/save_user';
 $route['admin/internal/user/list'] = 'admin/view_users';
 $route['admin/internal/user/change_pass/(:num)'] = 'admin/change_pass/$1';
 $route['admin/internal/user/(:num)/edit'] = 'admin/edit_users/$1';
-$route['admin/internal/user/save']['post'] = 'admin/edit_save_user';
+$route['admin/internal/user/edit/save']['post'] = 'admin/edit_save_user';
+$route['admin/internal/user/(:num)/delete'] = 'admin/delete_user/$1';
 
 $route['admin/internal/tasks'] = 'admin/view_tasks';
 $route['admin/internal/tasks/delete/(:num)'] = 'admin/delete_task/$1';
