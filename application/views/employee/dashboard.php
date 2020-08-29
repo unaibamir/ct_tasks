@@ -20,7 +20,7 @@
 
       <div class="col-lg-4">
         <div class="card card-chart text-center">
-         <img class="card-img-top" src="https://www.iconshock.com/image/Sophistique/Project_management/responsability_assignment" alt="Card image cap" style="width: 25%;">
+         <img class="card-img-top" src="https://payload.cargocollective.com/1/8/276225/13470810/yelldesign-blog-work.gif" alt="Card image cap" style="width: 60%;">
          <div class="card-body center">
           <h3 class="card-title">Check Assign Task</h3>
           <p class="card-text">New Task job is waiting for you</p>
@@ -31,7 +31,7 @@
 
     <div class="col-lg-4 col-md-4">
       <div class="card card-chart text-center">
-       <img class="card-img-top" src="https://cdn2.iconfinder.com/data/icons/news-1/65/_Daily_News-512.png" alt="Card image cap" style="width: 25%;">
+       <img class="card-img-top" src="https://i.pinimg.com/originals/e1/59/25/e15925c931a81678a3c2e0c0a40db781.gif" alt="Card image cap" style="width: 40%;">
        <div class="card-body ">
         <h3 class="card-title">View Daily Job Report</h3>
         <p class="card-text">Submit your Daily Task Report.</p>
@@ -43,7 +43,7 @@
   
   <div class="col-lg-4  col-md-6">
     <div class="card card-chart text-center">
-     <img class="card-img-top" src="https://pngimage.net/wp-content/uploads/2018/05/akademik-png-8.png" alt="Card image cap" style="width: 23%;">
+     <img class="card-img-top" src="https://www.oncomx.org/static/images/loading.gif" alt="Card image cap" style="width: 30%;">
      <div class="card-body ">
       <h3 class="card-title"><?php echo lang("monthly_job_summary_text"); ?></h3>
       <p class="card-text"><?php echo lang('monthly_job_summary_paragraph_text'); ?></p>
@@ -59,7 +59,7 @@
 
   <div class="col-lg-4">
     <div class="card card-chart text-center">
-      <img class="card-img-top" src="http://pluspng.com/img-png/task-png-regular-report-task-icon-256.png" alt="Card image cap" style="width: 25%;">
+      <img class="card-img-top" src="https://i.pinimg.com/originals/e3/bd/80/e3bd8040d980928d459eb79705afbce6.gif" alt="Card image cap" style="width: 50%;">
       <div class="card-body center">
         <h3 class="card-title">Finished Job</h3>
         <p class="card-text">All Finished Task & Executed Task over a Month</p>
@@ -70,7 +70,7 @@
 
 <div class="col-lg-4 ">
     <div class="card card-chart text-center">
-      <img class="card-img-top" src="https://www.perspectiverisk.com/wp-content/uploads/2016/08/email-attachment-300x229.png" alt="Card image cap" style="width: 27%;">
+      <img class="card-img-top" src="https://i.pinimg.com/originals/ba/9d/0b/ba9d0b56f48b4ecec4ddc8cbced67d78.gif" alt="Card image cap" style="width: 50%;">
       <div class="card-body center">
         <h3 class="card-title">Make an Enquiry </h3>
         <p class="card-text">Write Email or make Request</p>
@@ -81,7 +81,7 @@
 
   <div class="col-lg-4  col-md-6">
     <div class="card card-chart text-center">
-     <img class="card-img-top" src="https://icon-library.net/images/system-administrator-icon/system-administrator-icon-2.jpg" alt="Card image cap" style="width: 21%;">
+     <img class="card-img-top" src="https://static.dribbble.com/users/1791559/screenshots/4441947/gif_icon.gif" alt="Card image cap" style="width: 50%;">
      <div class="card-body ">
       <h3 class="card-title">View Your Profile</h3>
       <p class="card-text">Submit your Daily Task Report.</p>

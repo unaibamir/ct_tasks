@@ -1630,7 +1630,7 @@ class Report extends CI_Controller
 
     }
 
-    public function manual( $task_id = 0 ) {
+    public function manual_submit( $task_id = 0 ) {
         
         if( $task_id > 0 || isset($_GET["task_id"])  && !empty($_GET["task_id"])) {
             $this->getSingleTaskEntry( $_GET["task_id"] );

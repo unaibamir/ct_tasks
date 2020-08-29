@@ -14,6 +14,9 @@ class Admin extends CI_Controller
     {
         parent::__construct();
 
+        if(!$this->aauth->is_loggedin())
+            redirect(base_url(''));
+
         $this->load->helper(array('form'));
 
         $this->currentUser = $this->aauth->get_user();
@@ -79,6 +82,7 @@ class Admin extends CI_Controller
         $data['nav1']           = $this->currentUserGroup[0]->name;
         $data['currentUser']     = $this->currentUser;
         $data['currentUserGroup'] = $this->currentUserGroup[0]->name;
+        
         $data['inc_page']       = 'admin/users/list';
         
         $this->load->view('manager_layout', $data);
@@ -195,5 +199,47 @@ class Admin extends CI_Controller
         $this->db->update( $this->config->item('aauth')["users"] , $user_data);
 
         dd($user_data);
+    }
+
+
+    public function edit_users( $user_id ) {
+        $user = $this->aauth->get_user( $user_id );
+
+        $data = array();
+        $data['user']               = $user;
+        $departments = $this->getDepartments();
+        $data["departments"] = $departments;
+        $data['heading1']           = 'Edit User';
+        $data['nav1']               = $this->currentUserGroup[0]->name;
+        $data['currentUser']        = $this->currentUser;
+        $data['currentUserGroup']   = $this->currentUserGroup[0]->name;
+        $data['inc_page']           = 'admin/users/edit';
+        
+        $this->load->view('manager_layout', $data);
+
+    }
+
+    public function edit_save_user() {
+        if( !isset($_POST['user_id']) ) {
+            redirect(base_url('/dashboard'));
+        }
+        extract($_POST);
+        $user_data = array(
+            "first_name"    =>  $_POST['first_name'],
+            "last_name"     =>  $_POST['last_name'],
+            "email"         =>  $_POST['email'],
+            "cur_loc"       =>  $_POST['cur_loc'],
+            "per_mon_no"    =>  $_POST['per_mon_no'],
+            "company_email" =>  $_POST['company_email'],
+            'com_mob_no'    =>  $_POST['com_mob_no'],
+            'job_title'     =>  $_POST['job_title'],
+            'dept_id'       =>  $_POST['dept_id'],
+            'nationality'   =>  $_POST['nationality'],
+        );
+        
+        $this->db->where('id', $user_id);
+        $this->db->update('aauth_users', $user_data);
+
+        redirect(base_url('/admin/internal/user/list'));
     }
 }

@@ -31,19 +31,25 @@ defined('BASEPATH') OR exit('No direct script access allowed');
     /*display: block;*/
 }
 </style>
-<body class="bg">
-<div class="row m-4">
-  <div class=" col-md-6 d-flex">
-  <img src="<?php echo base_url('assets/img/logo.png'); ?>">
-  </div>
+<body class="container bg">
+
+<div class="row mt-4 h-100">
+    <div class=" col-md-6 " style="" >     
+        <img src="https://gewportal.com/assets/img/logo.png" class="img-responsive"/>
+    </div>
+    <div class=" col-md-6 " style="" >     
+            </div>
 </div>
-
 <div class="container-fluid">
-
-  <div class="d-flex justify-content-center h-100 ">
-    <div class="card col-md-6">
+<div class="row mt-4 h-100">
+ <!--   <div class=" col-md-6 " style="background-color: #e0e0e0;" >     
+    <img src="https://gewportal.com/assets/img/background_images2.png" class="img-responsive"/>
+ </div>-->
+ 
+ <div class=" col-md-3 " style=""></div>
+  <div class="card col-md-6 ">
       <div class="card-header">
-        <h3>Gulf Enivronment Employee Login </h3>
+        <h3>Welcome to GEW PORTAL </h3>
      <!--   <div class="d-flex justify-content-end social_icon">
           <span><i class="fab fa-facebook-square"></i></span>
           <span><i class="fab fa-google-plus-square"></i></span>
@@ -68,7 +74,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
               <span class="input-group-text"><i class="fas fa-user" style="color: white;"></i></span>
             </div>
 
-            <input type="text" name="username" class="form-control <?php echo $error ? 'is-invalid': ''; ?> log" placeholder="Enter Your Employee" value="<?=set_value('username');?>"/>
+            <input type="text" name="username" class="form-control <?php echo $error ? 'is-invalid': ''; ?> log" placeholder="Enter Your Employee code" value="<?=set_value('username');?>"/>
             <?= $error ?>
             
           </div>
@@ -100,15 +106,28 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         </div>
       </div>
     </div>
-  </div>
-
+    <div class=" col-md-3 "></div>
+</div>
+</div>
 <div class="row">
   <div class="col-md-3"></div>
-  <div class="col-md-6"><div class="footer-copyright text-center py-3"><kbd>© 2019 Copyright:
+  <div class="col-md-6"><div class="footer-copyright text-center py-3"><kbd>© 2020 Copyright:
     <a href="http://www.gulfenviro.ae/"> gulfenviro.ae</a> </kbd>
   </div></div>
   <div class="col-md-3"></div>
 </div>
+</div>
+
+
+<div class="container-fluid">
+
+  <div class="row"  >
+   
+    
+    
+  </div>
+
+
 </div>
   <!--   Core JS Files   -->
   <script src="<?php echo base_url('assets/js/core/jquery.min.js'); ?>"></script>

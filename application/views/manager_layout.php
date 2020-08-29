@@ -192,11 +192,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
                     <?php if ($this->aauth->is_group_allowed('all_task', $currentUserGroup)) : ?>
-                        <li>
-                            <a href="<?php echo base_url('employee/attendance'); ?>">
+                         <li>
+                          <!--  <a href="<?php echo base_url('employee/attendance'); ?>">  
                                 <i class="now-ui-icons gestures_tap-01 "></i>
                                 <p><?php echo lang( 'employee_attendance_text' ); ?></p>
-                            </a>
+                            </a> -->
                         </li>
                     <?php endif; ?>
                 </ul>

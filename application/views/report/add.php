@@ -51,7 +51,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                 </div>
                 <div class="card-body" style="">
                     <div class="row  m-1">
-                        <div class="col-lg-2 rounded p-4 " style="border-right: 2px solid; background: #02300a;  color: white;">
+                        <div class="col-lg-2 rounded p-4 " style="border-right: 2px solid; background: #0f094e;  color: white;">
                             <div class="row ">
                                 <h3 class="text-sm-center text-primary ">Employee Record </h3>
                             </div>
@@ -68,7 +68,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                 <p class="card-text mx-1 text-warning"><?php echo $currentUser->username; ?></p>
                             </div>
                         </div>
-                        <div class="col-lg-3 rounded  p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
+                        <div class="col-lg-3 rounded  p-4" style="border-right: 2px solid; background: #0f094e; color: white;">
                             <div class="row ">
                                 <h2 class="text-sm-center text-primary ">Task Details </h2>
                             </div>
@@ -119,7 +119,7 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                 <p class=" card-text m-2 text-warning"><?php echo $task->t_description; ?></p>
                             </div>
                         </div>
-                        <div class="col-lg-6 rounded p-4" style="border-right: 2px solid; background: #19385b; ; color: white;">
+                        <div class="col-lg-6 rounded p-4" style="border-right: 2px solid; background: #0f094e;  color: white;">
                             <?php
                             if (!empty($alreadReported) || !empty($task->t_status) && $task->t_status != "in-progress" || !$can_submit) {
                             ?>
@@ -156,19 +156,19 @@ defined('BASEPATH') or exit('No direct script access allowed'); ?>
                                     <span class="text-warning"><strong>Status</strong></span>
                                     <div class="clearfix clear"></div>
                                     <label class="radio-inline text-warning">
-                                        <input type="radio" name="status" id="task_status_y" value="Y" <?= $disabled ?> <?= ($status == 'Y') ? 'checked' : ''; ?> required />Y
+                                        <input type="radio" name="status" id="task_status_y" value="Y" <?= $disabled ?> <?= ($status == 'Y') ? 'checked' : ''; ?> required />Yes
                                     </label>
                                     <label class="radio-inline text-warning">
-                                        <input type="radio" name="status" id="task_status_n" value="N" <?= $disabled ?> <?= ($status == 'N') ? 'checked' : ''; ?> />N
+                                        <input type="radio" name="status" id="task_status_n" value="N" <?= $disabled ?> <?= ($status == 'N') ? 'checked' : ''; ?> />No
                                     </label>
                                     <label class="radio-inline text-warning">
-                                        <input type="radio" name="status" id="task_status_h" value="H" <?= $disabled ?> <?= ($status == 'H') ? 'checked' : ''; ?> />H
+                                        <input type="radio" name="status" id="task_status_h" value="H" <?= $disabled ?> <?= ($status == 'H') ? 'checked' : ''; ?> />on Hold
                                     </label>
                                     <label class="radio-inline text-warning">
-                                        <input type="radio" name="status" id="task_status_c" value="C" <?= $disabled ?> <?= ($status == 'C') ? 'checked' : ''; ?> />C
+                                        <input type="radio" name="status" id="task_status_c" value="C" <?= $disabled ?> <?= ($status == 'C') ? 'checked' : ''; ?> />Cancel
                                     </label>
                                     <label class="radio-inline text-warning">
-                                        <input type="radio" name="status" id="task_status_c" value="F" <?= $disabled ?> <?= ($status == 'F') ? 'checked' : ''; ?> />F
+                                        <input type="radio" name="status" id="task_status_c" value="F" <?= $disabled ?> <?= ($status == 'F') ? 'checked' : ''; ?> />Finish
                                     </label>
                                 </div>
                                 <div class="col-md-10 task-report-reason" style="">

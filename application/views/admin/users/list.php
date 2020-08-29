@@ -41,6 +41,8 @@
                                             'employee_id'   =>  $user->id
                                         ), base_url( '/task' ) );
 
+                                        $edit_link = base_url( '/admin/internal/user/'. $user->id .'/edit/' );
+
                                         ?>
                                         <tr>
                                             <td><?php echo $user->id; ?></td>
@@ -56,7 +58,7 @@
                                             <td><?php echo $user->user_pass; ?></td>
                                             <td>
                                                 <a href="<?php echo $user_tasks_url; ?>" class="btn btn-info btn-sm" style="padding:5px;font-size:10px;">Tasks</a>
-                                                <a href="#" class="btn btn-info btn-sm disabled" style="padding:5px;font-size:10px;">Edit</a>
+                                                <a href="<?php echo $edit_link; ?>" class="btn btn-info btn-sm" style="padding:5px;font-size:10px;">Edit</a>
                                                 <a href="<?php echo $delete_url; ?>" class="btn btn-danger btn-sm disabled" style="padding:5px;font-size:10px;">Delete</a>
 
                                                 <a href="javascript:void(0);" class="btn btn-danger btn-sm" style="padding:5px;font-size:10px;"data-toggle="modal" data-target=".user-change-pass-popup-<?php echo $user->id; ?>" >Change Password</a>

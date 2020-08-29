@@ -175,7 +175,7 @@
 					    <div class="col-sm-10">
 					      <button type="submit" class="btn btn-primary">Add User</button>
 					    </div>
-					  </div>
+					</div>
 
                 </fieldset>
             </form>

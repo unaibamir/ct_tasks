@@ -129,6 +129,11 @@ $job_types = array(
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            
+                               <p><b>Keys :</b> <br> <b> TD : </b>  Total Days , <b> H :</b> Friday - Holiday, <br> <b> 0 : </b> No Report / Absent , <b> 1 : </b> Reported / YES </p>
+                          
+                        </div>
                     </div>
                     <?php
                     if( isset($_GET["employee_id"]) && !empty($_GET["employee_id"]) ) {
@@ -198,12 +203,12 @@ $job_types = array(
                                             <?php
                                         }
                                         ?>
-                                        <td><span class="table-status"><?php echo $total_days; ?></span></td>
-                                        <td><span class="table-status"><?php echo $holidays;  ?></span></td>
-                                        <td><span class="table-status">
+                                        <td style="background: #c0ccc3;color: #1b0000;border-right: 1px #a79b9b solid; border-left: 1px #a79b9b solid"><span class="table-status" ><?php echo $total_days; ?></span></td>
+                                        <td style="background: #b3b7b4; color: #1b0000; border-right: 1px #a79b9b solid; border-left: 1px #a79b9b solid"><span class="table-status"><?php echo $holidays;  ?></span></td>
+                                        <td style="background: #c9dace; color: #000000;border-right: 1px #a79b9b solid; border-left: 1px #a79b9b solid;"><span class="table-status">
                                             <?php echo $total_days > $total_attendance ? $total_days - $total_attendance : "0" ;?>
                                         </span></td>
-                                        <td><span class="table-status"><?php echo $total_attendance; ?></span></td>
+                                        <td style="background: #fbff00;color: #000000;border-right: 1px #a79b9b solid; border-left: 1px #a79b9b solid; "><span class="table-status"><?php echo $total_attendance; ?></span></td>
                                     </tr>
                                     <?php
                                     $count++;
